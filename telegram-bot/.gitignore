@@ -64,3 +64,6 @@ viir.txt
 .*backup
 .sessions.json
 .config.json
+dayly-file-alerts.json
+nasa-fire-active.json
+near-neighbours.json
