@@ -3,6 +3,8 @@
   "description": "A Node-RED Project",
   "version": "0.0.1",
   "dependencies": {
+    "i18next": "^10.0.7",
+    "i18next-node-fs-backend": "^1.0.0",
     "moment": "^2.19.1",
     "node-red-contrib-config": "^1.1.1",
     "node-red-contrib-counter": "^0.1.4",
@@ -14,6 +16,7 @@
     "node-red-dashboard": "^2.5.1",
     "node-red-node-google": "^0.1.1",
     "node-red-node-mongodb": "0.0.13",
+    "node-red-node-rbe": "^0.1.13",
     "node-red-node-sqlite": "~0.1.2"
   }
 }

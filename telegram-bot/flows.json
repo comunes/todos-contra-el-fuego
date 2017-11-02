@@ -117,7 +117,7 @@
         "info": "",
         "in": [
             {
-                "x": 720,
+                "x": 60,
                 "y": 40,
                 "wires": [
                     {
@@ -248,6 +248,35 @@
                     },
                     {
                         "id": "4d5be381.f478fc",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "e81a68fa.695e38",
+        "type": "subflow",
+        "name": "tsend",
+        "info": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "dd683e99.7c126"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 560,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "dd683e99.7c126",
                         "port": 0
                     }
                 ]
@@ -516,15 +545,18 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "other replies",
-        "func": "//if(context.global.keyboard && context.global.keyboard.pending)\n//{\n//    context.global.keyboard.pending = false;\n    if(msg.payload.content === 'Desuscribirme')\n    {\n        msg.payload.content = '👍 Desuscrito';\n        return [msg, null];   \n    }\n    else if(msg.payload.content === '♥ Apoya esta iniciativa')\n    {\n        msg.payload.content = '¿Sabías que los fuegos producen tanto CO² como los coches y aproximadamente ⅕ de todas nuestras emisiones?\\r\\n\\r\\n'\n        msg.payload.content += 'Puedes ayudarnos (y al medioambiente) dando difusión a @TodosContraElFuego_bot entre tus contactos y grupos para que más gente lo use.\\r\\n\\r\\n';\n        msg.payload.content += 'También puedes apoyarnos con alguna donación. Así podremos pagar nuestros servidores, servicios de terceros, usar otras plataformas diferentes de Telegram y pagar algún café a los desarrolladores:';\n        msg.payload.content += '\\r\\n➡️ https://comunes.org/donate\\r\\n\\r\\n';\n\n        return [msg, null];\n\n    }\n    else if(msg.payload.content === '📖 Más info')\n    {   msg.payload.content = \"© Copyleft Asociación Comunes bajo licencia AGPLv3\\r\\n\";\n        msg.payload.content += \"https://comunes.org\\r\\n\";\n        msg.payload.content += \"Código: https://github.com/comunes/todos-contra-el-fuego\\r\\n\\r\\n\";\n        \n        msg.payload.content += \"LIMITACIÓN DE LA RESPONSABILIDAD:\\r\\n\\r\\n\"; \n        \n        msg.payload.content += \"EN NINGÚN CASO A MENOS QUE SEA REQUERIDO POR UNA LEY APLICABLE O ACUERDO \";\n        msg.payload.content += \"ESCRITO NINGÚN TITULAR DE LOS DERECHOS DE AUTOR (“COPYRIGHT”), O NINGÚN \";\n        msg.payload.content += \"TERCERO QUE MODIFIQUE Y/O TRANSMITA EL PROGRAMA COMO SE PERMITE \";\n        msg.payload.content += \"ANTERIORMENTE, SERÁ RESPONSABLE ANTE USTED POR DAÑOS, INCLUYENDO \";\n        msg.payload.content += \"CUALESQUIERA DAÑOS GENERALES, PARTICULARES, IMPREVISTOS O DERIVADOS DEL \";\n        msg.payload.content += \"USO O IMPOSIBILIDAD DE USO DEL PROGRAMA (INCLUYENDO, PERO NO LIMITADO A, \";\n        msg.payload.content += \"LA PÉRDIDA DE DATOS, DATOS GENERADOS INCORRECTOS, PÉRDIDAS SUFRIDAS POR \";\n        msg.payload.content += \"USTED O POR TERCERAS PERSONAS, O LOS FALLOS DEL PROGRAMA PARA OPERAR CON \";\n        msg.payload.content += \"OTROS PROGRAMAS), INCLUSO SI DICHO TITULAR O UN TERCERO HA SIDO ADVERTIDO \";\n        msg.payload.content += \"DE LA POSIBILIDAD DE TALES DAÑOS.\\r\\n\\r\\n\";\n        \n        msg.payload.content += \"POLÍTICA DE PRIVACIDAD:\\r\\n\\r\\n\"\n        msg.payload.content += \"No compartimos ninguna información con terceros. La información recogida por esta aplicación tiene el único fin ayudar en la prevención y extinción de fuegos principalmente forestales.\\r\\n\\r\\n\";\n\n        msg.payload.content += \"FUENTES DE DATOS:\\r\\n\\r\\n\"\n        msg.payload.content += \"Además de las alertas proporcionadas por nuestros usuari@s, usamos datos de fuegos activos proporcionados por la NASA (programa MODIS y VIIRS). Ver mapa: http://effis.jrc.ec.europa.eu/static/effis_current_situation/public/index.html\\r\\n\";\n        msg.payload.content += \"«We acknowledge the use of data and imagery from LANCE FIRMS operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ».\\r\\n\"\n        msg.payload.content += \"Si quieres que añadamos otras fuentes de datos sobre fuegos, no dudes en contactar con nosotros: info@comunes.org\\r\\n\\r\\n\";\n        \n        msg.payload.content += \"PREGUNTAS FRECUENTES:\\r\\n\\r\\n\"\n        msg.payload.content += \"➖ ¿Me puedo suscribir a varias zonas?: Por ahora no directamente. Solo con un truco, añadiendo a @TodosContraElFuego_bot como miembro a un grupo y que ese grupo esté subscrito a otra zona.\\r\\n\";\n        msg.payload.content += \"➖ ¿Hay 'falsos positivos'?: Sí los hay. Puedes recibir alguna notificación de fuego por ej. de refinerías o incineradoras. Puedes pulsar a la localización del falso positivo y responder con un mensaje que diga 'falso positivo' o 'es una industria' para que estos fuegos no sean notificados.\\r\\n\";\n        msg.payload.content += \"Nos puedes ayudar mucho proporcionándonos otros feedbacks sobre la veracidad de las notificaciones de fuego, sobre el estado del fuego, etc. Siplemente responde a la localización de una notificación de fuego (pulsando sobre ella y seleccionando 'Responder') con algún comentario sobre ese fuego.'\\r\\n\";\n        msg.payload.content += \"➖ ¿Puedo recibir notificaciones en una distancia diferente o mayor? Sí, basta con estar subscrito y teclear, por ejemplo, 'a 17 km' si quisieramos recibir notificaciones en un radio de 17 kilómetros (o mayor si queremos hacer pruebas).\\r\\n\";\n        msg.payload.content += \"➖ ¿No voy a recibir demasiadas notificaciones?: En principio no deberías, ya que agrupamos las notificaciones de las diferentes fuentes y solo avisamos una vez al día por fuego. Por ejemplo no repetimos notificaciones si algún vecino ya ha notificado un mismo fuego en la zona previamente.\\r\\n\\r\\n\";\n        \n        msg.payload.content += \"OTROS:\\r\\n\\r\\n\"\n        msg.payload.content += \"➖ Por ahora solo procesamos datos de fuegos de la NASA en Europa, pero si nos lo pedís podemos ampliar nuestro radio de acción.\\r\\n\";\n        msg.payload.content += \"➖ Puedes añadir a @TodosContraElFuego_bot a un grupo como miembro y recibir notificaciones de cierta área en ese grupo.\\r\\n\";\n        msg.payload.content += \"➖ Puedes votar con alegría ⭐️⭐️⭐️⭐️⭐️ nuestro bot en https://telegram.me/storebot?start=TodosContraElFuego_bot .\\r\\n\\r\\n\";\n        \n        msg.payload.content += \"Feedback, sugerencias, bugs, etc: @vj_rj\\r\\n\\r\\n\";\n        \n        msg.payload.content += \"¡Gracias!\";\n        return [msg, null];\n    }\n    else {\n        msg.payload.content = 'Opción de teclado desconocida';\n        return [null, msg];   \n    }\n//}\n",
-        "outputs": "2",
+        "func": "var i = context.global.i18next;\n//if(context.global.keyboard && context.global.keyboard.pending)\n//{\n//    context.global.keyboard.pending = false;\n    if(msg.payload.content === i.t('Desuscribirme'))\n    {\n        msg.payload.content = i.t('👍 Desuscrito');\n        return [msg, null];   \n    }\n    else if(msg.payload.content === i.t('♥ Apoya esta iniciativa'))\n    {\n        msg.payload.content =  i.t('¿Sabías que los fuegos producen tanto CO² como los coches y aproximadamente ⅕ de todas nuestras emisiones?') + '\\r\\n\\r\\n'\n        msg.payload.content += i.t('Puedes ayudarnos (y al medioambiente) dando difusión a @TodosContraElFuego_bot entre tus contactos y grupos para que más gente lo use.') + '\\r\\n\\r\\n';\n        msg.payload.content += i.t('También puedes apoyarnos con alguna donación. Así podremos pagar nuestros servidores, servicios de terceros, usar otras plataformas diferentes de Telegram y pagar algún café a los desarrolladores:');\n        msg.payload.content += '\\r\\n➡️ https://comunes.org/donate\\r\\n\\r\\n';\n\n        return [msg, null];\n\n    }\n    else if(msg.payload.content === i.t('📖 Más info'))\n    {   msg.payload.content =  i.t('© Copyleft Asociación Comunes bajo licencia AGPLv3') + '\\r\\n';\n        msg.payload.content += \"https://comunes.org\\r\\n\";\n        msg.payload.content += i.t('Código:') + 'https://github.com/comunes/todos-contra-el-fuego\\r\\n\\r\\n';\n        \n        msg.payload.content += i.t('LIMITACIÓN DE LA RESPONSABILIDAD:') + '\\r\\n\\r\\n'; \n        \n        msg.payload.content += i.t('EN NINGÚN CASO A MENOS QUE SEA REQUERIDO POR UNA LEY APLICABLE O ACUERDO ESCRITO NINGÚN TITULAR DE LOS DERECHOS DE AUTOR (“COPYRIGHT”), O NINGÚN TERCERO QUE MODIFIQUE Y/O TRANSMITA EL PROGRAMA COMO SE PERMITE ANTERIORMENTE, SERÁ RESPONSABLE ANTE USTED POR DAÑOS, INCLUYENDO CUALESQUIERA DAÑOS GENERALES, PARTICULARES, IMPREVISTOS O DERIVADOS DEL USO O IMPOSIBILIDAD DE USO DEL PROGRAMA (INCLUYENDO, PERO NO LIMITADO A, LA PÉRDIDA DE DATOS, DATOS GENERADOS INCORRECTOS, PÉRDIDAS SUFRIDAS POR USTED O POR TERCERAS PERSONAS, O LOS FALLOS DEL PROGRAMA PARA OPERAR CON OTROS PROGRAMAS), INCLUSO SI DICHO TITULAR O UN TERCERO HA SIDO ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += i.t('POLÍTICA DE PRIVACIDAD:') + '\\r\\n\\r\\n';\n        msg.payload.content += i.t('No compartimos ninguna información con terceros. La información recogida por esta aplicación tiene el único fin ayudar en la prevención y extinción de fuegos principalmente forestales.') + '\\r\\n\\r\\n';\n\n        msg.payload.content += i.t('FUENTES DE DATOS:') + '\\r\\n\\r\\n';\n        msg.payload.content += i.t('Además de las alertas proporcionadas por nuestros usuari@s, usamos datos de fuegos activos proporcionados por la NASA (programa MODIS y VIIRS). Ver mapa: http://effis.jrc.ec.europa.eu/static/effis_current_situation/public/index.html') + '\\r\\n';\n        msg.payload.content += \"«We acknowledge the use of data and imagery from LANCE FIRMS operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ».\" + '\\r\\n';\n        msg.payload.content += i.t('Si quieres que añadamos otras fuentes de datos sobre fuegos, no dudes en contactar con nosotros: info@comunes.org') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += i.t('PREGUNTAS FRECUENTES:') + '\\r\\n\\r\\n';\n        msg.payload.content += i.t('➖ ¿Me puedo suscribir a varias zonas?: Por ahora no directamente. Solo con un truco, añadiendo a @TodosContraElFuego_bot como miembro a un grupo y que ese grupo esté subscrito a otra zona.') + '\\r\\n';\n        msg.payload.content += i.t('➖ ¿Hay \"falsos positivos\"?: Sí los hay. Puedes recibir alguna notificación de fuego por ej. de refinerías o incineradoras. Puedes pulsar a la localización del falso positivo y responder con un mensaje que diga \"falso positivo\" o \"es una industria\" para que estos fuegos no sean notificados.') + '\\r\\n';\n        msg.payload.content += i.t('Nos puedes ayudar mucho proporcionándonos otros feedbacks sobre la veracidad de las notificaciones de fuego, sobre el estado del fuego, etc. Siplemente responde a la localización de una notificación de fuego (pulsando sobre ella y seleccionando \"Responder\") con algún comentario sobre ese fuego.') + '\\r\\n';\n        msg.payload.content += i.t('➖ ¿Puedo recibir notificaciones en una distancia diferente o mayor? Sí, basta con estar subscrito y teclear, por ejemplo, \"a 17 km\" si quisieramos recibir notificaciones en un radio de 17 kilómetros (o mayor si queremos hacer pruebas).') + '\\r\\n';\n        msg.payload.content += i.t('➖ ¿No voy a recibir demasiadas notificaciones?: En principio no deberías, ya que agrupamos las notificaciones de las diferentes fuentes y solo avisamos una vez al día por fuego. Por ejemplo no repetimos notificaciones si algún vecino ya ha notificado un mismo fuego en la zona previamente.') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += i.t('OTROS:') + '\\r\\n\\r\\n';\n        msg.payload.content += i.t('➖ Por ahora solo procesamos datos de fuegos de la NASA en Europa, pero si nos lo pedís podemos ampliar nuestro radio de acción.') + '\\r\\n';\n        msg.payload.content += i.t('➖ Puedes añadir a @TodosContraElFuego_bot a un grupo como miembro y recibir notificaciones de cierta área en ese grupo.') + '\\r\\n';\n        msg.payload.content += i.t('➖ Puedes votar con alegría ⭐️⭐️⭐️⭐️⭐️ nuestro bot en https://telegram.me/storebot?start=TodosContraElFuego_bot.') +  '\\r\\n\\r\\n';\n        \n        msg.payload.content += i.t('Feedback, sugerencias, bugs, etc: @vj_rj') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += i.t(\"¡Gracias!\");\n        return [msg, null];\n    }\n    else {\n        msg.payload.content = i.t('Opción de teclado desconocida');\n        return [null, msg];   \n    }\n//}\n",
+        "outputs": "5",
         "noerr": 0,
         "x": 770,
-        "y": 560,
+        "y": 580,
         "wires": [
             [
                 "9ac27b91.95fd38"
             ],
+            [],
+            [],
+            [],
             []
         ]
     },
@@ -533,7 +565,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "escribir posición",
-        "func": "if(context.global.keyboard.pending)\n{\n    context.global.keyboard.pending = false;\n    msg.payload.type = 'message';\n    msg.payload.content = 'Indícanos la posición a vigilar (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip';\n    msg.payload.topic = \"sus\";\n    \n    var opts = {\n      reply_markup: JSON.stringify({\n        force_reply: true,\n      })\n    };\n    msg.payload.options = opts;\n    return msg;\n}\n",
+        "func": "var i = context.global.i18next;\nif(context.global.keyboard.pending)\n{\n    context.global.keyboard.pending = false;\n    msg.payload.type = 'message';\n    msg.payload.content = i.t('Indícanos la posición a vigilar (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip');\n    msg.payload.topic = \"sus\";\n    \n    var opts = {\n      reply_markup: JSON.stringify({\n        force_reply: true,\n      })\n    };\n    msg.payload.options = opts;\n    return msg;\n}\n",
         "outputs": "1",
         "noerr": 0,
         "x": 610,
@@ -813,7 +845,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "ask location to sub",
-        "func": "if (msg.payload.chatId > 0) {\n    if(context.global.keyboard.pending) {\n        context.global.keyboard.pending = false;\n        context.global.keyboard = { pending : true };\n        var opts = {\n            // reply_to_message_id: msg.payload.messageId,\n            \n            reply_markup: JSON.stringify({\n                force_reply: true,\n                keyboard: [ \n                    [{text: '📍 Compartir mi posición', request_location: true}, \n                     {text: '📝 Escribir mi posición'}\n                    ],\n                    [{text: \"⬅️ Cancelar\"}]\n                ], \n\n                'resize_keyboard' : true, \n                'one_time_keyboard' : true\n            })\n        };\n    }\n    msg.payload.content = '¿Quieres compartir tu posición o escribir el nombre de la zona a vigilar (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación';\n    msg.payload.options = opts;\n    global.set('locationtopic', 'sus');\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'sus');\n    return [null, msg];\n}",
+        "func": "var i = context.global.i18next;\nif (msg.payload.chatId > 0) {\n    if(context.global.keyboard.pending) {\n        context.global.keyboard.pending = false;\n        context.global.keyboard = { pending : true };\n        var opts = {\n            // reply_to_message_id: msg.payload.messageId,\n            \n            reply_markup: JSON.stringify({\n                force_reply: true,\n                keyboard: [ \n                    [{text: i.t('📍 Compartir mi posición'), request_location: true}, \n                     {text: i.t('📝 Escribir mi posición')}\n                    ],\n                    [{text: i.t('⬅️ Cancelar')}]\n                ], \n\n                'resize_keyboard' : true, \n                'one_time_keyboard' : true\n            })\n        };\n    }\n    msg.payload.content = i.t('¿Quieres compartir tu posición o escribir el nombre de la zona a vigilar (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    global.set('locationtopic', 'sus');\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'sus');\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 610,
@@ -869,7 +901,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "ask fire",
-        "func": "if (msg.payload.chatId > 0) {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: '📍 El fuego está en mi ubiciación', request_location: true}, \n                 {text: '📝 Escribir localización fuego'}\n                ],\n                [{text: \"⬅️ Cancelar\"}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = '¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación';\n    msg.payload.options = opts;\n    global.set('locationtopic', 'nuevofuego');\n    // msg.payload.topic = \"nuevofuego\";\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'nuevofuego');\n    return [null, msg];\n}\n",
+        "func": "var i = context.global.i18next;\nif (msg.payload.chatId > 0) {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: i.t('📍 El fuego está en mi ubiciación'), request_location: true}, \n                 {text: i.t('📝 Escribir localización fuego')}\n                ],\n                [{text: i.t('⬅️ Cancelar')}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = i.t('¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    global.set('locationtopic', 'nuevofuego');\n    // msg.payload.topic = \"nuevofuego\";\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'nuevofuego');\n    return [null, msg];\n}\n",
         "outputs": "2",
         "noerr": 0,
         "x": 860,
@@ -983,29 +1015,15 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "Subscrito!",
-        "func": "var newMsg = {\n    payload : {\n        content : \"👍 ¡Suscrito/a!\",\n        type: \"message\",\n        chatId: msg.query.chatId\n    }\n}\n\nreturn newMsg;",
+        "func": "var i = context.global.i18next;\nvar newMsg = {\n    payload : {\n        content : i.t('👍 ¡Suscrito/a!'),\n        type: \"message\",\n        chatId: msg.query.chatId\n    }\n}\n\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 830,
         "y": 720,
         "wires": [
             [
-                "3f247e6f.79b772",
-                "abe7d7fb.2c4708"
-            ]
-        ]
-    },
-    {
-        "id": "3f247e6f.79b772",
-        "type": "telegram sender",
-        "z": "93cb4937.6fc068",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 1030,
-        "y": 700,
-        "wires": [
-            [
-                "baa17b12.6767a8"
+                "abe7d7fb.2c4708",
+                "c60a2456.adac68"
             ]
         ]
     },
@@ -1024,7 +1042,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 860,
+        "x": 200,
         "y": 40,
         "wires": [
             [
@@ -1210,7 +1228,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "calc distances",
-        "func": "// node.log(\"Find users near \" + msg.payload.length);\n\nfor(var i = msg.payload.length; i--; ) {\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload[i].location.lat, \n      longitude: msg.payload[i].location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload[i].distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        content = \"🔥 Alerta vecinal de fuego a \" + km + \" км de distancia:\"\n    } else if (msg.type === \"nasa\") {\n        content = \"🔥 Alerta de posible fuego a \" + km + \" км de distancia (fuente NASA):\"\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload[i].chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload[i].chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        caption: caption\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload[i].chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 2000 // Junto notificaciones en un radio de 2km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption\n    }\n    \n    node.send(newMsg);\n}\n\n}\n",
+        "func": "var i18n = context.global.i18next;\n\n// node.log(\"Find users near \" + msg.payload.length);\nfor(var i = msg.payload.length; i--; ) {\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload[i].location.lat, \n      longitude: msg.payload[i].location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload[i].distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia:''\n        content = i18n.t('kmnasa', {km: km});\n    } else if (msg.type === \"nasa\") {\n        // kmvecinal '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA):''\n        content = i18n.t('kmvecinal', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload[i].chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload[i].chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        caption: caption\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload[i].chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 2000 // Junto notificaciones en un radio de 2km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption\n    }\n    \n    node.send(newMsg);\n}\n\n}\n",
         "outputs": 1,
         "noerr": 0,
         "x": 580,
@@ -1252,14 +1270,14 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "send location",
-        "func": "if (msg.payload.length > 0) {\n    var caption = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"message\",\n          content: \"Estas suscrito/a a alertas de fuegos a \" + msg.payload[0].distance + \" km a la redonda de esta zona\"\n        }\n    }\n    \n    var location = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.payload[0].location.lon,\n             latitude: msg.payload[0].location.lat\n          }\n        }\n    }\n    return [caption, location, null];\n}",
+        "func": "var i = context.global.i18next;\nvar km = msg.payload[0].distance;\nif (msg.payload.length > 0) {\n    var caption = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"message\",\n          content: i.t('kmdistancia', {km: km})\n        }\n    }\n    \n    var location = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.payload[0].location.lon,\n             latitude: msg.payload[0].location.lat\n          }\n        }\n    }\n    return [caption, location, null];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1060,
         "y": 840,
         "wires": [
             [
-                "ab7f78d0.e84ee8"
+                "33cd0275.71172e"
             ],
             [
                 "74146dac.0d0704"
@@ -1274,11 +1292,11 @@
         "id": "54c7f5d3.8c4e7c",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "no suscrito",
-        "func": "if (msg.payload.length === 0) {\n    msg.payload.type = \"message\";\n    msg.payload.content = \"No estás suscrito/a a ninguna alerta\";\n    msg.payload.chatId = msg.chatId;\n    return msg;\n}\n",
+        "name": "no susc",
+        "func": "var i = context.global.i18next;\nif (msg.payload.length === 0) {\n    msg.payload.type = \"message\";\n    msg.payload.content = i.t('No estás suscrito/a a ninguna alerta');\n    msg.payload.chatId = msg.chatId;\n    return msg;\n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1050,
+        "x": 1040,
         "y": 800,
         "wires": [
             [
@@ -2038,7 +2056,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "users near",
-        "func": "var newMsg  = {\n    payload: msg.payload.length,\n    label: \"Usuarios en la zona\"\n}\nreturn newMsg;\n",
+        "func": "var i = context.global.i18next;\n\nvar newMsg  = {\n    payload: msg.payload.length,\n    label: i.t('Usuarios en la zona')\n}\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 570,
@@ -2524,14 +2542,14 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "112",
-        "func": "var newMsg = {\n    payload: {\n        type: \"message\",\n        content: \"No olvides llamar al 📞112 si no lo has hecho ya para avisar a los servicios de emergencia 🚒\",\n        chatId : msg.payload.chatId\n    }\n};\nreturn newMsg;\n\n",
+        "func": "var i = context.global.i18next;\nvar newMsg = {\n    payload: {\n        type: \"message\",\n        content: i.t('No olvides llamar al 📞112 si no lo has hecho ya para avisar a los servicios de emergencia 🚒'),\n        chatId : msg.payload.chatId\n    }\n};\nreturn newMsg;\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 570,
         "y": 760,
         "wires": [
             [
-                "d5f6c81c.2bfa98"
+                "373aa2ef.0aac9e"
             ]
         ]
     },
@@ -2556,18 +2574,6 @@
             [
                 "b0289aa8.88a968"
             ]
-        ]
-    },
-    {
-        "id": "d5f6c81c.2bfa98",
-        "type": "telegram sender",
-        "z": "93cb4937.6fc068",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 730,
-        "y": 760,
-        "wires": [
-            []
         ]
     },
     {
@@ -2750,11 +2756,11 @@
         "id": "4230490a.147bf8",
         "type": "function",
         "z": "c644db46.3854c8",
-        "name": "escribir pos",
-        "func": "msg.payload.type = 'message';\n\nmsg.payload.content = 'Escribir localización del fuego (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip):';\n\nvar opts = {\n  reply_markup: JSON.stringify({\n    force_reply: true,\n  })\n};\n\nmsg.payload.options = opts;\nreturn msg;\n",
+        "name": "write pos",
+        "func": "var i = context.global.i18next;\nmsg.payload.type = 'message';\nmsg.payload.content = i.t('Escribir localización del fuego (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip):');\n\nvar opts = {\n  reply_markup: JSON.stringify({\n    force_reply: true,\n  })\n};\n\nmsg.payload.options = opts;\nreturn msg;\n",
         "outputs": "1",
         "noerr": 0,
-        "x": 170,
+        "x": 160,
         "y": 180,
         "wires": [
             [
@@ -2776,7 +2782,7 @@
         "type": "function",
         "z": "c6a40c11.dfc6b",
         "name": "volver btn",
-        "func": "var opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_to_message_id : null,\n    reply_markup: JSON.stringify({\n        force_reply: true,\n        keyboard: [ \n            [{text: \"⬅️ Volver\"}]\n        ], \n        'resize_keyboard' : true, \n        'one_time_keyboard' : true\n        })\n    };\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\nreturn [msg];",
+        "func": "var i = context.global.i18next;\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_to_message_id : null,\n    reply_markup: JSON.stringify({\n        force_reply: true,\n        keyboard: [ \n            [{text: i.t(\"⬅️ Volver\")}]\n        ], \n        'resize_keyboard' : true, \n        'one_time_keyboard' : true\n        })\n    };\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\nreturn [msg];",
         "outputs": 1,
         "noerr": 0,
         "x": 340,
@@ -2803,6 +2809,7 @@
         "id": "9ac27b91.95fd38",
         "type": "subflow:c6a40c11.dfc6b",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 930,
         "y": 560,
         "wires": []
@@ -2812,7 +2819,7 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "ask confirmation",
-        "func": "var isUser = msg.payload.chatId > 0;\n\ncontext.global.keyboard = { pending : true };\n\nvar opts = {\n  reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Sí\",\n                    \"callback_data\": \"notify_fire\"\n                },\n                {\n                    \"text\": \"No\",\n                    \"callback_data\": \"no_notify_fire\"\n                }]\n            ]\n  })\n};\n\nglobal.set('location', msg);\n\nvar newMsg = {\n    payload : {\n        chatId: msg.payload.chatId,\n        type: 'message',\n        content: 'Vas a notificar a los vecinos cercanos sobre este fuego ¿estás seguro/a?',\n        options: opts\n    }\n};\n\nif (isUser) {\n  //  msg.payload.content += ' Te solicitaremos tú contacto como medida de seguridad.';\n}\n\nreturn [newMsg, null];",
+        "func": "var i = context.global.i18next;\nvar isUser = msg.payload.chatId > 0;\n\ncontext.global.keyboard = { pending : true };\n\nvar opts = {\n  reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": i.t('Sí'),\n                    \"callback_data\": \"notify_fire\"\n                },\n                {\n                    \"text\": i.t('No'),\n                    \"callback_data\": \"no_notify_fire\"\n                }]\n            ]\n  })\n};\n\nglobal.set('location', msg);\n\nvar newMsg = {\n    payload : {\n        chatId: msg.payload.chatId,\n        type: 'message',\n        content: i.t('Vas a notificar a los vecinos cercanos sobre este fuego ¿estás seguro/a?'),\n        options: opts\n    }\n};\n\nif (isUser) {\n  //  msg.payload.content += ' Te solicitaremos tú contacto como medida de seguridad.';\n}\n\nreturn [newMsg, null];",
         "outputs": "1",
         "noerr": 0,
         "x": 1050,
@@ -2867,7 +2874,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "caption",
-        "func": "msg.caption = \"Este es el mapa del lugar al que te subscribes\";\nmsg.payload.chatId = msg.chatId;\nreturn msg;",
+        "func": "var i = context.global.i18next;\nmsg.caption = i.t('Este es el mapa del lugar al que te subscribes');\nmsg.payload.chatId = msg.chatId;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1980,
@@ -2979,7 +2986,7 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "answer confirm",
-        "func": "var show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar location = global.get('location');\n\nif (location !== null) {\n    global.set('location', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        msg.payload.content = '📣 Alerta recibida, ¡gracias!';\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: \"Aviso cancelado\",\n                chatId: msg.payload.chatId\n            }\n        }\n        return [null, null, newMsg];\n    }\n}",
+        "func": "var i = context.global.i18next;\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar location = global.get('location');\n\nif (location !== null) {\n    global.set('location', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: i.t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            }\n        }\n        return [null, null, newMsg];\n    }\n}",
         "outputs": "3",
         "noerr": 0,
         "x": 400,
@@ -3029,7 +3036,7 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "caption, etc",
-        "func": "msg.caption = \"Este es el mapa del lugar donde crees que hay un fuego\";\nmsg.location.text = msg.address;\nmsg.payload.chatId = msg.chatId;\nreturn msg;",
+        "func": "var i = context.global.i18next;\nmsg.caption = i.t('Este es el mapa del lugar donde crees que hay un fuego');\nmsg.location.text = msg.address;\nmsg.payload.chatId = msg.chatId;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 470,
@@ -3113,18 +3120,6 @@
         ]
     },
     {
-        "id": "ab7f78d0.e84ee8",
-        "type": "telegram sender",
-        "z": "93cb4937.6fc068",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 1390,
-        "y": 840,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "74146dac.0d0704",
         "type": "delay",
         "z": "93cb4937.6fc068",
@@ -3143,8 +3138,8 @@
         "y": 860,
         "wires": [
             [
-                "ab7f78d0.e84ee8",
-                "fbac8488.5194a8"
+                "fbac8488.5194a8",
+                "33cd0275.71172e"
             ]
         ]
     },
@@ -3153,7 +3148,7 @@
         "type": "function",
         "z": "9968fcc5.ed33c",
         "name": "menú distancia",
-        "func": "context.global.keyboard = { pending : true };\n\n// if (msg.payload.type == 'message') {\nvar opts = {\n  // reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    force_reply: true,\n    keyboard: [ \n        [{text: \"a 5 km\"}, {text: \"a 10 km\"}],\n        [{text: \"a 20 km\"}, {text: 'a 40 km'} ],\n        [{text: \"a 100 km\"}, {text: '⬅️ Cancelar'} ]],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n  })\n};\n\nmsg.payload.type = 'message';\nmsg.payload.content = '¿A que distancia a la redonda quieres recibir notificaciones?';\nmsg.payload.options = opts;\n\nreturn msg;\n//}\n",
+        "func": "var i = context.global.i18next;\ncontext.global.keyboard = { pending : true };\n\n// if (msg.payload.type == 'message') {\nvar opts = {\n  // reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    force_reply: true,\n    keyboard: [ \n        [{text: i.t('a 5 km')}, {text: i.t('a 10 km')}],\n        [{text: i.t('a 20 km')}, {text: i.t('a 40 km')} ],\n        [{text: i.t('a 100 km')}, {text: i.t('⬅️ Cancelar')} ]],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n  })\n};\n\nmsg.payload.type = 'message';\nmsg.payload.content = i.t('¿A que distancia a la redonda quieres recibir notificaciones?');\nmsg.payload.options = opts;\n\nreturn msg;\n//}\n",
         "outputs": "1",
         "noerr": 0,
         "x": 360,
@@ -3228,6 +3223,7 @@
         "id": "7d6a8c23.8b1694",
         "type": "subflow:9968fcc5.ed33c",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 480,
         "y": 1460,
         "wires": []
@@ -3532,7 +3528,7 @@
         "type": "function",
         "z": "76bd701f.29d0f",
         "name": "start menu",
-        "func": "context.global.keyboard = { pending : true };\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\nif (msg.payload.length === 0) {\n// Ya suscrito\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup:\n    JSON.stringify(\n        {\n            keyboard: [ \n                [{text: \"📣 Suscribirme a fuegos en mi zona\"}],\n                [{text: '🔥 Notificar un fuego nuevo'} ], \n                [{text: \"♥ Apoya esta iniciativa\"}, {text: \"📖 Más info\"}, ] ],\n            'resize_keyboard' : true, \n            // 'one_time_keyboard' : true\n        })\n};\n}\nelse {\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup:\n    JSON.stringify(\n        {\n            keyboard: [ \n                [{text: \"📣 Suscrito a nuevos fuegos\"}],\n                [{text: \"Desuscribirme\"}, {text: '🔥 Notificar un fuego nuevo'} ], \n                [{text: \"♥ Apoya esta iniciativa\"}, {text: \"📖 Más info\"}, ] ],\n            'resize_keyboard' : true, \n            // 'one_time_keyboard' : true\n        })\n};\n}\n\nmsg.payload.content = 'Elige una de las opciones:';\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\n\nreturn [ msg ];\n",
+        "func": "context.global.keyboard = { pending : true };\nvar i = context.global.i18next;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\nif (msg.payload.length === 0) {\n// Ya suscrito\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup:\n    JSON.stringify(\n        {\n            keyboard: [ \n                [{text: i.t('📣 Suscribirme a fuegos en mi zona')}],\n                [{text: i.t('🔥 Notificar un fuego nuevo')} ], \n                [{text: i.t('♥ Apoya esta iniciativa')}, {text: i.t('📖 Más info')}, ] ],\n            'resize_keyboard' : true, \n            // 'one_time_keyboard' : true\n        })\n};\n}\nelse {\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup:\n    JSON.stringify(\n        {\n            keyboard: [ \n                [{text: i.t('📣 Suscrito a nuevos fuegos')}],\n                [{text: i.t('Desuscribirme')}, {text: i.t('🔥 Notificar un fuego nuevo')} ], \n                [{text: i.t('♥ Apoya esta iniciativa')}, {text: i.t('📖 Más info')}, ] ],\n            'resize_keyboard' : true, \n            // 'one_time_keyboard' : true\n        })\n};\n}\n\nmsg.payload.content = i.t('Elige una de las opciones:');\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\n\nreturn [ msg ];\n",
         "outputs": "1",
         "noerr": 0,
         "x": 670,
@@ -3559,6 +3555,7 @@
         "id": "55ebd8f8.436e38",
         "type": "subflow:76bd701f.29d0f",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 570,
         "y": 360,
         "wires": []
@@ -3567,7 +3564,7 @@
         "id": "bf50334e.7ac3a",
         "type": "subflow:76bd701f.29d0f",
         "z": "465e67f.6ebf598",
-        "x": 1010,
+        "x": 350,
         "y": 40,
         "wires": []
     },
@@ -3823,8 +3820,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 630,
-        "y": 420,
+        "x": 410,
+        "y": 460,
         "wires": []
     },
     {
@@ -3934,7 +3931,7 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "already notif",
-        "func": "var newMsg = {\n    payload: {\n        type: \"message\",\n        chatId: msg.originalMessage.chatId,\n        content: \"Este fuego o uno muy cercano ya ha sido notificado por otra persona anteriormente. ¡Gracias!\"\n    }   \n}\nreturn newMsg;",
+        "func": "var i = context.global.i18next;\nvar newMsg = {\n    payload: {\n        type: \"message\",\n        chatId: msg.originalMessage.chatId,\n        content: i.t('Este fuego o uno muy cercano ya ha sido notificado por otra persona anteriormente. ¡Gracias!')\n    }   \n};\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 850,
@@ -4020,7 +4017,7 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "limits notif",
-        "func": "var newMsg = {\n    payload: {\n        type: \"message\",\n        chatId: msg.originalMessage.chatId,\n        content: \"Ya habías notificado un fuego hoy. Si por algún motivo necesitas reportar más de un fuego al día, ponte en contacto con nosotros: info@comunes.org ¡Gracias!\"\n    }   \n}\nreturn newMsg;",
+        "func": "var i = context.global.i18next;\nvar newMsg = {\n    payload: {\n        type: \"message\",\n        chatId: msg.originalMessage.chatId,\n        content: i.t('Ya habías notificado un fuego hoy. Si por algún motivo necesitas reportar más de un fuego al día, ponte en contacto con nosotros: info@comunes.org ¡Gracias!')\n    }   \n}\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1340,
@@ -4561,18 +4558,19 @@
         "id": "3534f560.645aea",
         "type": "inject",
         "z": "93cb4937.6fc068",
-        "name": "conf map",
+        "name": "onInit",
         "topic": "",
         "payload": "",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": true,
-        "x": 760,
+        "x": 830,
         "y": 140,
         "wires": [
             [
-                "c0867d8e.a5999"
+                "c0867d8e.a5999",
+                "f2c9762e.6c90a8"
             ]
         ]
     },
@@ -4905,7 +4903,7 @@
         "type": "function",
         "z": "2f0217a5.051978",
         "name": "thanks!",
-        "func": "var thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = \"👌 Tomamos nota, ¡gracias por colaborar!\"\nreturn thx;",
+        "func": "var i = context.global.i18next;\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = i.t('👌 Tomamos nota, ¡gracias por colaborar');\nreturn thx;",
         "outputs": 1,
         "noerr": 0,
         "x": 880,
@@ -5041,5 +5039,94 @@
         "x": 280,
         "y": 260,
         "wires": []
+    },
+    {
+        "id": "f2c9762e.6c90a8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "i18n conf",
+        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n}\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  fallbackLng: 'es',\n  whitelist: ['es'], // allowed languages\n  debug: true,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: true,\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n  // initialized and ready to go!\n  // msg.payload = i.t('kmvecinal', {km: 7}) ; // i.t('Sí');\n  // node.send(msg)\n  \n});\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1180,
+        "y": 180,
+        "wires": [
+            [
+                "1f93ce66.41da62"
+            ]
+        ]
+    },
+    {
+        "id": "1f93ce66.41da62",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "payl",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1350,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "ffdd465d.6f67c8",
+        "type": "function",
+        "z": "e81a68fa.695e38",
+        "name": "t.payl.content",
+        "func": "var i = context.global.i18next;\nif (!msg.payload.content) {\n    node.error(\"Has no msg.payload.content\");\n} else if (typeof msg.payload.content === 'string' && msg.payload.type === 'message' ) {\n    var toTrans = msg.payload.content;\n    msg.payload.content = i.t(toTrans, {interpolation: {escape: false}});\n    return msg;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 180,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "373aa2ef.0aac9e",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 720,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dd683e99.7c126",
+        "type": "telegram sender",
+        "z": "e81a68fa.695e38",
+        "name": "",
+        "bot": "f93d1a38.c43218",
+        "x": 350,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c60a2456.adac68",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1040,
+        "y": 700,
+        "wires": [
+            [
+                "baa17b12.6767a8"
+            ]
+        ]
+    },
+    {
+        "id": "33cd0275.71172e",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1400,
+        "y": 840,
+        "wires": [
+            []
+        ]
     }
 ]
