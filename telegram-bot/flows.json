@@ -69,6 +69,9 @@
                     }
                 ]
             }
+        ],
+        "inputLabels": [
+            "location.lat & lon"
         ]
     },
     {
@@ -132,11 +135,11 @@
         "info": "",
         "in": [
             {
-                "x": 80,
+                "x": 40,
                 "y": 100,
                 "wires": [
                     {
-                        "id": "59c0890d.7d97e8"
+                        "id": "d76ddf98.d3de9"
                     }
                 ]
             }
@@ -971,7 +974,7 @@
         "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 590,
+        "x": 580,
         "y": 680,
         "wires": []
     },
@@ -1191,7 +1194,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "near?",
-        "func": "// msg.csv = msg.payload;\nmsg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   }\nreturn msg;",
+        "func": "msg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   }\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 210,
@@ -1290,8 +1293,8 @@
         "name": "catch error",
         "active": true,
         "console": "true",
-        "complete": "error",
-        "x": 1430,
+        "complete": "true",
+        "x": 1480,
         "y": 100,
         "wires": []
     },
@@ -1303,7 +1306,7 @@
         "func": "var km = Number(msg.payload.content.replace(/a ([0-9]+)[ ]*km/, \"$1\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    } \n}\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 600,
+        "x": 590,
         "y": 640,
         "wires": [
             [
@@ -1480,12 +1483,12 @@
         "id": "6294a71e.647c58",
         "type": "debug",
         "z": "2b8628df.fdcca8",
-        "name": "payload",
+        "name": "false positive",
         "active": false,
         "console": "false",
-        "complete": "payload",
-        "x": 960,
-        "y": 160,
+        "complete": "true",
+        "x": 650,
+        "y": 280,
         "wires": []
     },
     {
@@ -2656,18 +2659,16 @@
         "to": "",
         "reg": false,
         "x": 170,
-        "y": 220,
+        "y": 600,
         "wires": [
-            [
-                "9620588a.113218"
-            ]
+            []
         ]
     },
     {
         "id": "9620588a.113218",
         "type": "google geocoding",
         "z": "c644db46.3854c8",
-        "name": "Geo",
+        "name": "Geo Fire",
         "geocodeBy": "address",
         "address": "",
         "lat": "",
@@ -2677,7 +2678,7 @@
         "language": "",
         "region": "",
         "components": "",
-        "x": 310,
+        "x": 320,
         "y": 220,
         "wires": [
             [
@@ -2741,7 +2742,7 @@
         "y": 180,
         "wires": [
             [
-                "90e7067.6f1b1f8"
+                "60fdfcd6.2a6d84"
             ]
         ]
     },
@@ -2814,7 +2815,7 @@
         "func": "var isUser = msg.payload.chatId > 0;\n\ncontext.global.keyboard = { pending : true };\n\nvar opts = {\n  reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Sí\",\n                    \"callback_data\": \"notify_fire\"\n                },\n                {\n                    \"text\": \"No\",\n                    \"callback_data\": \"no_notify_fire\"\n                }]\n            ]\n  })\n};\n\nglobal.set('location', msg);\n\nvar newMsg = {\n    payload : {\n        chatId: msg.payload.chatId,\n        type: 'message',\n        content: 'Vas a notificar a los vecinos cercanos sobre este fuego ¿estás seguro/a?',\n        options: opts\n    }\n};\n\nif (isUser) {\n  //  msg.payload.content += ' Te solicitaremos tú contacto como medida de seguridad.';\n}\n\nreturn [newMsg, null];",
         "outputs": "1",
         "noerr": 0,
-        "x": 1040,
+        "x": 1050,
         "y": 200,
         "wires": [
             [
@@ -2895,7 +2896,7 @@
         "type": "subflow:156e20df.86399f",
         "z": "c644db46.3854c8",
         "name": "",
-        "x": 630,
+        "x": 640,
         "y": 220,
         "wires": [
             [
@@ -2909,7 +2910,7 @@
         "z": "c644db46.3854c8",
         "name": "send",
         "bot": "f93d1a38.c43218",
-        "x": 1190,
+        "x": 1210,
         "y": 200,
         "wires": [
             []
@@ -2966,7 +2967,7 @@
         "command": "",
         "bot": "f93d1a38.c43218",
         "x": 180,
-        "y": 280,
+        "y": 300,
         "wires": [
             [
                 "9b5cd6c7.921428"
@@ -2982,7 +2983,7 @@
         "outputs": "3",
         "noerr": 0,
         "x": 400,
-        "y": 280,
+        "y": 300,
         "wires": [
             [
                 "59a6376a.109fa8",
@@ -3462,8 +3463,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1180,
-        "y": 340,
+        "x": 420,
+        "y": 420,
         "wires": []
     },
     {
@@ -3890,7 +3891,7 @@
         "func": "var newMsg = {\n    payload: msg.originalMessage,\n    location: msg.originalLocation\n};\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 840,
+        "x": 880,
         "y": 200,
         "wires": [
             [
@@ -4280,7 +4281,7 @@
         "type": "function",
         "z": "d29a1c6a.5a89e",
         "name": "neigh - args",
-        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar point = msg.location? msg: msg.payload;\n\nvar lat = point.location.lat;\nvar lon = point.location.lon;\nvar pname = \"\" + lat + \"/\" + lon;\npname += \"/\" + point.chatId? \"neighbourhood\" : \"neigh-alert/\" + point.dateformat;\n\nvar newMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: point.chatId? \"Neighbourhood\": \"Neighbourhood alerts\",\n        icon: point.chatId? \"fa-user\": \"hostile\",\n        iconColor: \"blue\",\n        addtoheatmap: false, // only rest to the heatmap\n        // radius: point.distance? point.distance * 1000: null,\n        // color: \"red\",\n        // fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        // radius: 10000, // radius,\n        // fillOpacity: 1,\n        // weblink only with markers\n        // weblink: \"http://example.com\"\n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nif (point.distance) {\n    var radius = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"Neighbourhood area\",\n            // icon:  \"hostile\",\n            // nColor: \"green\",\n            addtoheatmap: false,\n            radius: point.distance * 1000,\n            color: \"#145A32\",\n            fillColor: \"green\",\n            // intensity: intensity,\n            // weight: intensity,\n            fillOpacity: .1,\n            // weblink: \"http://example.com\"\n            // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n        }\n    }\n    node.send(radius);\n}\n\nreturn newMsg;",
+        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar point = msg.location? msg: msg.payload;\n\nvar lat = point.location.lat;\nvar lon = point.location.lon;\nvar pname = \"\" + lat + \"/\" + lon;\npname += \"/\" + point.chatId? \"neighbourhood\" : \"neigh-alert/\" + point.dateformat;\n\n// https://github.com/dceejay/RedMap/issues/29\n// A kind of \"update\" (del & add)\nvar delMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: point.chatId? \"Neighbourhood\": \"Neighbourhood alerts\",\n        deleted: true\n    }\n}\nnode.send(delMsg);\n\nvar addMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: point.chatId? \"Neighbourhood\": \"Neighbourhood alerts\",\n        icon: point.chatId? \"fa-user\": \"fa-fire\",\n        iconColor: point.chatId? \"green\": \"red\",\n        addtoheatmap: false, // only rest to the heatmap\n        // radius: point.distance? point.distance * 1000: null,\n        // color: \"red\",\n        // fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        // radius: 10000, // radius,\n        // fillOpacity: 1,\n        // weblink only with markers\n        // weblink: \"http://example.com\"\n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nif (point.distance) {\n    var radiusDel = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"Neighbourhood area\",\n            deleted: true\n        }\n    }\n    node.send(radiusDel);\n    \n    var radius = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"Neighbourhood area\",\n            // icon:  \"hostile\",\n            // nColor: \"green\",\n            addtoheatmap: false,\n            radius: point.distance * 1000,\n            color: \"#145A32\",\n            fillColor: \"green\",\n            // intensity: intensity,\n            // weight: intensity,\n            fillOpacity: .1,\n            // weblink: \"http://example.com\"\n            // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n        }\n    }\n    node.send(radius);\n}\n\nreturn addMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 190,
@@ -4960,11 +4961,11 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "false positive?",
-        "func": "msg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n       }\n   }\nreturn msg;",
+        "func": "msg.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n       }\n   }\nmsg.originalMessage = msg;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 240,
-        "y": 340,
+        "x": 140,
+        "y": 280,
         "wires": [
             [
                 "61abc532.9a0afc"
@@ -4979,10 +4980,66 @@
         "name": "find",
         "collection": "falsepositives",
         "operation": "find",
-        "x": 410,
-        "y": 340,
+        "x": 290,
+        "y": 280,
         "wires": [
-            []
+            [
+                "9e65a744.1a6a68"
+            ]
         ]
+    },
+    {
+        "id": "9e65a744.1a6a68",
+        "type": "function",
+        "z": "2b8628df.fdcca8",
+        "name": "false?",
+        "func": "if (msg.payload.length > 0) {\n    // node.log(\"False positive\");\n    return [null, msg.originalMessage];\n} else {\n    // node.log(\"Not false positive\");\n    return [msg.originalMessage, null];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 430,
+        "y": 280,
+        "wires": [
+            [
+                "59c0890d.7d97e8"
+            ],
+            [
+                "6294a71e.647c58"
+            ]
+        ],
+        "outputLabels": [
+            "not false positive",
+            "false"
+        ]
+    },
+    {
+        "id": "60fdfcd6.2a6d84",
+        "type": "function",
+        "z": "c644db46.3854c8",
+        "name": "set location",
+        "func": "msg.chatId = msg.payload.chatId;\nvar content = msg.payload.content;\nmsg.location = {};\n\nif (content && content.latitude) {\n    // Is a shared location (clip)\n    msg.location.lat = content.latitude;\n    msg.location.lon = content.longitude;\n    return [null, msg];\n} else {\n    // Is a writen location\n    msg.location.address = content;\n    return [msg, null];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "9620588a.113218"
+            ],
+            []
+        ],
+        "outputLabels": [
+            "address",
+            "lat,lon already"
+        ]
+    },
+    {
+        "id": "f6259b4e.a8d368",
+        "type": "comment",
+        "z": "c644db46.3854c8",
+        "name": "location attached is received also in the switch",
+        "info": "",
+        "x": 280,
+        "y": 260,
+        "wires": []
     }
 ]
