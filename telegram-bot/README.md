@@ -28,6 +28,8 @@ db.notifications.createIndex( { chatId: 1 })
 db.fstats.createIndex( { name: 1 } )
 db.avisosfuego.createIndex( { chatId: 1 })
 db.avisosfuego.createIndex( { geo : "2dsphere" } )
+db.falsepositives.createIndex( { chatId: 1 })
+db.falsepositives.createIndex( { geo : "2dsphere" } )
 ```
 
 # Telegram Comands #
@@ -38,3 +40,7 @@ inicio - Igual que /start ;-)
 suscribirme - a alertas de fuegos
 distancia - a la que monitorizar
 info - sobre tu subscripción```
+
+## Acknowledgements ##
+
+*We acknowledge the use of data and imagery from LANCE FIRMS operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ*.
