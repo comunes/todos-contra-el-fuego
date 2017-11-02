@@ -3,5 +3,18 @@
     "No": "No",
     "kmnasa": "🔥 Alert of possible fire in {{km}} км of distance (source NASA):",
     "kmvecinal": "🔥 Neighborhood alert of fire in {{km}} км of distance:",
-    "kmdistancia": "You are subscribed to fire alerts in {{km}} around of this zone"
+    "kmdistancia": "You are subscribed to fire alerts in {{km}} around of this zone",
+    "📣 Suscrito a nuevos fuegos": "📣 Subscribed to new fires",
+    "Desuscribirme": "Unsubscribe",
+    "🔥 Notificar un fuego nuevo": "🔥 Notify a new fire",
+    "♥ Apoya esta iniciativa": "♥ Support this initiative",
+    "📖 Más info": "📖 More info",
+    "Elige una de las opciones:": "Choose one of these options:",
+    "Usuarios en la zona": "Users around",
+    "⬅️ Volver": "⬅️ Return",
+    "👍 Desuscrito": "👍 Unsubscribed",
+    "📣 Suscribirme a fuegos en mi zona": "📣 Subscribe to fires around my area",
+    "📍 Compartir mi posición": "📍 Share my position",
+    "📝 Escribir mi posición": "📝 Write my position",
+    "⬅️ Cancelar": "⬅️ Cancel"
 }
