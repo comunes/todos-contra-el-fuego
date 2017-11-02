@@ -4434,7 +4434,7 @@
         "zoom": "6",
         "layer": "OSM grey",
         "cluster": "0",
-        "maxage": "1800",
+        "maxage": "20000",
         "usermenu": "hide",
         "layers": "show",
         "x": 1070,
