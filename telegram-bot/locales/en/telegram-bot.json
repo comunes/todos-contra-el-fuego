@@ -1,1 +1,7 @@
-{}
+{
+    "Sí": "Yes",
+    "No": "No",
+    "kmnasa": "🔥 Alert of possible fire in {{km}} км of distance (source NASA):",
+    "kmvecinal": "🔥 Neighborhood alert of fire in {{km}} км of distance:",
+    "kmdistancia": "You are subscribed to fire alerts in {{km}} around of this zone"
+}
