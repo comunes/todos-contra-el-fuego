@@ -31,11 +31,11 @@
         "info": "",
         "in": [
             {
-                "x": 180,
+                "x": 80,
                 "y": 120,
                 "wires": [
                     {
-                        "id": "b0495fbe.5ecca"
+                        "id": "49b822b4.2c81fc"
                     }
                 ]
             }
@@ -277,6 +277,64 @@
                 "wires": [
                     {
                         "id": "dd683e99.7c126",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "4384af8e.a7409",
+        "type": "subflow",
+        "name": "lang",
+        "info": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "5541b1d7.23da4"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 620,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "5541b1d7.23da4",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "94b874d7.e0e478",
+        "type": "subflow",
+        "name": "check lang change",
+        "info": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "e3b00d54.9cd4e"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 600,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "e3b00d54.9cd4e",
                         "port": 0
                     }
                 ]
@@ -533,10 +591,10 @@
         "y": 340,
         "wires": [
             [
-                "55ebd8f8.436e38"
+                "c757b5f5.bafb68"
             ],
             [
-                "a5ababbd.b45f98"
+                "1eddeb25.368605"
             ]
         ]
     },
@@ -620,18 +678,18 @@
             },
             {
                 "t": "eq",
-                "v": "⬅️ Volver",
-                "vt": "str"
+                "v": "i18n[\"⬅️ Volver\"]",
+                "vt": "msg"
             },
             {
                 "t": "eq",
-                "v": "⬅️ Cancelar",
-                "vt": "str"
+                "v": "i18n[\"⬅️ Cancelar\"]",
+                "vt": "msg"
             },
             {
-                "t": "cont",
-                "v": "Suscribirme a fuegos en mi zona",
-                "vt": "str"
+                "t": "eq",
+                "v": "i18n[\"📣 Suscribirme a fuegos en mi zona\"]",
+                "vt": "msg"
             },
             {
                 "t": "eq",
@@ -644,45 +702,45 @@
                 "vt": "str"
             },
             {
-                "t": "cont",
-                "v": "Desuscribirme",
-                "vt": "str"
-            },
-            {
-                "t": "cont",
-                "v": "Notificar un fuego nuevo",
-                "vt": "str"
+                "t": "eq",
+                "v": "i18n[\"Desuscribirme\"]",
+                "vt": "msg"
             },
             {
                 "t": "eq",
-                "v": "♥ Apoya esta iniciativa",
-                "vt": "str"
+                "v": "i18n[\"🔥 Notificar un fuego nuevo\"]",
+                "vt": "msg"
             },
             {
                 "t": "eq",
-                "v": "📝 Escribir mi posición",
-                "vt": "str"
-            },
-            {
-                "t": "cont",
-                "v": "Más info",
-                "vt": "str"
+                "v": "i18n[\"♥ Apoya esta iniciativa\"]",
+                "vt": "msg"
             },
             {
                 "t": "eq",
-                "v": "📝 Escribir localización fuego",
-                "vt": "str"
+                "v": "i18n[\"📝 Escribir mi posición\"]",
+                "vt": "msg"
+            },
+            {
+                "t": "eq",
+                "v": "i18n[\"📖 Más info\"]",
+                "vt": "msg"
+            },
+            {
+                "t": "eq",
+                "v": "i18n[\"📝 Escribir localización fuego\"]",
+                "vt": "msg"
             },
             {
                 "t": "regex",
-                "v": "^a [0-9]*[ ]*km",
+                "v": "^(a |)[0-9]*[ ]*km( around|)",
                 "vt": "str",
                 "case": true
             },
             {
                 "t": "eq",
-                "v": "📣 Suscrito a nuevos fuegos",
-                "vt": "str"
+                "v": "i18n['📣 Suscrito a nuevos fuegos']",
+                "vt": "msg"
             },
             {
                 "t": "eq",
@@ -701,8 +759,8 @@
             },
             {
                 "t": "eq",
-                "v": "📝 El fuego está en mi ubicación",
-                "vt": "str"
+                "v": "i18n[\"📍 El fuego está en mi ubicación\"]",
+                "vt": "msg"
             },
             {
                 "t": "eq",
@@ -721,8 +779,8 @@
         ],
         "checkall": "false",
         "outputs": 24,
-        "x": 280,
-        "y": 520,
+        "x": 300,
+        "y": 540,
         "wires": [
             [
                 "55ebd8f8.436e38"
@@ -796,8 +854,7 @@
                 "9f730cf9.c7a3b"
             ],
             [
-                "e0bc7e33.2a795",
-                "7a814ff6.010fd"
+                "acf185e6.858808"
             ]
         ]
     },
@@ -901,7 +958,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "ask fire",
-        "func": "var i = context.global.i18next;\nif (msg.payload.chatId > 0) {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: i.t('📍 El fuego está en mi ubiciación'), request_location: true}, \n                 {text: i.t('📝 Escribir localización fuego')}\n                ],\n                [{text: i.t('⬅️ Cancelar')}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = i.t('¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    global.set('locationtopic', 'nuevofuego');\n    // msg.payload.topic = \"nuevofuego\";\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'nuevofuego');\n    return [null, msg];\n}\n",
+        "func": "var i = context.global.i18next;\nif (msg.payload.chatId > 0) {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: i.t('📍 El fuego está en mi ubicación'), request_location: true}, \n                 {text: i.t('📝 Escribir localización fuego')}\n                ],\n                [{text: i.t('⬅️ Cancelar')}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = i.t('¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    global.set('locationtopic', 'nuevofuego');\n    // msg.payload.topic = \"nuevofuego\";\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'nuevofuego');\n    return [null, msg];\n}\n",
         "outputs": "2",
         "noerr": 0,
         "x": 860,
@@ -1005,8 +1062,8 @@
         "name": "otherwise",
         "active": true,
         "console": "false",
-        "complete": "payload",
-        "x": 580,
+        "complete": "true",
+        "x": 820,
         "y": 680,
         "wires": []
     },
@@ -1320,8 +1377,8 @@
         "id": "82292481.dd9428",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "query update",
-        "func": "var km = Number(msg.payload.content.replace(/a ([0-9]+)[ ]*km/, \"$1\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    } \n}\n\nreturn newMsg;\n",
+        "name": "update km",
+        "func": "var km = Number(msg.payload.content.replace(/(a |)([0-9]+)[ ]*km( around|)/, \"$2\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    } \n}\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 590,
@@ -1679,10 +1736,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "test",
-        "func": "msg.payload = {\n    dayUtc: context.global.moment.utc().dayOfYear(),\n    day: context.global.moment().dayOfYear()\n}\n// global.get(\"ftp-path\")\nreturn msg;",
+        "func": "\nvar i = context.global.i18next;\ni.changeLanguage(\"en\");\n/*\n    var i18n = [];\n    i18n['♥ Apoya esta iniciativa'] = i.t('♥ Apoya esta iniciativa');\n    i18n['⬅️ Volver'] = i.t('⬅️ Volver');\n    global.set('i18n', i18n);*/\n    \n    \nmsg.payload = {\n    dayUtc: context.global.moment.utc().dayOfYear(),\n    day: context.global.moment().dayOfYear(),\n   /* content: global.get('i18n')['Apoya esta iniciativa'],\n    content2: global.get('i18n').Volver,\n    content3: global.get('i18n') */\n};\n// global.get(\"ftp-path\")\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1490,
+        "x": 1610,
         "y": 1000,
         "wires": [
             [
@@ -1697,8 +1754,8 @@
         "name": "",
         "active": true,
         "console": "false",
-        "complete": "payload",
-        "x": 1640,
+        "complete": "true",
+        "x": 1770,
         "y": 1000,
         "wires": []
     },
@@ -1717,7 +1774,7 @@
         "y": 1000,
         "wires": [
             [
-                "72f03b95.7b3704"
+                "55edbbfa.a6d384"
             ]
         ]
     },
@@ -1835,7 +1892,7 @@
         "y": 300,
         "wires": [
             [
-                "55ebd8f8.436e38"
+                "c757b5f5.bafb68"
             ],
             []
         ]
@@ -2782,14 +2839,14 @@
         "type": "function",
         "z": "c6a40c11.dfc6b",
         "name": "volver btn",
-        "func": "var i = context.global.i18next;\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_to_message_id : null,\n    reply_markup: JSON.stringify({\n        force_reply: true,\n        keyboard: [ \n            [{text: i.t(\"⬅️ Volver\")}]\n        ], \n        'resize_keyboard' : true, \n        'one_time_keyboard' : true\n        })\n    };\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\nreturn [msg];",
+        "func": "var i = context.global.i18next;\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_to_message_id : null,\n    reply_markup: JSON.stringify({\n        force_reply: true,\n        keyboard: [ \n            [{text: i.t(\"⬅️ Volver\")}]\n        ], \n        'resize_keyboard' : true, \n        'one_time_keyboard' : false\n        })\n    };\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\nreturn [msg];",
         "outputs": 1,
         "noerr": 0,
-        "x": 340,
+        "x": 400,
         "y": 120,
         "wires": [
             [
-                "5f2a32ba.eaa58c"
+                "73730bca.1ff064"
             ]
         ]
     },
@@ -2799,7 +2856,7 @@
         "z": "c6a40c11.dfc6b",
         "name": "show keyb",
         "bot": "f93d1a38.c43218",
-        "x": 550,
+        "x": 790,
         "y": 120,
         "wires": [
             []
@@ -2952,18 +3009,6 @@
         "operation": "update",
         "x": 790,
         "y": 340,
-        "wires": []
-    },
-    {
-        "id": "7a814ff6.010fd",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "otros-origMessage",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 610,
-        "y": 720,
         "wires": []
     },
     {
@@ -3232,6 +3277,7 @@
         "id": "539a53d4.268c7c",
         "type": "subflow:9968fcc5.ed33c",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 600,
         "y": 840,
         "wires": []
@@ -3499,7 +3545,7 @@
         "func": "msg.chatId = msg.payload.chatId;\nmsg.payload = {\"chatId\": msg.payload.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 320,
+        "x": 520,
         "y": 100,
         "wires": [
             [
@@ -3515,7 +3561,7 @@
         "name": "find sub",
         "collection": "subscriptions",
         "operation": "find",
-        "x": 500,
+        "x": 700,
         "y": 100,
         "wires": [
             [
@@ -3531,7 +3577,7 @@
         "func": "context.global.keyboard = { pending : true };\nvar i = context.global.i18next;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\nif (msg.payload.length === 0) {\n// Ya suscrito\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup:\n    JSON.stringify(\n        {\n            keyboard: [ \n                [{text: i.t('📣 Suscribirme a fuegos en mi zona')}],\n                [{text: i.t('🔥 Notificar un fuego nuevo')} ], \n                [{text: i.t('♥ Apoya esta iniciativa')}, {text: i.t('📖 Más info')}, ] ],\n            'resize_keyboard' : true, \n            // 'one_time_keyboard' : true\n        })\n};\n}\nelse {\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup:\n    JSON.stringify(\n        {\n            keyboard: [ \n                [{text: i.t('📣 Suscrito a nuevos fuegos')}],\n                [{text: i.t('Desuscribirme')}, {text: i.t('🔥 Notificar un fuego nuevo')} ], \n                [{text: i.t('♥ Apoya esta iniciativa')}, {text: i.t('📖 Más info')}, ] ],\n            'resize_keyboard' : true, \n            // 'one_time_keyboard' : true\n        })\n};\n}\n\nmsg.payload.content = i.t('Elige una de las opciones:');\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\n\nreturn [ msg ];\n",
         "outputs": "1",
         "noerr": 0,
-        "x": 670,
+        "x": 890,
         "y": 100,
         "wires": [
             [
@@ -3545,7 +3591,7 @@
         "z": "76bd701f.29d0f",
         "name": "keyb",
         "bot": "f93d1a38.c43218",
-        "x": 850,
+        "x": 1070,
         "y": 100,
         "wires": [
             []
@@ -3583,7 +3629,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": true,
-        "x": 170,
+        "x": 350,
         "y": 100,
         "wires": [
             [
@@ -5045,7 +5091,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "i18n conf",
-        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n}\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  fallbackLng: 'es',\n  whitelist: ['es'], // allowed languages\n  debug: true,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: true,\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n  // initialized and ready to go!\n  // msg.payload = i.t('kmvecinal', {km: 7}) ; // i.t('Sí');\n  // node.send(msg)\n  \n});\n",
+        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: true,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n  // initialized and ready to go!\n  // msg.payload = i.t('kmvecinal', {km: 7}) ; // i.t('Sí');\n  // node.send(msg)\n  \n});\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1180,
@@ -5063,7 +5109,7 @@
         "name": "payl",
         "active": true,
         "console": "false",
-        "complete": "payload",
+        "complete": "true",
         "x": 1350,
         "y": 180,
         "wires": []
@@ -5128,5 +5174,169 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "5541b1d7.23da4",
+        "type": "function",
+        "z": "4384af8e.a7409",
+        "name": "set lang if not set",
+        "func": "if (msg.originalMessage && msg.originalMessage.from && msg.originalMessage.from.language_code &&\n    typeof msg.i18n === 'undefined') { \n\n    var i = context.global.i18next;\n\n    // node.log(\"User lang: \"+ msg.originalMessage.from.language_code);\n    \n    var lang = msg.originalMessage.from.language_code;\n    \n    i.changeLanguage(lang);\n    // node.log(\"langs len \"+ i.languages.length);\n    // node.log(\"langs \"+ i.languages);\n    \n    var i18n;\n    var currentLang;\n    for (var l = 0; l < i.languages.length && typeof i18n === 'undefined'; l++) {\n        var cl = i.languages[l];\n        // node.log(\"Trying: \" + cl);\n        i18n = i.getResourceBundle(cl, 'telegram-bot');\n        currentLang = cl;\n        // node.log(i18n);\n    }\n    if (typeof i18n === 'undefined') {\n        // node.log(\"Falling back to 'es'\");\n        i18n = i.getResourceBundle('es', 'telegram-bot');\n        currentLang = 'es';\n    }\n    i18n.currentLang = lang;\n    msg.i18n = i18n;\n    return [msg, null]; \n}\nelse if (msg.originalMessage && msg.originalMessage.from && msg.originalMessage.from.language_code &&\n    msg.i18n.currentLang !== msg.originalMessage.from.language_code) {\n    // user lang changed!!!\n    node.log(\"User lang change detected, old lang: \" + msg.i18n.currentLang + \", new lang: \" + msg.originalMessage.from.language_code);\n    msg.i18n = undefined;\n    // return to /start (with a the language)\n    return [null, msg]; \n}\nreturn msg; ",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 310,
+        "y": 100,
+        "wires": [
+            [],
+            [
+                "2f979cd.012f464"
+            ]
+        ]
+    },
+    {
+        "id": "1eddeb25.368605",
+        "type": "subflow:4384af8e.a7409",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 90,
+        "y": 540,
+        "wires": [
+            [
+                "a5ababbd.b45f98"
+            ]
+        ]
+    },
+    {
+        "id": "55edbbfa.a6d384",
+        "type": "subflow:4384af8e.a7409",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1470,
+        "y": 1000,
+        "wires": [
+            [
+                "72f03b95.7b3704"
+            ]
+        ]
+    },
+    {
+        "id": "16145554.9e027b",
+        "type": "debug",
+        "z": "4384af8e.a7409",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 510,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "18a46191.e18d5e",
+        "type": "telegram sender",
+        "z": "4384af8e.a7409",
+        "name": "",
+        "bot": "f93d1a38.c43218",
+        "x": 550,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "73730bca.1ff064",
+        "type": "subflow:4384af8e.a7409",
+        "z": "c6a40c11.dfc6b",
+        "name": "",
+        "x": 590,
+        "y": 120,
+        "wires": [
+            [
+                "5f2a32ba.eaa58c"
+            ]
+        ]
+    },
+    {
+        "id": "c757b5f5.bafb68",
+        "type": "subflow:4384af8e.a7409",
+        "z": "93cb4937.6fc068",
+        "x": 260,
+        "y": 320,
+        "wires": [
+            [
+                "55ebd8f8.436e38"
+            ]
+        ]
+    },
+    {
+        "id": "2f979cd.012f464",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "4384af8e.a7409",
+        "x": 510,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "49b822b4.2c81fc",
+        "type": "subflow:4384af8e.a7409",
+        "z": "c6a40c11.dfc6b",
+        "name": "",
+        "x": 210,
+        "y": 120,
+        "wires": [
+            [
+                "b0495fbe.5ecca"
+            ]
+        ]
+    },
+    {
+        "id": "acf185e6.858808",
+        "type": "subflow:94b874d7.e0e478",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 610,
+        "y": 680,
+        "wires": [
+            [
+                "e0bc7e33.2a795"
+            ]
+        ]
+    },
+    {
+        "id": "e3b00d54.9cd4e",
+        "type": "function",
+        "z": "94b874d7.e0e478",
+        "name": "detect lang change",
+        "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return [null, msg];\n}\nelse \n    return [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "776742ab.da3f4c",
+                "148a484f.48c168"
+            ]
+        ]
+    },
+    {
+        "id": "148a484f.48c168",
+        "type": "debug",
+        "z": "94b874d7.e0e478",
+        "name": "all",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 570,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "776742ab.da3f4c",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "94b874d7.e0e478",
+        "x": 570,
+        "y": 140,
+        "wires": []
     }
 ]
