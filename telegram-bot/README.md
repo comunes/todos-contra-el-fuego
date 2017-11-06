@@ -30,6 +30,9 @@ db.avisosfuego.createIndex( { chatId: 1 })
 db.avisosfuego.createIndex( { geo : "2dsphere" } )
 db.falsepositives.createIndex( { chatId: 1 })
 db.falsepositives.createIndex( { geo : "2dsphere" } )
+db.users.createIndex( { telegramChatId: 1 } )
+db.users.createIndex( { lang: 1 } )
+db.users.createIndex( { updated: 1 } )
 ```
 
 # Telegram Comands #
@@ -39,7 +42,9 @@ start - Ir al menú de Inicio
 inicio - Igual que /start ;-)
 suscribirme - a alertas de fuegos
 distancia - a la que monitorizar
-info - sobre tu subscripción```
+info - sobre tu subscripción
+lang - seleccionar idioma
+```
 
 # Acknowledgements #
 
