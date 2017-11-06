@@ -149,8 +149,8 @@
         "info": "",
         "in": [
             {
-                "x": 40,
-                "y": 100,
+                "x": 60,
+                "y": 240,
                 "wires": [
                     {
                         "id": "d76ddf98.d3de9"
@@ -315,11 +315,11 @@
         ],
         "out": [
             {
-                "x": 1460,
+                "x": 1520,
                 "y": 140,
                 "wires": [
                     {
-                        "id": "5541b1d7.23da4",
+                        "id": "e39f3d19.34c0f",
                         "port": 0
                     }
                 ]
@@ -401,6 +401,35 @@
             }
         ],
         "out": []
+    },
+    {
+        "id": "6995c6a.1a0bf38",
+        "type": "subflow",
+        "name": "set i18n",
+        "info": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "5541b1d7.23da4"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 440,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "5541b1d7.23da4",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "f93d1a38.c43218",
@@ -1042,13 +1071,11 @@
         "name": "find subs near",
         "collection": "subscriptions",
         "operation": "find",
-        "x": 360,
-        "y": 100,
+        "x": 880,
+        "y": 240,
         "wires": [
             [
-                "2c3e131d.a7264c",
-                "ca5f1316.5932c",
-                "c7da78e3.f6ea28"
+                "1986ad37.928233"
             ]
         ]
     },
@@ -1060,11 +1087,12 @@
         "func": "msg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   }\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 210,
-        "y": 100,
+        "x": 710,
+        "y": 240,
         "wires": [
             [
-                "9637d9cb.5f8a38"
+                "9637d9cb.5f8a38",
+                "c7da78e3.f6ea28"
             ]
         ]
     },
@@ -1073,11 +1101,11 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "calc distances",
-        "func": "// TODO: save user lang in subscriptions!!!\nvar t = global.get('lang-es');\n\nnode.log(\"Find users near \" + msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload[i].location.lat, \n      longitude: msg.payload[i].location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload[i].distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA):''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"nasa\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia:''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload[i].chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload[i].chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload[i].chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 2000 // Junto notificaciones en un radio de 2km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        i18n: t\n    }\n    \n    node.send(newMsg);\n}\n\n}\n",
+        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA):''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"nasa\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia:''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 2000 // Junto notificaciones en un radio de 2km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 580,
-        "y": 100,
+        "x": 1140,
+        "y": 400,
         "wires": [
             [
                 "c0e6a5d.fb1e058"
@@ -1090,8 +1118,8 @@
         "z": "2b8628df.fdcca8",
         "name": "send",
         "bot": "f93d1a38.c43218",
-        "x": 1730,
-        "y": 80,
+        "x": 2270,
+        "y": 400,
         "wires": [
             []
         ]
@@ -1166,7 +1194,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "update km",
-        "func": "var km = Number(msg.payload.content.replace(/(a |)([0-9]+)[ ]*km( around|)/, \"$2\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn newMsg;\n",
+        "func": "var km = Number(msg.payload.content.replace(/(a |em |)([0-9]+)[ ]*km( around| arredor|)/, \"$2\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 590,
@@ -1189,8 +1217,8 @@
         "upsert": true,
         "multi": true,
         "operation": "store",
-        "x": 1570,
-        "y": 40,
+        "x": 2110,
+        "y": 360,
         "wires": []
     },
     {
@@ -1201,8 +1229,8 @@
         "name": "find notis",
         "collection": "notifications",
         "operation": "find",
-        "x": 960,
-        "y": 100,
+        "x": 1520,
+        "y": 400,
         "wires": [
             [
                 "990b8bb6.bacdd8"
@@ -1217,8 +1245,8 @@
         "func": "if (msg.payload.type === \"location\") {\n    var newMsg = {\n        chatId: msg.payload.chatId,\n        geo: {\n            type: \"Point\",\n            coordinates: [ \n                msg.payload.content.longitude,\n                msg.payload.content.latitude\n            ]\n        }\n    };\n    return newMsg;\n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1400,
-        "y": 40,
+        "x": 1940,
+        "y": 360,
         "wires": [
             [
                 "c063defc.417ea"
@@ -1233,15 +1261,14 @@
         "func": "if (msg.payload.length === 0) {\n    // No yet notified  save and \n    // send notifications\n    return [ msg.notification, [msg.caption, msg.notification], null];\n} else {\n    // Already notified, do nothing\n}\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 1180,
-        "y": 80,
+        "x": 1720,
+        "y": 400,
         "wires": [
             [
                 "6329567.da6b7a8"
             ],
             [
-                "cf97891b.2928a8",
-                "39e523c3.2a951c"
+                "cf97891b.2928a8"
             ]
         ]
     },
@@ -1260,8 +1287,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 780,
-        "y": 100,
+        "x": 1340,
+        "y": 400,
         "wires": [
             [
                 "53f7be24.9be16"
@@ -1283,8 +1310,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1400,
-        "y": 80,
+        "x": 1940,
+        "y": 400,
         "wires": [
             [
                 "d79d8e7b.539c8"
@@ -1299,8 +1326,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 660,
-        "y": 280,
+        "x": 740,
+        "y": 300,
         "wires": []
     },
     {
@@ -1377,7 +1404,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "save location",
-        "func": "var newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    // payload $set for updates\n    payload: {\n       $set: {        \n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    // _id: msg.payload.chatId,\n    chatId: msg.payload.chatId,\n    geo: {\n        type: \"Point\",\n        coordinates: [\n            msg.payload.content.longitude, \n            msg.payload.content.latitude]\n    },\n    distance: 5\n       }\n    },\n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    chatId: msg.payload.chatId,\n}\nreturn newMsg;",
+        "func": "var newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    // payload $set for updates\n    payload: {\n       $set: {        \n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    // _id: msg.payload.chatId,\n    chatId: msg.payload.chatId,\n    geo: {\n        type: \"Point\",\n        coordinates: [\n            msg.payload.content.longitude, \n            msg.payload.content.latitude]\n    },\n    distance: 5\n       }\n    },\n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    chatId: msg.payload.chatId,\n    i18n: msg.i18n\n}\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1750,
@@ -1659,8 +1686,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1570,
-        "y": 80,
+        "x": 2110,
+        "y": 400,
         "wires": [
             [
                 "4fe5e164.e7dc",
@@ -1703,8 +1730,8 @@
             "#c5b0d5"
         ],
         "useOldStyle": false,
-        "x": 780,
-        "y": 60,
+        "x": 1320,
+        "y": 140,
         "wires": [
             [
                 "ac0b5f28.dea74"
@@ -1720,8 +1747,8 @@
         "func": "var newMsg  = {\n    payload: msg.payload.length,\n    label: 'Usuarios en la zona'\n}\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 600,
-        "y": 60,
+        "x": 1110,
+        "y": 140,
         "wires": [
             [
                 "8cffd8ff.5786d8"
@@ -1915,8 +1942,8 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 1890,
-        "y": 40,
+        "x": 2430,
+        "y": 360,
         "wires": []
     },
     {
@@ -1927,8 +1954,8 @@
         "func": "// var day = context.global.moment.utc().dayOfYear()\n\nvar newMsg = {\n    query : {\n        // day: day,\n        name: \"sendnotis\"\n    },\n    payload: {\n        $inc: { value: 1 }\n    }\n}\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1740,
-        "y": 40,
+        "x": 2280,
+        "y": 360,
         "wires": [
             [
                 "475edba3.768d04"
@@ -2258,7 +2285,7 @@
         ],
         "checkall": "false",
         "outputs": 2,
-        "x": 1240,
+        "x": 1280,
         "y": 640,
         "wires": [
             [
@@ -2463,11 +2490,11 @@
         "id": "771c05f7.78a3ac",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "caption",
+        "name": "subs caption",
         "func": "var t = msg.i18n;\nmsg.caption = t('Este es el mapa del lugar al que te subscribes');\nmsg.payload.chatId = msg.chatId;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1980,
+        "x": 1990,
         "y": 640,
         "wires": [
             [
@@ -2849,7 +2876,7 @@
         "type": "subflow:c644db46.3854c8",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1750,
+        "x": 1780,
         "y": 680,
         "wires": []
     },
@@ -2949,18 +2976,6 @@
             ],
             []
         ]
-    },
-    {
-        "id": "eae1b744.4beb48",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "payl",
-        "active": true,
-        "console": "false",
-        "complete": "payload",
-        "x": 1210,
-        "y": 600,
-        "wires": []
     },
     {
         "id": "f0552abc.9ccb78",
@@ -3106,8 +3121,8 @@
         "func": "global.set('locationtopic', null);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1410,
-        "y": 640,
+        "x": 1470,
+        "y": 600,
         "wires": [
             [
                 "10eb3fd5.6d416",
@@ -3123,7 +3138,7 @@
         "func": "global.set('locationtopic', null);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1410,
+        "x": 1470,
         "y": 680,
         "wires": [
             [
@@ -3136,17 +3151,15 @@
         "id": "349ef6f8.98e88a",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "is location",
+        "name": "is loc",
         "func": "if (msg.payload.type === 'location' && \n    typeof msg.geo === 'undefined') {\n    // node.log(\"Location received\");  \n    return msg;\n} else {\n    return null;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1080,
+        "x": 1090,
         "y": 640,
         "wires": [
             [
-                "3d60861f.0f7cea",
-                "eae1b744.4beb48",
-                "5b42be73.7ac18"
+                "69a62d00.26b314"
             ]
         ]
     },
@@ -3159,19 +3172,19 @@
         "console": "false",
         "complete": "payload",
         "x": 1570,
-        "y": 600,
+        "y": 640,
         "wires": []
     },
     {
         "id": "5b42be73.7ac18",
         "type": "debug",
         "z": "93cb4937.6fc068",
-        "name": "all",
+        "name": "loc-lang",
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1210,
-        "y": 560,
+        "x": 1260,
+        "y": 580,
         "wires": []
     },
     {
@@ -3184,30 +3197,6 @@
         "complete": "true",
         "x": 1730,
         "y": 540,
-        "wires": []
-    },
-    {
-        "id": "2c3e131d.a7264c",
-        "type": "debug",
-        "z": "2b8628df.fdcca8",
-        "name": "all",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 550,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "39e523c3.2a951c",
-        "type": "debug",
-        "z": "2b8628df.fdcca8",
-        "name": "all",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 1370,
-        "y": 140,
         "wires": []
     },
     {
@@ -3232,12 +3221,12 @@
         "id": "dd53d5e0.fdd0b8",
         "type": "debug",
         "z": "c644db46.3854c8",
-        "name": "all rec",
+        "name": "near?",
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 150,
-        "y": 60,
+        "x": 530,
+        "y": 20,
         "wires": []
     },
     {
@@ -3252,7 +3241,8 @@
         "y": 60,
         "wires": [
             [
-                "a05c3c94.f331f"
+                "a05c3c94.f331f",
+                "dd53d5e0.fdd0b8"
             ]
         ]
     },
@@ -3484,26 +3474,14 @@
         ]
     },
     {
-        "id": "36194e93.1ca832",
-        "type": "debug",
-        "z": "2b8628df.fdcca8",
-        "name": "all",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 1870,
-        "y": 80,
-        "wires": []
-    },
-    {
         "id": "d982859c.d8dea8",
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "args",
-        "func": "var newMsg = {\n    payload: {\n        type: \"location\",\n        chatId: msg.payload.chatId\n    },\n    location: {\n        lon: msg.payload.content.longitude,\n        lat: msg.payload.content.latitude,\n        text: \"\"\n    }\n};\nreturn newMsg;",
+        "func": "var newMsg = {\n    payload: {\n        type: \"location\",\n        chatId: msg.payload.chatId\n    },\n    location: {\n        lon: msg.payload.content.longitude,\n        lat: msg.payload.content.latitude,\n        text: \"\"\n    },\n    i18n: msg.i18n\n};\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1570,
+        "x": 1630,
         "y": 680,
         "wires": [
             [
@@ -3520,8 +3498,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1690,
-        "y": 720,
+        "x": 1750,
+        "y": 740,
         "wires": []
     },
     {
@@ -3541,7 +3519,7 @@
         "type": "subflow:4a3c7cc0.965dd4",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1210,
+        "x": 1250,
         "y": 180,
         "wires": []
     },
@@ -3666,8 +3644,8 @@
         "z": "2b8628df.fdcca8",
         "name": "near-neighbours",
         "storageNode": "db913a18.f8bf88",
-        "x": 980,
-        "y": 60,
+        "x": 1520,
+        "y": 140,
         "wires": []
     },
     {
@@ -3676,8 +3654,8 @@
         "z": "2b8628df.fdcca8",
         "name": "near-neighbours",
         "storageNode": "db913a18.f8bf88",
-        "x": 580,
-        "y": 20,
+        "x": 1110,
+        "y": 100,
         "wires": [
             [
                 "8cffd8ff.5786d8"
@@ -3882,7 +3860,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 1060,
-        "y": 100,
+        "y": 80,
         "wires": [
             [
                 "9ad7b6d1.a6e748"
@@ -4282,11 +4260,11 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "false positive?",
-        "func": "msg.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n       }\n   }\n// msg.originalMessage = msg;\nreturn msg;",
+        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n       }\n   }\nquery.originalMessage = msg;\nreturn query;",
         "outputs": 1,
         "noerr": 0,
-        "x": 140,
-        "y": 280,
+        "x": 240,
+        "y": 240,
         "wires": [
             [
                 "61abc532.9a0afc"
@@ -4301,8 +4279,8 @@
         "name": "find",
         "collection": "falsepositives",
         "operation": "find",
-        "x": 310,
-        "y": 280,
+        "x": 410,
+        "y": 240,
         "wires": [
             [
                 "9e65a744.1a6a68"
@@ -4314,18 +4292,16 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "false?",
-        "func": "if (msg.payload.length > 0) {\n    // node.log(\"False positive\");\n    return [null, msg];\n} else {\n    // node.log(\"Not false positive\");\n    return [msg, null];\n}",
+        "func": "if (msg.payload.length > 0) {\n    // node.log(\"False positive\");\n    return [null, msg.originalMessage];\n} else {\n    // node.log(\"Not false positive\");\n    return [msg.originalMessage, null];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 430,
-        "y": 280,
+        "x": 530,
+        "y": 240,
         "wires": [
             [
                 "59c0890d.7d97e8"
             ],
-            [
-                "6294a71e.647c58"
-            ]
+            []
         ],
         "outputLabels": [
             "not false positive",
@@ -4361,7 +4337,7 @@
         "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: true,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    i.loadLanguages(['en', 'pt', 'ast'], function() {\n        var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1220,
+        "x": 1280,
         "y": 140,
         "wires": [
             [
@@ -4431,13 +4407,13 @@
     {
         "id": "5541b1d7.23da4",
         "type": "function",
-        "z": "4384af8e.a7409",
-        "name": "set lang if not set",
+        "z": "6995c6a.1a0bf38",
+        "name": "set i18n if not set",
         "func": "if (msg.lang === null || typeof msg.i18n === 'undefined') {\n    var current = msg.lang;\n    if (current.match(/^en/)) {\n        node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Current language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    node.log(\"i18n already configured\");\n} \n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; ",
         "outputs": "1",
         "noerr": 0,
-        "x": 1350,
-        "y": 140,
+        "x": 270,
+        "y": 60,
         "wires": [
             []
         ]
@@ -4673,7 +4649,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 340,
-        "y": 2200,
+        "y": 1860,
         "wires": [
             [
                 "ffec927c.d96be"
@@ -4692,7 +4668,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 2200,
+        "y": 1860,
         "wires": [
             [
                 "d64bffcd.fec3c"
@@ -4708,7 +4684,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 580,
-        "y": 2200,
+        "y": 1860,
         "wires": [
             []
         ]
@@ -4718,7 +4694,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "start opts",
-        "func": "var output = [];\nvar opt = msg.payload.content;\nvar t = msg.i18n;\n// node.log(\"Type of i18n \" + typeof t);\n\nif (opt === \"/start@rednodetest_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/start@TodosContraElFuego_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/inicio@rednodetest_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/inicio@TodosContraElFuego_bot\") {\n  output[0] = msg; return output;\n} else if (opt === t(\"⬅️ Volver\")) {\n  output[0] = msg; return output;\n} else if (opt === t(\"⬅️ Cancelar\")) {\n  output[0] = msg; return output;\n} else if (opt === t(\"📣 Suscribirme a fuegos en mi zona\")) {\n  output[1] = msg; return output;\n} else if (opt === \"/suscribirme@rednodetest_bot\") {\n  output[1] = msg; return output;\n} else if (opt === \"/suscribirme@TodosContraElFuego_bot\") {\n  output[1] = msg; return output;\n} else if (opt === t(\"📖 Más info\")) {\n  output[2] = msg; return output;\n} else if (opt === t(\"♥ Apoya esta iniciativa\")) {\n  output[2] = msg; return output;\n} else if (opt === t(\"🔥 Notificar un fuego nuevo\")) {\n  output[3] = msg; return output;\n} else if (opt === t(\"📝 Escribir mi posición\")) {\n  output[4] = msg; return output;\n} else if (opt === t(\"📝 Escribir localización fuego\")) {\n  output[5] = msg; return output;\n} else if ((opt + \"\").match(new RegExp(\"^(a |)[0-9]*[ ]*km( around|)\",'i'))) {\n  output[6] = msg; return output;\n} else if (opt === t(\"📣 Suscrito a nuevos fuegos\")) {\n  output[7] = msg; return output;\n} else if (opt === \"/info@rednodetest_bot\") {\n  output[7] = msg; return output;\n} else if (opt === \"/info@TodosContraElFuego_bot\") {\n  output[7] = msg; return output;\n} else if (opt === \"/distancia@rednodetest_bot\") {\n  output[8] = msg; return output;\n} else if (opt === \"/distancia@TodosContraElFuego_bot\") {\n  output[8] = msg; return output;\n} else if (opt === t(\"📍 El fuego está en mi ubicación\")) {\n  output[9] = msg; return output;\n} else if ((opt + \"\").match(new RegExp(\"(falsa alarma|falso positivo|es una industria|industria)\",'i'))) {\n  output[10] = msg; return output;\n} else if (opt === t(\"Desuscribirme\")) {\n  output[11] = msg; return output;\n} else {\n  output[12] = msg; return output;\n}\n",
+        "func": "var output = [];\nvar opt = msg.payload.content;\nvar t = msg.i18n;\n// node.log(\"Type of i18n \" + typeof t);\n\nif (opt === \"/start@rednodetest_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/start@TodosContraElFuego_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/inicio@rednodetest_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/inicio@TodosContraElFuego_bot\") {\n  output[0] = msg; return output;\n} else if (opt === t(\"⬅️ Volver\")) {\n  output[0] = msg; return output;\n} else if (opt === t(\"⬅️ Cancelar\")) {\n  output[0] = msg; return output;\n} else if (opt === t(\"📣 Suscribirme a fuegos en mi zona\")) {\n  output[1] = msg; return output;\n} else if (opt === \"/suscribirme@rednodetest_bot\") {\n  output[1] = msg; return output;\n} else if (opt === \"/suscribirme@TodosContraElFuego_bot\") {\n  output[1] = msg; return output;\n} else if (opt === t(\"📖 Más info\")) {\n  output[2] = msg; return output;\n} else if (opt === t(\"♥ Apoya esta iniciativa\")) {\n  output[2] = msg; return output;\n} else if (opt === t(\"🔥 Notificar un fuego nuevo\")) {\n  output[3] = msg; return output;\n} else if (opt === t(\"📝 Escribir mi posición\")) {\n  output[4] = msg; return output;\n} else if (opt === t(\"📝 Escribir localización fuego\")) {\n  output[5] = msg; return output;\n} else if ((opt + \"\").match(new RegExp(\"^(a |em |)[0-9]*[ ]*km( around| arredor|)\",'i'))) {\n  output[6] = msg; return output;\n} else if (opt === t(\"📣 Suscrito a nuevos fuegos\")) {\n  output[7] = msg; return output;\n} else if (opt === \"/info@rednodetest_bot\") {\n  output[7] = msg; return output;\n} else if (opt === \"/info@TodosContraElFuego_bot\") {\n  output[7] = msg; return output;\n} else if (opt === \"/distancia@rednodetest_bot\") {\n  output[8] = msg; return output;\n} else if (opt === \"/distancia@TodosContraElFuego_bot\") {\n  output[8] = msg; return output;\n} else if (opt === t(\"📍 El fuego está en mi ubicación\")) {\n  output[9] = msg; return output;\n} else if ((opt + \"\").match(new RegExp(\"(falsa alarma|falso positivo|es una industria|industria)\",'i'))) {\n  output[10] = msg; return output;\n} else if (opt === t(\"Desuscribirme\")) {\n  output[11] = msg; return output;\n} else {\n  output[12] = msg; return output;\n}\n",
         "outputs": "13",
         "noerr": 0,
         "x": 280,
@@ -5361,225 +5337,6 @@
         "wires": []
     },
     {
-        "id": "e959c88c.68adb8",
-        "type": "function",
-        "z": "eecb5e00.6607b",
-        "name": "save",
-        "func": "var date = new Date();\nvar formated = context.global.moment(date).format('YYYYMMDD');\nvar lon = msg.location.lon;\nvar lat = msg.location.lat;\nvar text = msg.location.text;\n\nvar chatId = msg.payload.chatId;\n\nvar newMsg = {\n    query : {\n        // solo un fuego por usuario por ahora\n        chatId : chatId \n    },\n    payload: {\n       $set: {        \n    location: {\n        lat: lat,\n        lon: lon,\n        text: text // msg.address\n    },\n    // _id: msg.chatId,\n    chatId: msg.chatId,\n    aviso: date,\n    dateformat: formated,\n    geo: {\n        type: \"Point\",\n        coordinates: [lon, lat]\n    }\n    }\n    },\n    location: {\n        lat: lat,\n        lon: lon\n    },\n    chatId: chatId,\n    \n}\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 630,
-        "y": 200,
-        "wires": [
-            [
-                "50661ec3.a3dc5",
-                "aabca5a6.5f74a8"
-            ]
-        ]
-    },
-    {
-        "id": "50661ec3.a3dc5",
-        "type": "mongodb out",
-        "z": "eecb5e00.6607b",
-        "mongodb": "51a7af07.93444",
-        "name": "save fuego",
-        "collection": "avisosfuego",
-        "payonly": false,
-        "upsert": true,
-        "multi": false,
-        "operation": "update",
-        "x": 910,
-        "y": 200,
-        "wires": []
-    },
-    {
-        "id": "acfbf497.2d5218",
-        "type": "function",
-        "z": "eecb5e00.6607b",
-        "name": "inc fuegos",
-        "func": "var day = context.global.moment.utc().dayOfYear();\n\nvar newMsg = {\n    query : {\n        day: day,\n        name: \"numfuegos\"\n    },\n    payload: {\n        $inc: { value: 1 }\n    }\n};\n\nreturn newMsg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 650,
-        "y": 160,
-        "wires": [
-            [
-                "f6977245.303be"
-            ]
-        ]
-    },
-    {
-        "id": "f6977245.303be",
-        "type": "mongodb out",
-        "z": "eecb5e00.6607b",
-        "mongodb": "51a7af07.93444",
-        "name": "update stats",
-        "collection": "fstats",
-        "payonly": false,
-        "upsert": true,
-        "multi": false,
-        "operation": "update",
-        "x": 910,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "5020ee16.2a194",
-        "type": "telegram callback_query",
-        "z": "eecb5e00.6607b",
-        "name": "callback_query",
-        "command": "",
-        "bot": "f93d1a38.c43218",
-        "x": 120,
-        "y": 120,
-        "wires": [
-            [
-                "cf919c5.80d566"
-            ]
-        ]
-    },
-    {
-        "id": "f84d3d49.c06da",
-        "type": "function",
-        "z": "eecb5e00.6607b",
-        "name": "answer confirm",
-        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar location = global.get('location');\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set('location', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
-        "outputs": "3",
-        "noerr": 0,
-        "x": 420,
-        "y": 120,
-        "wires": [
-            [
-                "e8829cef.e137",
-                "5a6dec7b.f2b1b4"
-            ],
-            [
-                "acfbf497.2d5218",
-                "e959c88c.68adb8",
-                "e1cff5.7e436008"
-            ],
-            [
-                "e8829cef.e137"
-            ]
-        ],
-        "outputLabels": [
-            "Sí",
-            "Location",
-            "No"
-        ]
-    },
-    {
-        "id": "5a6dec7b.f2b1b4",
-        "type": "telegram sender",
-        "z": "eecb5e00.6607b",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 630,
-        "y": 80,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "e8829cef.e137",
-        "type": "subflow:c6a40c11.dfc6b",
-        "z": "eecb5e00.6607b",
-        "x": 710,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "9e9cd01f.9ab3b",
-        "type": "debug",
-        "z": "eecb5e00.6607b",
-        "name": "all after sendloc",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 400,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "22f677ab.babc88",
-        "type": "debug",
-        "z": "eecb5e00.6607b",
-        "name": "all confirm",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 610,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "231b873f.76ce58",
-        "type": "subflow:2b8628df.fdcca8",
-        "z": "eecb5e00.6607b",
-        "name": "",
-        "x": 930,
-        "y": 280,
-        "wires": []
-    },
-    {
-        "id": "e1cff5.7e436008",
-        "type": "function",
-        "z": "eecb5e00.6607b",
-        "name": "args",
-        "func": "var newMsg = {\n    type: \"vecinal\",\n    lon: msg.location.lon,\n    lat: msg.location.lat\n}\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 630,
-        "y": 280,
-        "wires": [
-            [
-                "231b873f.76ce58"
-            ]
-        ]
-    },
-    {
-        "id": "7b1206c1.26cc18",
-        "type": "debug",
-        "z": "eecb5e00.6607b",
-        "name": "all loc",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 790,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "aabca5a6.5f74a8",
-        "type": "subflow:d29a1c6a.5a89e",
-        "z": "eecb5e00.6607b",
-        "x": 930,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "59ce28b2.488a78",
-        "type": "comment",
-        "z": "eecb5e00.6607b",
-        "name": "location attached is received also in the switch",
-        "info": "",
-        "x": 210,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "cf919c5.80d566",
-        "type": "subflow:4384af8e.a7409",
-        "z": "eecb5e00.6607b",
-        "x": 270,
-        "y": 120,
-        "wires": [
-            [
-                "f84d3d49.c06da"
-            ]
-        ]
-    },
-    {
         "id": "152ee632.13c3fa",
         "type": "comment",
         "z": "93cb4937.6fc068",
@@ -5630,7 +5387,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "update user",
-        "func": "var orig = msg.originalMessage;\n\nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
+        "func": "var orig = msg.originalMessage;\n\nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 550,
@@ -5691,14 +5448,14 @@
         "func": "if (msg.payload.length === 0) {\n    return [msg, null];\n} else {\n    // user register\n    var lang = msg.payload[0].lang;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    return [null, msg];\n}\n\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 1110,
+        "x": 1150,
         "y": 40,
         "wires": [
             [
                 "4e79d201.8c93bc"
             ],
             [
-                "5541b1d7.23da4"
+                "e39f3d19.34c0f"
             ]
         ],
         "outputLabels": [
@@ -5717,8 +5474,8 @@
         "valueType": "msg",
         "valueProperty": "lang",
         "useString": true,
-        "x": 380,
-        "y": 40,
+        "x": 400,
+        "y": 20,
         "wires": [
             []
         ]
@@ -5728,7 +5485,7 @@
         "type": "function",
         "z": "4384af8e.a7409",
         "name": "query user",
-        "func": "msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {\"telegramChatId\": msg.payload.chatId };\nreturn msg;",
+        "func": "msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {\"telegramChatId\": msg.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 770,
@@ -5767,12 +5524,10 @@
         "y": 80,
         "wires": [
             [
-                "5ade250d.5e12fc",
-                "7368515c.c6292"
+                "5ade250d.5e12fc"
             ],
             [
-                "609be7c0.d095a8",
-                "5541b1d7.23da4"
+                "e39f3d19.34c0f"
             ]
         ],
         "outputLabels": [
@@ -5821,8 +5576,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 570,
-        "y": 160,
+        "x": 440,
+        "y": 140,
         "wires": []
     },
     {
@@ -5857,8 +5612,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 770,
-        "y": 160,
+        "x": 750,
+        "y": 140,
         "wires": []
     },
     {
@@ -5953,6 +5708,445 @@
         "z": "4384af8e.a7409",
         "x": 1340,
         "y": 40,
+        "wires": []
+    },
+    {
+        "id": "69a62d00.26b314",
+        "type": "subflow:4384af8e.a7409",
+        "z": "93cb4937.6fc068",
+        "x": 1090,
+        "y": 580,
+        "wires": [
+            [
+                "3d60861f.0f7cea",
+                "5b42be73.7ac18"
+            ]
+        ]
+    },
+    {
+        "id": "b8099eb5.315a1",
+        "type": "function",
+        "z": "2b8628df.fdcca8",
+        "name": "is lang set?",
+        "func": "if (msg.payload.length === 0) {\n    // fallback\n    msg.lang = 'es';\n    msg.payload = msg.originalPayload;\n    return [msg, null];\n} else {\n    // user register\n    var lang = msg.payload[0].lang;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    return [null, msg];\n}\n\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 2010,
+        "y": 200,
+        "wires": [
+            [
+                "6f05d6e0.346e98"
+            ],
+            [
+                "6f05d6e0.346e98"
+            ]
+        ],
+        "outputLabels": [
+            "ask",
+            "we have lang"
+        ]
+    },
+    {
+        "id": "1e94769b.4a6099",
+        "type": "mongodb in",
+        "z": "2b8628df.fdcca8",
+        "mongodb": "51a7af07.93444",
+        "name": "find users",
+        "collection": "users",
+        "operation": "find",
+        "x": 1840,
+        "y": 200,
+        "wires": [
+            [
+                "b8099eb5.315a1"
+            ]
+        ]
+    },
+    {
+        "id": "89857846.7f0968",
+        "type": "function",
+        "z": "2b8628df.fdcca8",
+        "name": "query user",
+        "func": "msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {\"telegramChatId\": msg.chatId };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1670,
+        "y": 200,
+        "wires": [
+            [
+                "1e94769b.4a6099"
+            ]
+        ]
+    },
+    {
+        "id": "999d94d.8b58768",
+        "type": "function",
+        "z": "2b8628df.fdcca8",
+        "name": "no cached?",
+        "func": "if (typeof msg.lang === 'undefined'  || msg.lang === null) {\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 1470,
+        "y": 240,
+        "wires": [
+            [
+                "89857846.7f0968"
+            ],
+            [
+                "6f05d6e0.346e98"
+            ]
+        ],
+        "outputLabels": [
+            "no cached",
+            "cached"
+        ]
+    },
+    {
+        "id": "bd354f75.34da3",
+        "type": "Cache in",
+        "z": "2b8628df.fdcca8",
+        "name": "users-lang-out",
+        "cache": "488013b6.1183ec",
+        "keyType": "msg",
+        "keyProperty": "payload.chatId",
+        "valueType": "msg",
+        "valueProperty": "lang",
+        "useString": true,
+        "x": 1260,
+        "y": 240,
+        "wires": [
+            [
+                "999d94d.8b58768"
+            ]
+        ]
+    },
+    {
+        "id": "1986ad37.928233",
+        "type": "split",
+        "z": "2b8628df.fdcca8",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1070,
+        "y": 240,
+        "wires": [
+            [
+                "bd354f75.34da3",
+                "50bb0492.b20fbc"
+            ]
+        ]
+    },
+    {
+        "id": "6f05d6e0.346e98",
+        "type": "function",
+        "z": "2b8628df.fdcca8",
+        "name": "join",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 2170,
+        "y": 240,
+        "wires": [
+            [
+                "2a9cd9af.ae25c6",
+                "d1901604.d1e3a8"
+            ]
+        ]
+    },
+    {
+        "id": "e39f3d19.34c0f",
+        "type": "subflow:6995c6a.1a0bf38",
+        "z": "4384af8e.a7409",
+        "name": "",
+        "x": 1370,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2a9cd9af.ae25c6",
+        "type": "subflow:6995c6a.1a0bf38",
+        "z": "2b8628df.fdcca8",
+        "x": 960,
+        "y": 400,
+        "wires": [
+            [
+                "ca5f1316.5932c"
+            ]
+        ]
+    },
+    {
+        "id": "b47755bb.64af48",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "save",
+        "func": "var date = new Date();\nvar formated = context.global.moment(date).format('YYYYMMDD');\nvar lon = msg.location.lon;\nvar lat = msg.location.lat;\nvar text = msg.location.text;\n\nvar chatId = msg.payload.chatId;\n\nvar newMsg = {\n    query : {\n        // solo un fuego por usuario por ahora\n        chatId : chatId \n    },\n    payload: {\n       $set: {        \n    location: {\n        lat: lat,\n        lon: lon,\n        text: text // msg.address\n    },\n    // _id: msg.chatId,\n    chatId: msg.chatId,\n    aviso: date,\n    dateformat: formated,\n    geo: {\n        type: \"Point\",\n        coordinates: [lon, lat]\n    }\n    }\n    },\n    location: {\n        lat: lat,\n        lon: lon\n    },\n    chatId: chatId,\n    \n}\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 690,
+        "y": 2080,
+        "wires": [
+            [
+                "3980d36e.8c5dfc",
+                "585ace97.26933"
+            ]
+        ]
+    },
+    {
+        "id": "3980d36e.8c5dfc",
+        "type": "mongodb out",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "save fuego",
+        "collection": "avisosfuego",
+        "payonly": false,
+        "upsert": true,
+        "multi": false,
+        "operation": "update",
+        "x": 970,
+        "y": 2080,
+        "wires": []
+    },
+    {
+        "id": "76cd31f0.40e6",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "inc fuegos",
+        "func": "var day = context.global.moment.utc().dayOfYear();\n\nvar newMsg = {\n    query : {\n        day: day,\n        name: \"numfuegos\"\n    },\n    payload: {\n        $inc: { value: 1 }\n    }\n};\n\nreturn newMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 710,
+        "y": 2040,
+        "wires": [
+            [
+                "b9afc1e.d78db4"
+            ]
+        ]
+    },
+    {
+        "id": "b9afc1e.d78db4",
+        "type": "mongodb out",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "update stats",
+        "collection": "fstats",
+        "payonly": false,
+        "upsert": true,
+        "multi": false,
+        "operation": "update",
+        "x": 970,
+        "y": 2040,
+        "wires": []
+    },
+    {
+        "id": "f7be44bd.5d84f8",
+        "type": "telegram callback_query",
+        "z": "93cb4937.6fc068",
+        "name": "callback_query",
+        "command": "",
+        "bot": "f93d1a38.c43218",
+        "x": 120,
+        "y": 2000,
+        "wires": [
+            [
+                "b81751c6.f7b84"
+            ]
+        ]
+    },
+    {
+        "id": "4964dee.a0c6e2",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "answer confirm",
+        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar location = global.get('location');\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set('location', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
+        "outputs": "3",
+        "noerr": 0,
+        "x": 480,
+        "y": 2000,
+        "wires": [
+            [
+                "a1aac5f6.cf0228",
+                "a13314cd.bfdb78"
+            ],
+            [
+                "76cd31f0.40e6",
+                "b47755bb.64af48",
+                "b19e4ad8.90f058"
+            ],
+            [
+                "a1aac5f6.cf0228"
+            ]
+        ],
+        "outputLabels": [
+            "Sí",
+            "Location",
+            "No"
+        ]
+    },
+    {
+        "id": "a13314cd.bfdb78",
+        "type": "telegram sender",
+        "z": "93cb4937.6fc068",
+        "name": "send",
+        "bot": "f93d1a38.c43218",
+        "x": 690,
+        "y": 1960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a1aac5f6.cf0228",
+        "type": "subflow:c6a40c11.dfc6b",
+        "z": "93cb4937.6fc068",
+        "x": 770,
+        "y": 2000,
+        "wires": []
+    },
+    {
+        "id": "e75ad8bd.147e48",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "previous confirm",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 470,
+        "y": 2160,
+        "wires": []
+    },
+    {
+        "id": "311b07de.9a7238",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "send notis!",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 870,
+        "y": 2220,
+        "wires": []
+    },
+    {
+        "id": "6fe5f874.cf4978",
+        "type": "subflow:2b8628df.fdcca8",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 990,
+        "y": 2160,
+        "wires": []
+    },
+    {
+        "id": "b19e4ad8.90f058",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "args",
+        "func": "var newMsg = {\n    type: \"vecinal\",\n    lon: msg.location.lon,\n    lat: msg.location.lat\n}\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 690,
+        "y": 2160,
+        "wires": [
+            [
+                "311b07de.9a7238",
+                "6fe5f874.cf4978"
+            ]
+        ]
+    },
+    {
+        "id": "585ace97.26933",
+        "type": "subflow:d29a1c6a.5a89e",
+        "z": "93cb4937.6fc068",
+        "x": 990,
+        "y": 2120,
+        "wires": []
+    },
+    {
+        "id": "2ccdf622.74c9ba",
+        "type": "comment",
+        "z": "93cb4937.6fc068",
+        "name": "location attached is received also in the switch",
+        "info": "",
+        "x": 210,
+        "y": 1940,
+        "wires": []
+    },
+    {
+        "id": "b81751c6.f7b84",
+        "type": "subflow:4384af8e.a7409",
+        "z": "93cb4937.6fc068",
+        "x": 270,
+        "y": 2000,
+        "wires": [
+            [
+                "4964dee.a0c6e2",
+                "e75ad8bd.147e48"
+            ]
+        ]
+    },
+    {
+        "id": "9524e182.148b2",
+        "type": "debug",
+        "z": "2b8628df.fdcca8",
+        "name": "positive?",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 450,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "fbdce741.552298",
+        "type": "debug",
+        "z": "2b8628df.fdcca8",
+        "name": "positive result",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 540,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "74a88d3a.e6fe64",
+        "type": "debug",
+        "z": "2b8628df.fdcca8",
+        "name": "users near?",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 890,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "50bb0492.b20fbc",
+        "type": "debug",
+        "z": "2b8628df.fdcca8",
+        "name": "user near",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1240,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "d1901604.d1e3a8",
+        "type": "debug",
+        "z": "2b8628df.fdcca8",
+        "name": "user result",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 2350,
+        "y": 240,
         "wires": []
     }
 ]
