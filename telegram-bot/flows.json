@@ -14,13 +14,6 @@
         "info": ""
     },
     {
-        "id": "eecb5e00.6607b",
-        "type": "tab",
-        "label": "New Fire Callback",
-        "disabled": false,
-        "info": ""
-    },
-    {
         "id": "c644db46.3854c8",
         "type": "subflow",
         "name": "new fire",
@@ -5099,7 +5092,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "test news",
-        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Ahora puedes marcar 'falsos positivos' (por ej. refinerías, incineradoras, etc). Para ello pulsa al mapa de la notificación de un fuego (que no sea forestal) y pulsa 'Responder' con un mensaje que diga 'falso positivo' o 'industria' para que estos fuegos no sean notificados en un futuro.\\r\\n\";\nnews.payload.content += \"➖ Estamos traduciendo este bot al asturiano, gallego, inglés, portugués, etc. Puedes participar [en la traducción](https://translate.comunes.org/projects/todos-contra-el-fuego/todoscontraelfuego_bot/).\\r\\n\";\nnews.payload.content += \"➖ A petición de usuarios/amigos de Latinoamérica, ahora procesamos alertas de fuegos también de otras partes del mundo, no solo Europa.\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ A veces habrás visto que llegan notificaciones de fuegos de industrias como incineradoras, siderúrgicas, refinerías, etc. \"\nnews.payload.content += \"Ahora puedes ayudarnos a marcar estos 'falsos positivos'. Para ello pulsa en el mapa de la notificación de uno de estos fuegos y pulsa 'Responder' con un mensaje que diga 'falso positivo' o 'industria' para que estos fuegos no sean notificados en un futuro. Gracias.\\r\\n\";\nnews.payload.content += \"➖ Estamos traduciendo este bot al asturiano, gallego, inglés, portugués, etc. Puedes participar [en la traducción](https://translate.comunes.org/projects/todos-contra-el-fuego/todoscontraelfuego_bot/).\\r\\n\";\nnews.payload.content += \"➖ A petición de usuarios/amigos de Latinoamérica, ahora procesamos alertas de fuegos también de otras partes del mundo, no solo Europa.\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
         "outputs": 1,
         "noerr": 0,
         "x": 530,
@@ -5157,7 +5150,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "answer confirm",
-        "func": "// Not translated right now\n// var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\nvar notification = global.get('notification');\n\nif (notification !== null) {\n    node.log(\"Notification callback\");\n    msg.payload.options = show_alert;\n    \n    global.set('notification', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'news_send') {\n        return [notification, null];\n    } else if (msg.payload.content === 'news_no_send') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: 'Notificación cancelada',\n                chatId: msg.payload.chatId\n            }\n        };\n        return [null, newMsg];\n    }\n}",
+        "func": "// Not translated right now\n// var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\nvar notification = global.get('notification');\n\nif (notification !== null) {\n    // node.log(\"Notification callback\");\n    msg.payload.options = show_alert;\n    \n    global.set('notification', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'news_send') {\n        return [notification, null];\n    } else if (msg.payload.content === 'news_no_send') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: 'Notificación cancelada',\n                chatId: msg.payload.chatId\n            }\n        };\n        return [null, newMsg];\n    }\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 300,
