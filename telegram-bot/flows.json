@@ -604,8 +604,8 @@
         "type": "Cache",
         "z": "",
         "name": "userslang",
-        "defaultTtl": "2",
-        "checkPeriod": "1"
+        "defaultTtl": "120",
+        "checkPeriod": "100"
     },
     {
         "id": "7aa07a53.1c8ec4",
@@ -2985,7 +2985,7 @@
         "func": "msg.chatId = msg.payload.chatId;\nmsg.payload = {\"chatId\": msg.payload.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 610,
+        "x": 590,
         "y": 100,
         "wires": [
             [
@@ -3001,7 +3001,7 @@
         "name": "find sub",
         "collection": "subscriptions",
         "operation": "find",
-        "x": 820,
+        "x": 800,
         "y": 100,
         "wires": [
             [
@@ -3015,10 +3015,10 @@
         "type": "function",
         "z": "76bd701f.29d0f",
         "name": "start menu",
-        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\nif (msg.payload.length === 0) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\nmsg.payload.content = t('Elige una de las opciones:');\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\n\nreturn [ msg ];",
+        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\nif (msg.payload.length === 0) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\nmsg.payload.content = t('Elige una de las opciones:');\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nopts.disable_notification = true;\nmsg.payload.options = opts;\n\nreturn [ msg ];",
         "outputs": "1",
         "noerr": 0,
-        "x": 1010,
+        "x": 990,
         "y": 100,
         "wires": [
             [
@@ -3032,7 +3032,7 @@
         "z": "76bd701f.29d0f",
         "name": "keyb",
         "bot": "f93d1a38.c43218",
-        "x": 1210,
+        "x": 1190,
         "y": 100,
         "wires": [
             []
@@ -4969,7 +4969,7 @@
         "type": "subflow:4384af8e.a7409",
         "z": "76bd701f.29d0f",
         "name": "",
-        "x": 390,
+        "x": 370,
         "y": 100,
         "wires": [
             [
@@ -5099,7 +5099,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "test news",
-        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Ahora puedes marcar 'falsos positivos' (por ej. refinerías, incineradoras, etc). Para ello pulsa al mapa de la notificación de fuego (que no sea forestal) y pulsa 'Responder' con un mensaje que diga 'falso positivo' o 'industria' para que estos fuegos no sean notificados en un futuro.\\r\\n\";\nnews.payload.content += \"➖ Estamos traduciendo este bot al asturiano, gallego, inglés, portugués, etc. Puedes participar [en la traducción](https://translate.comunes.org/projects/todos-contra-el-fuego/todoscontraelfuego_bot/).\\r\\n\";\nnews.payload.content += \"➖ A petición de usuarios/amigos de Latinoamérica, ahora procesamos alertas de fuegos también de otras partes del mundo, no solo Europa.\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Ahora puedes marcar 'falsos positivos' (por ej. refinerías, incineradoras, etc). Para ello pulsa al mapa de la notificación de un fuego (que no sea forestal) y pulsa 'Responder' con un mensaje que diga 'falso positivo' o 'industria' para que estos fuegos no sean notificados en un futuro.\\r\\n\";\nnews.payload.content += \"➖ Estamos traduciendo este bot al asturiano, gallego, inglés, portugués, etc. Puedes participar [en la traducción](https://translate.comunes.org/projects/todos-contra-el-fuego/todoscontraelfuego_bot/).\\r\\n\";\nnews.payload.content += \"➖ A petición de usuarios/amigos de Latinoamérica, ahora procesamos alertas de fuegos también de otras partes del mundo, no solo Europa.\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
         "outputs": 1,
         "noerr": 0,
         "x": 530,
@@ -5291,7 +5291,8 @@
         "y": 300,
         "wires": [
             [
-                "49f7750c.76675c"
+                "49f7750c.76675c",
+                "3eff4b32.9114b4"
             ]
         ]
     },
@@ -5474,10 +5475,12 @@
         "valueType": "msg",
         "valueProperty": "lang",
         "useString": true,
-        "x": 400,
-        "y": 20,
+        "x": 380,
+        "y": 80,
         "wires": [
-            []
+            [
+                "6b27a3a5.4208dc"
+            ]
         ]
     },
     {
@@ -5624,11 +5627,11 @@
         "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n  // do nothing   \n} else {\n    msg.chatId = msg.payload.chatId;\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 220,
+        "x": 200,
         "y": 80,
         "wires": [
             [
-                "6b27a3a5.4208dc"
+                "6173b8ee.c73038"
             ]
         ]
     },
@@ -5661,7 +5664,7 @@
         "type": "function",
         "z": "e6f3db8c.48eac8",
         "name": "ask-lang",
-        "func": "context.global.keyboardlang = { pending : true };\n// no user\nvar opts = {\n    reply_to_message_id: msg.payload.messageId,\n    reply_markup: JSON.stringify({\n        keyboard: [ \n            [{text: 'Asturianu'}, {text: 'Español'}, ],\n            [{text: 'English'}, {text: 'Galego'}, ],\n            [{text: 'Português'}, {text: 'Português do Brasil'}, ]\n            ],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n    })\n};\nmsg.payload.chatId = msg.payload.chatId? msg.payload.chatId : msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.content = 'Escoge tu idioma / Choose your language:';\nmsg.payload.options = opts;\nreturn [msg, null];\n",
+        "func": "context.global.keyboardlang = { pending : true };\n// no user\nvar opts = {\n    disable_notification : true,\n    reply_to_message_id: msg.payload.messageId,\n    reply_markup: JSON.stringify({\n        keyboard: [ \n            [{text: 'Asturianu'}, {text: 'Español'}, ],\n            [{text: 'English'}, {text: 'Galego'}, ],\n            [{text: 'Português'}, {text: 'Português do Brasil'}, ]\n            ],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n      \n    })\n};\nmsg.payload.chatId = msg.payload.chatId? msg.payload.chatId : msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.content = 'Escoge tu idioma / Choose your language:';\nmsg.payload.options = opts;\nreturn [msg, null];\n",
         "outputs": "2",
         "noerr": 0,
         "x": 260,
@@ -6147,6 +6150,14 @@
         "complete": "true",
         "x": 2350,
         "y": 240,
+        "wires": []
+    },
+    {
+        "id": "3eff4b32.9114b4",
+        "type": "subflow:465e67f.6ebf598",
+        "z": "128790f6.dee0df",
+        "x": 1520,
+        "y": 340,
         "wires": []
     }
 ]
