@@ -2367,7 +2367,7 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "write pos",
-        "func": "var t = msg.i18n;\nmsg.payload.type = 'message';\nmsg.payload.content = t('Escribir localización del fuego (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip):');\n\nvar opts = {\n  reply_markup: JSON.stringify({\n    force_reply: true,\n  })\n};\n\nmsg.payload.options = opts;\nreturn msg;\n",
+        "func": "var t = msg.i18n;\nmsg.payload.type = 'message';\nmsg.payload.content = t('Escribir localización del fuego (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip:');\n\nvar opts = {\n  reply_markup: JSON.stringify({\n    force_reply: true,\n  })\n};\n\nmsg.payload.options = opts;\nreturn msg;\n",
         "outputs": "1",
         "noerr": 0,
         "x": 100,
@@ -3173,7 +3173,7 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "loc-lang",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
         "x": 1260,
@@ -3234,8 +3234,7 @@
         "y": 60,
         "wires": [
             [
-                "a05c3c94.f331f",
-                "dd53d5e0.fdd0b8"
+                "a05c3c94.f331f"
             ]
         ]
     },
@@ -4197,7 +4196,7 @@
         "type": "function",
         "z": "2f0217a5.051978",
         "name": "thanks!",
-        "func": "var t = msg.i18n;\n\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = t('👌 Tomamos nota, ¡gracias por colaborar');\nreturn thx;",
+        "func": "var t = msg.i18n;\n\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = t('👌 Tomamos nota, ¡gracias por colaborar!');\nreturn thx;",
         "outputs": 1,
         "noerr": 0,
         "x": 1020,
@@ -4327,7 +4326,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "i18n conf",
-        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: true,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    i.loadLanguages(['en', 'pt', 'ast'], function() {\n        var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
+        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: false,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    i.loadLanguages(['en', 'pt', 'ast'], function() {\n        var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1280,
@@ -4637,16 +4636,14 @@
         "id": "d64bffcd.fec3c",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "test lang",
-        "func": "var en = global.get('lang-en');\nmsg.i18n = en;\nnode.log(\"en: \" + typeof en + \" \" + en('Desuscribirme'));\nreturn msg;\n",
+        "name": "test something",
+        "func": "",
         "outputs": 1,
         "noerr": 0,
-        "x": 340,
+        "x": 360,
         "y": 1860,
         "wires": [
-            [
-                "ffec927c.d96be"
-            ]
+            []
         ]
     },
     {
@@ -5831,8 +5828,7 @@
         "y": 240,
         "wires": [
             [
-                "bd354f75.34da3",
-                "50bb0492.b20fbc"
+                "bd354f75.34da3"
             ]
         ]
     },
@@ -5848,8 +5844,7 @@
         "y": 240,
         "wires": [
             [
-                "2a9cd9af.ae25c6",
-                "d1901604.d1e3a8"
+                "2a9cd9af.ae25c6"
             ]
         ]
     },
@@ -6141,8 +6136,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 2350,
-        "y": 240,
+        "x": 2330,
+        "y": 180,
         "wires": []
     },
     {
