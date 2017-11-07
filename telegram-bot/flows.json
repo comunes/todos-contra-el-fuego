@@ -14,6 +14,13 @@
         "info": ""
     },
     {
+        "id": "5501c3cc.11327c",
+        "type": "tab",
+        "label": "Sandbox",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "c644db46.3854c8",
         "type": "subflow",
         "name": "new fire",
@@ -313,35 +320,6 @@
                 "wires": [
                     {
                         "id": "e39f3d19.34c0f",
-                        "port": 0
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "id": "94b874d7.e0e478",
-        "type": "subflow",
-        "name": "check lang change",
-        "info": "",
-        "in": [
-            {
-                "x": 100,
-                "y": 80,
-                "wires": [
-                    {
-                        "id": "e3b00d54.9cd4e"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 600,
-                "y": 80,
-                "wires": [
-                    {
-                        "id": "e3b00d54.9cd4e",
                         "port": 0
                     }
                 ]
@@ -913,8 +891,8 @@
         "func": "var t = msg.i18n;\nvar newMsg = {\n    payload : {\n        content : t('👍 ¡Suscrito/a!'),\n        type: \"message\",\n        chatId: msg.query.chatId\n    }\n}\n\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 830,
-        "y": 720,
+        "x": 810,
+        "y": 700,
         "wires": [
             [
                 "abe7d7fb.2c4708",
@@ -1085,7 +1063,8 @@
         "y": 240,
         "wires": [
             [
-                "1986ad37.928233"
+                "1986ad37.928233",
+                "c7da78e3.f6ea28"
             ]
         ]
     },
@@ -1101,8 +1080,7 @@
         "y": 240,
         "wires": [
             [
-                "9637d9cb.5f8a38",
-                "c7da78e3.f6ea28"
+                "9637d9cb.5f8a38"
             ]
         ]
     },
@@ -1337,7 +1315,7 @@
         "console": "false",
         "complete": "true",
         "x": 740,
-        "y": 300,
+        "y": 320,
         "wires": []
     },
     {
@@ -2244,7 +2222,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 570,
-        "y": 760,
+        "y": 740,
         "wires": [
             [
                 "373aa2ef.0aac9e"
@@ -2412,7 +2390,7 @@
         "func": "var t = msg.i18n;\nvar opts = {\n    // reply_to_message_id: msg.payload.messageId,\n    reply_to_message_id : null,\n    reply_markup: JSON.stringify({\n        force_reply: true,\n        keyboard: [ \n            [{text: t(\"⬅️ Volver\")}]\n        ], \n        'resize_keyboard' : true, \n        'one_time_keyboard' : false\n        })\n    };\nmsg.payload.type = \"message\";\nmsg.payload.options = opts;\nreturn [msg];",
         "outputs": 1,
         "noerr": 0,
-        "x": 400,
+        "x": 250,
         "y": 120,
         "wires": [
             [
@@ -2426,7 +2404,7 @@
         "z": "c6a40c11.dfc6b",
         "name": "show keyb",
         "bot": "f93d1a38.c43218",
-        "x": 650,
+        "x": 470,
         "y": 120,
         "wires": [
             []
@@ -2706,7 +2684,7 @@
         "name": "/distancia",
         "command": "/distancia",
         "bot": "f93d1a38.c43218",
-        "x": 80,
+        "x": 100,
         "y": 1460,
         "wires": [
             [
@@ -2730,7 +2708,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": true,
-        "x": 270,
+        "x": 290,
         "y": 1460,
         "wires": [
             [
@@ -2743,7 +2721,7 @@
         "type": "subflow:9968fcc5.ed33c",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 480,
+        "x": 500,
         "y": 1460,
         "wires": []
     },
@@ -3214,7 +3192,7 @@
         "type": "subflow:465e67f.6ebf598",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1230,
+        "x": 1240,
         "y": 700,
         "wires": []
     },
@@ -3507,7 +3485,7 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1750,
+        "x": 1770,
         "y": 740,
         "wires": []
     },
@@ -4371,8 +4349,8 @@
         "type": "subflow:e81a68fa.695e38",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 720,
-        "y": 760,
+        "x": 710,
+        "y": 740,
         "wires": [
             []
         ]
@@ -4418,81 +4396,13 @@
         "type": "function",
         "z": "6995c6a.1a0bf38",
         "name": "set i18n if not set",
-        "func": "if (msg.lang === null || typeof msg.i18n === 'undefined') {\n    var current = msg.lang;\n    if (current.match(/^es/)) {\n        node.log(\"Current language Spanish\");\n        msg.i18n = global.get('lang-es');\n    } else if (current.match(/^gl/)) {\n        node.log(\"Current language Galego\");\n        msg.i18n = global.get('lang-gl');\n    } else if (current.match(/^en/)) {\n        node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Current language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    node.log(\"i18n already configured\");\n} \n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; ",
+        "func": "if (msg.lang === null || typeof msg.i18n === 'undefined') {\n    var current = msg.lang;\n    if (current.match(/^es/)) {\n        //node.log(\"Current language Spanish\");\n        msg.i18n = global.get('lang-es');\n    } else if (current.match(/^gl/)) {\n        // node.log(\"Current language Galego\");\n        msg.i18n = global.get('lang-gl');\n    } else if (current.match(/^en/)) {\n        // node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        // node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        // node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Fallback language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    // node.log(\"i18n already configured\");\n} \n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; ",
         "outputs": "1",
         "noerr": 0,
         "x": 270,
         "y": 60,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "acf185e6.858808",
-        "type": "subflow:94b874d7.e0e478",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 990,
-        "y": 920,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "e3b00d54.9cd4e",
-        "type": "function",
-        "z": "94b874d7.e0e478",
-        "name": "detect lang change",
-        "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return [null, msg];\n}\nelse \n    return [msg, null];",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 310,
-        "y": 80,
-        "wires": [
-            [],
-            [
-                "776742ab.da3f4c",
-                "148a484f.48c168"
-            ]
-        ]
-    },
-    {
-        "id": "148a484f.48c168",
-        "type": "debug",
-        "z": "94b874d7.e0e478",
-        "name": "all",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 570,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "776742ab.da3f4c",
-        "type": "subflow:76bd701f.29d0f",
-        "z": "94b874d7.e0e478",
-        "x": 570,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "5cd09e04.d865d",
-        "type": "inject",
-        "z": "93cb4937.6fc068",
-        "name": "20m down",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 1160,
-        "y": 1560,
-        "wires": [
-            [
-                "4aeaeb09.be3364"
-            ]
         ]
     },
     {
@@ -4512,73 +4422,6 @@
             [
                 "7b95048a.80eaac"
             ]
-        ]
-    },
-    {
-        "id": "4aeaeb09.be3364",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "set ftp files",
-        "func": "var moment = context.global.moment.utc();\nvar day = moment.dayOfYear();\nvar year = moment.year();\n\n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data\n// Cada 60 * 125 min\n\nvar msgV = {};\nvar msgM = {};\n\nvar area = global.get('ftp-area');\n\nvar filesV = [\n            {'src': '/FIRMS/viirs/' + area + '/VIIRS_I_'+ area + '_VNP14IMGTDL_NRT_' + year + day + '.txt', 'dest': 'viir.txt'}\n            ];\nvar filesM = [\n            {'src': '/FIRMS/c6/' + area + '/MODIS_C6_'+ area + '_MCD14DL_NRT_' + year + day + '.txt', 'dest': 'modis.txt'}\n            ];\n\n// VIIRS Fields (adquisition is in UTC)      \n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/v1-vnp14imgt      \n// Acq_Date\tAcquisition Date\tDate of VIIRS acquisition.\n// Acq_Time\tAcquisition Time\tTime of acquisition/overpass of the satellite (in UTC).\n\n// newMsg.files = global.get('ftp-files');\n// global.set('ftp-files', files);\n// global.get('ftp-files');\n\nmsgV.files = filesV;\nmsgM.files = filesM; \n\nreturn [msgM, msgV];\n\n/*\nAlaska\nAustralia_NewZealand\nCanada\nCentral_America\nEurope\nGlobal\nNorthern_and_Central_Africa\nRussia_Asia\nSouthEast_Asia\nSouth_America\nSouth_Asia\nSouthern_Africa\nUSA_contiguous_and_Hawaii\n*/\n",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 1330,
-        "y": 1560,
-        "wires": [
-            [
-                "d2a5d34f.2387a"
-            ],
-            [
-                "1da56c1e.21c564"
-            ]
-        ],
-        "outputLabels": [
-            "modis",
-            "viirs "
-        ]
-    },
-    {
-        "id": "1da56c1e.21c564",
-        "type": "delay",
-        "z": "93cb4937.6fc068",
-        "name": "d 10s",
-        "pauseType": "delay",
-        "timeout": "10",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 1430,
-        "y": 1600,
-        "wires": [
-            [
-                "c4d37e69.19c7b"
-            ]
-        ]
-    },
-    {
-        "id": "d2a5d34f.2387a",
-        "type": "subflow:a7679700.0cb7a8",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1560,
-        "y": 1560,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "c4d37e69.19c7b",
-        "type": "subflow:a7679700.0cb7a8",
-        "z": "93cb4937.6fc068",
-        "x": 1560,
-        "y": 1600,
-        "wires": [
-            []
         ]
     },
     {
@@ -4643,53 +4486,6 @@
             [
                 "1b848c63.4e2bf4"
             ]
-        ]
-    },
-    {
-        "id": "d64bffcd.fec3c",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "test something",
-        "func": "",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 360,
-        "y": 1860,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "94cfbe56.9321f",
-        "type": "inject",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 120,
-        "y": 1860,
-        "wires": [
-            [
-                "d64bffcd.fec3c"
-            ]
-        ]
-    },
-    {
-        "id": "ffec927c.d96be",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "use lang",
-        "func": "var en = msg.i18n;\nnode.log(\"en: \" + typeof en + \" \" + en('Desuscribirme'));\nreturn msg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 580,
-        "y": 1860,
-        "wires": [
-            []
         ]
     },
     {
@@ -4849,10 +4645,10 @@
         "type": "debug",
         "z": "128790f6.dee0df",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1350,
+        "x": 1370,
         "y": 200,
         "wires": []
     },
@@ -5164,7 +4960,7 @@
         "wires": [
             [
                 "977bb03b.dc94f",
-                "6906bc92.3ea1d4"
+                "d5cbb344.cf8db"
             ]
         ]
     },
@@ -5186,7 +4982,7 @@
         "z": "93cb4937.6fc068",
         "name": "Warning: Listeners like /commands in subflows can be duplicated",
         "info": "",
-        "x": 250,
+        "x": 270,
         "y": 1540,
         "wires": []
     },
@@ -5198,7 +4994,7 @@
         "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    var langs = {\n        'Asturianu': 'ast',\n        'Català': 'ca',\n        'Español': 'es',\n        'English': 'en',\n        'Galego': 'gl',\n        'Português': 'pt',\n        'Português do Brasil': 'pt_BR'\n        // Euskara\n    };\n    \n    context.global.keyboardlang.pending = false;\n    \n    if (msg.payload.content.match(/(Asturianu)|(Español)|(English)|(Galego)|(Português)|(Português do Brasil)/i)) {\n        msg.lang = langs[msg.payload.content];\n        return [msg, null];   \n    } else\n    {\n        return [null, msg];   \n    }\n}\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 320,
+        "x": 340,
         "y": 1660,
         "wires": [
             [
@@ -5222,7 +5018,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 540,
+        "x": 560,
         "y": 1720,
         "wires": []
     },
@@ -5234,7 +5030,7 @@
         "func": "var orig = msg.originalMessage;\n\nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 550,
+        "x": 570,
         "y": 1660,
         "wires": [
             [
@@ -5254,7 +5050,7 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 770,
+        "x": 790,
         "y": 1660,
         "wires": []
     },
@@ -5271,7 +5067,7 @@
         "ttlType": "msg",
         "ttlProperty": "",
         "useString": true,
-        "x": 770,
+        "x": 790,
         "y": 1720,
         "wires": []
     },
@@ -5280,7 +5076,7 @@
         "type": "subflow:465e67f.6ebf598",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 780,
+        "x": 800,
         "y": 1600,
         "wires": []
     },
@@ -5403,7 +5199,7 @@
         "name": "",
         "bot": "f93d1a38.c43218",
         "saveDataDir": "",
-        "x": 100,
+        "x": 120,
         "y": 1660,
         "wires": [
             [
@@ -5434,7 +5230,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 290,
+        "x": 310,
         "y": 1740,
         "wires": []
     },
@@ -5530,7 +5326,7 @@
         "name": "/lang",
         "command": "/lang",
         "bot": "f93d1a38.c43218",
-        "x": 70,
+        "x": 90,
         "y": 1580,
         "wires": [
             [
@@ -5544,7 +5340,7 @@
         "type": "subflow:e6f3db8c.48eac8",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 365,
+        "x": 385,
         "y": 1580,
         "wires": []
     },
@@ -5965,7 +5761,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 890,
+        "x": 870,
         "y": 80,
         "wires": []
     },
@@ -6141,6 +5937,259 @@
             [
                 "70cddff9.2dbfb"
             ]
+        ]
+    },
+    {
+        "id": "e7804873.bdc4c8",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 140,
+        "y": 60,
+        "wires": [
+            [
+                "d4cdc02e.99c3f"
+            ]
+        ]
+    },
+    {
+        "id": "c0c6b098.1fe63",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "20m down",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "ac7840e1.f9429"
+            ]
+        ]
+    },
+    {
+        "id": "ac7840e1.f9429",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "set ftp files",
+        "func": "var moment = context.global.moment.utc();\nvar day = moment.dayOfYear();\nvar year = moment.year();\n\n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data\n// Cada 60 * 125 min\n\nvar msgV = {};\nvar msgM = {};\n\nvar area = global.get('ftp-area');\n\nvar filesV = [\n            {'src': '/FIRMS/viirs/' + area + '/VIIRS_I_'+ area + '_VNP14IMGTDL_NRT_' + year + day + '.txt', 'dest': 'viir.txt'}\n            ];\nvar filesM = [\n            {'src': '/FIRMS/c6/' + area + '/MODIS_C6_'+ area + '_MCD14DL_NRT_' + year + day + '.txt', 'dest': 'modis.txt'}\n            ];\n\n// VIIRS Fields (adquisition is in UTC)      \n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/v1-vnp14imgt      \n// Acq_Date\tAcquisition Date\tDate of VIIRS acquisition.\n// Acq_Time\tAcquisition Time\tTime of acquisition/overpass of the satellite (in UTC).\n\n// newMsg.files = global.get('ftp-files');\n// global.set('ftp-files', files);\n// global.get('ftp-files');\n\nmsgV.files = filesV;\nmsgM.files = filesM; \n\nreturn [msgM, msgV];\n\n/*\nAlaska\nAustralia_NewZealand\nCanada\nCentral_America\nEurope\nGlobal\nNorthern_and_Central_Africa\nRussia_Asia\nSouthEast_Asia\nSouth_America\nSouth_Asia\nSouthern_Africa\nUSA_contiguous_and_Hawaii\n*/\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 310,
+        "y": 280,
+        "wires": [
+            [
+                "32d8a2d5.a76cbe"
+            ],
+            [
+                "b5f1f5b1.744e18"
+            ]
+        ],
+        "outputLabels": [
+            "modis",
+            "viirs "
+        ]
+    },
+    {
+        "id": "b5f1f5b1.744e18",
+        "type": "delay",
+        "z": "5501c3cc.11327c",
+        "name": "d 10s",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 450,
+        "y": 320,
+        "wires": [
+            [
+                "e645a172.5ccb"
+            ]
+        ]
+    },
+    {
+        "id": "32d8a2d5.a76cbe",
+        "type": "subflow:a7679700.0cb7a8",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "x": 640,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e645a172.5ccb",
+        "type": "subflow:a7679700.0cb7a8",
+        "z": "5501c3cc.11327c",
+        "x": 640,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d5cbb344.cf8db",
+        "type": "function",
+        "z": "128790f6.dee0df",
+        "name": "counter",
+        "func": "c = context.get('counter') || 0;\nc += 1;\ncontext.set('counter', c);\n\nnode.status({fill:\"green\",shape:\"ring\",text:c});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1220,
+        "y": 200,
+        "wires": [
+            [
+                "6906bc92.3ea1d4"
+            ]
+        ]
+    },
+    {
+        "id": "2e950a20.784d56",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "36d5ed85.92faa2"
+            ]
+        ]
+    },
+    {
+        "id": "36d5ed85.92faa2",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "counter",
+        "func": "c = context.get('counter') || 0;\nc += 1;\ncontext.set('counter', c);\n\nnode.status({fill:\"green\",shape:\"dot\",text:c});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 340,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d4cdc02e.99c3f",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "counter",
+        "func": "c = context.get('counter') || 0;\nc += 1;\ncontext.set('counter', c);\n\nnode.status({fill:\"green\",shape:\"dot\",text:c});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 340,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "90683393.0463b",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "detect lang change",
+        "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return [null, msg];\n}\nelse \n    return [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 750,
+        "y": 160,
+        "wires": [
+            [],
+            [
+                "d1767c0c.2aaad",
+                "54be8ab0.25fa74"
+            ]
+        ]
+    },
+    {
+        "id": "54be8ab0.25fa74",
+        "type": "debug",
+        "z": "5501c3cc.11327c",
+        "name": "all",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1010,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "d1767c0c.2aaad",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "5501c3cc.11327c",
+        "x": 1010,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "59bde767.a4c4a8",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test something",
+        "func": "",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "427cb9c9.0ef938",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 120,
+        "y": 480,
+        "wires": [
+            [
+                "59bde767.a4c4a8"
+            ]
+        ]
+    },
+    {
+        "id": "77e79521.bcb3bc",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "use lang",
+        "func": "var en = msg.i18n;\nnode.log(\"en: \" + typeof en + \" \" + en('Desuscribirme'));\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 580,
+        "y": 480,
+        "wires": [
+            []
         ]
     }
 ]
