@@ -425,6 +425,35 @@
         ]
     },
     {
+        "id": "1bbd6687.58eae9",
+        "type": "subflow",
+        "name": "validate geo",
+        "info": "",
+        "in": [
+            {
+                "x": 120,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "c60831ef.7bc3a"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 380,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "c60831ef.7bc3a",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "id": "f93d1a38.c43218",
         "type": "telegram bot",
         "z": "",
@@ -609,8 +638,8 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 690,
-        "y": 220,
+        "x": 650,
+        "y": 180,
         "wires": [
             [
                 "b599e89d.2138b8",
@@ -629,8 +658,8 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 860,
-        "y": 220,
+        "x": 820,
+        "y": 180,
         "wires": [
             [
                 "9ef9c4c5.a68d08",
@@ -739,12 +768,12 @@
         "language": "",
         "region": "",
         "components": "",
-        "x": 1570,
-        "y": 560,
+        "x": 1590,
+        "y": 480,
         "wires": [
             [
-                "70cddff9.2dbfb",
-                "52271fef.7036"
+                "52271fef.7036",
+                "daebf6ef.f07908"
             ]
         ]
     },
@@ -754,7 +783,7 @@
         "z": "93cb4937.6fc068",
         "name": "get reply",
         "bot": "f93d1a38.c43218",
-        "x": 1220,
+        "x": 1160,
         "y": 480,
         "wires": [
             [
@@ -841,7 +870,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1390,
+        "x": 1310,
         "y": 480,
         "wires": [
             [
@@ -924,7 +953,7 @@
         "active": false,
         "console": "false",
         "complete": "chatId",
-        "x": 1930,
+        "x": 1970,
         "y": 440,
         "wires": []
     },
@@ -994,18 +1023,6 @@
                 "529f65ba.a3f03c"
             ]
         ]
-    },
-    {
-        "id": "50883145.39176",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "geo a salvar",
-        "active": false,
-        "console": "false",
-        "complete": "geo",
-        "x": 1950,
-        "y": 480,
-        "wires": []
     },
     {
         "id": "f0663c0a.d0646",
@@ -1332,8 +1349,8 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 690,
-        "y": 180,
+        "x": 650,
+        "y": 140,
         "wires": [
             [
                 "6cb3b14e.a135a",
@@ -1352,8 +1369,8 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 860,
-        "y": 180,
+        "x": 820,
+        "y": 140,
         "wires": [
             [
                 "9ef9c4c5.a68d08",
@@ -1381,8 +1398,8 @@
         "func": "var newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.chatId \n    },\n    payload: {\n       $set: {        \n            location: {\n                lat: msg.payload.lat,\n                lon: msg.payload.lon,\n                text: msg.address\n            },\n            // _id: msg.chatId,\n            chatId: msg.chatId,\n            geo: {\n                type: \"Point\",\n                coordinates: [msg.payload.lon, msg.payload.lat]\n            },\n            distance: 5\n        }\n    },\n    location: {\n        lat: msg.payload.lat,\n        lon: msg.payload.lon\n    },\n    // _id: msg.chatId,\n    chatId: msg.chatId,\n    i18n: msg.i18n\n    \n}\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1750,
-        "y": 580,
+        "x": 1780,
+        "y": 540,
         "wires": [
             [
                 "4f819d77.37fcc4",
@@ -1400,7 +1417,7 @@
         "func": "var newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    // payload $set for updates\n    payload: {\n       $set: {        \n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    // _id: msg.payload.chatId,\n    chatId: msg.payload.chatId,\n    geo: {\n        type: \"Point\",\n        coordinates: [\n            msg.payload.content.longitude, \n            msg.payload.content.latitude]\n    },\n    distance: 5\n       }\n    },\n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    chatId: msg.payload.chatId,\n    i18n: msg.i18n\n}\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1750,
+        "x": 1720,
         "y": 640,
         "wires": [
             [
@@ -1756,8 +1773,8 @@
         "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos en Europa (VIRR)\"\n    }\n    return newMsg;\n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1010,
-        "y": 280,
+        "x": 970,
+        "y": 240,
         "wires": [
             [
                 "44fbc396.81360c"
@@ -1775,8 +1792,8 @@
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 840,
-        "y": 280,
+        "x": 800,
+        "y": 240,
         "wires": [
             [
                 "8f83bfc5.cfb9b"
@@ -1794,8 +1811,8 @@
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 850,
-        "y": 320,
+        "x": 810,
+        "y": 280,
         "wires": [
             [
                 "d8b00aa6.5027f8"
@@ -1810,8 +1827,8 @@
         "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos en Europa (MODIS)\"\n    }\n    return newMsg;\n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1010,
-        "y": 320,
+        "x": 970,
+        "y": 280,
         "wires": [
             [
                 "44fbc396.81360c"
@@ -1853,8 +1870,8 @@
             "#c5b0d5"
         ],
         "useOldStyle": false,
-        "x": 1220,
-        "y": 280,
+        "x": 1180,
+        "y": 240,
         "wires": [
             [
                 "c4c96710.0c14f8"
@@ -2330,7 +2347,7 @@
         "y": 320,
         "wires": [
             [
-                "6d492c2d.a26024"
+                "b9c8c0db.ee0be"
             ]
         ]
     },
@@ -2513,7 +2530,7 @@
         "type": "subflow:156e20df.86399f",
         "z": "c644db46.3854c8",
         "name": "",
-        "x": 1090,
+        "x": 1260,
         "y": 320,
         "wires": [
             [
@@ -2541,7 +2558,7 @@
         "func": "var t = msg.i18n;\nmsg.caption = t('Este es el mapa del lugar donde crees que hay un fuego');\nmsg.location.text = msg.address;\nmsg.payload.chatId = msg.chatId;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 930,
+        "x": 1090,
         "y": 320,
         "wires": [
             [
@@ -3164,8 +3181,8 @@
         "active": false,
         "console": "false",
         "complete": "payload",
-        "x": 1570,
-        "y": 640,
+        "x": 1690,
+        "y": 600,
         "wires": []
     },
     {
@@ -3188,8 +3205,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1730,
-        "y": 540,
+        "x": 1750,
+        "y": 480,
         "wires": []
     },
     {
@@ -3218,7 +3235,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 550,
+        "x": 670,
         "y": 20,
         "wires": []
     },
@@ -3281,7 +3298,7 @@
             {
                 "t": "gt",
                 "v": "0",
-                "vt": "str"
+                "vt": "num"
             },
             {
                 "t": "else"
@@ -3305,7 +3322,7 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "already notif",
-        "func": "var t = msg.i18n;\nnode.log(\"i18n: \" + typeof t);\nvar newMsg = {\n    payload: {\n        type: \"message\",\n        chatId: msg.originalMessage.chatId,\n        content: t('Este fuego o uno muy cercano ya ha sido notificado por otra persona anteriormente. ¡Gracias!')\n    },\n    i18n: t\n};\nreturn newMsg;",
+        "func": "var t = msg.i18n;\n// node.log(\"i18n: \" + typeof t);\nvar newMsg = {\n    payload: {\n        type: \"message\",\n        chatId: msg.originalMessage.chatId,\n        content: t('Este fuego o uno muy cercano ya ha sido notificado por otra persona anteriormente. ¡Gracias!')\n    },\n    i18n: t\n};\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 850,
@@ -3445,8 +3462,8 @@
         "type": "subflow:2b8628df.fdcca8",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1190,
-        "y": 220,
+        "x": 1170,
+        "y": 180,
         "wires": []
     },
     {
@@ -3457,8 +3474,8 @@
         "func": "var newMsg = {\n    type: \"nasa\",\n    lon: msg.payload.longitude,\n    lat: msg.payload.latitude\n}\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1010,
-        "y": 220,
+        "x": 970,
+        "y": 180,
         "wires": [
             [
                 "e1100c9f.a5d3a"
@@ -3511,8 +3528,8 @@
         "type": "subflow:4a3c7cc0.965dd4",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1250,
-        "y": 180,
+        "x": 1210,
+        "y": 140,
         "wires": []
     },
     {
@@ -3564,8 +3581,8 @@
         "z": "93cb4937.6fc068",
         "name": "nasa-fire-active",
         "storageNode": "2c23f46.8edd30c",
-        "x": 1400,
-        "y": 280,
+        "x": 1380,
+        "y": 240,
         "wires": []
     },
     {
@@ -3574,8 +3591,8 @@
         "z": "93cb4937.6fc068",
         "name": "nasa-fire-active",
         "storageNode": "2c23f46.8edd30c",
-        "x": 1240,
-        "y": 320,
+        "x": 1200,
+        "y": 280,
         "wires": [
             [
                 "44fbc396.81360c"
@@ -3622,8 +3639,8 @@
         "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar lat = msg.payload.latitude;\nvar lon = msg.payload.longitude;\nvar pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\npname += \", satelite: \" + msg.payload.satellite;\nvar maxkevin = 373;\nvar intensity =\n    (msg.payload.bright_ti4? msg.payload.bright_ti4: \n    (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\nvar radius = msg.payload.scan * 1000;\n\nvar newMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: \"NASA\",\n        // icon: \"earthquake\",\n        color: \"red\",\n        fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        radius: radius,\n        fillOpacity: 1,\n        iconColor:'red', // obligatorio\n        stroke: false,\n        addtoheatmap: false,\n        // fillOpacity: 0.8,\n        clickable: true,\n        weblink: {url: \"http://example.com\", name: \"Más info\"}\n        \n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1020,
-        "y": 180,
+        "x": 980,
+        "y": 140,
         "wires": [
             [
                 "9ad7b6d1.a6e748"
@@ -3870,8 +3887,8 @@
         "repeat": "",
         "crontab": "",
         "once": true,
-        "x": 890,
-        "y": 140,
+        "x": 910,
+        "y": 40,
         "wires": [
             [
                 "c0867d8e.a5999",
@@ -4329,8 +4346,8 @@
         "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'pt-BR': ['pt'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: false,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    const gl = i.getFixedT('gl');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    global.set('lang-gl', gl);\n    i.loadLanguages(['es', 'en', 'pt', 'ast', 'gl'], function() {\n        // var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1280,
-        "y": 140,
+        "x": 1060,
+        "y": 40,
         "wires": [
             [
                 "1f93ce66.41da62"
@@ -4342,11 +4359,11 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "payl",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1410,
-        "y": 140,
+        "x": 1210,
+        "y": 40,
         "wires": []
     },
     {
@@ -4470,8 +4487,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 120,
-        "y": 180,
+        "x": 1160,
+        "y": 1560,
         "wires": [
             [
                 "4aeaeb09.be3364"
@@ -4505,8 +4522,8 @@
         "func": "var moment = context.global.moment.utc();\nvar day = moment.dayOfYear();\nvar year = moment.year();\n\n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data\n// Cada 60 * 125 min\n\nvar msgV = {};\nvar msgM = {};\n\nvar area = global.get('ftp-area');\n\nvar filesV = [\n            {'src': '/FIRMS/viirs/' + area + '/VIIRS_I_'+ area + '_VNP14IMGTDL_NRT_' + year + day + '.txt', 'dest': 'viir.txt'}\n            ];\nvar filesM = [\n            {'src': '/FIRMS/c6/' + area + '/MODIS_C6_'+ area + '_MCD14DL_NRT_' + year + day + '.txt', 'dest': 'modis.txt'}\n            ];\n\n// VIIRS Fields (adquisition is in UTC)      \n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/v1-vnp14imgt      \n// Acq_Date\tAcquisition Date\tDate of VIIRS acquisition.\n// Acq_Time\tAcquisition Time\tTime of acquisition/overpass of the satellite (in UTC).\n\n// newMsg.files = global.get('ftp-files');\n// global.set('ftp-files', files);\n// global.get('ftp-files');\n\nmsgV.files = filesV;\nmsgM.files = filesM; \n\nreturn [msgM, msgV];\n\n/*\nAlaska\nAustralia_NewZealand\nCanada\nCentral_America\nEurope\nGlobal\nNorthern_and_Central_Africa\nRussia_Asia\nSouthEast_Asia\nSouth_America\nSouth_Asia\nSouthern_Africa\nUSA_contiguous_and_Hawaii\n*/\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 290,
-        "y": 180,
+        "x": 1330,
+        "y": 1560,
         "wires": [
             [
                 "d2a5d34f.2387a"
@@ -4535,8 +4552,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 390,
-        "y": 220,
+        "x": 1430,
+        "y": 1600,
         "wires": [
             [
                 "c4d37e69.19c7b"
@@ -4548,24 +4565,20 @@
         "type": "subflow:a7679700.0cb7a8",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 520,
-        "y": 180,
+        "x": 1560,
+        "y": 1560,
         "wires": [
-            [
-                "e2ba2944.46c208"
-            ]
+            []
         ]
     },
     {
         "id": "c4d37e69.19c7b",
         "type": "subflow:a7679700.0cb7a8",
         "z": "93cb4937.6fc068",
-        "x": 520,
-        "y": 220,
+        "x": 1560,
+        "y": 1600,
         "wires": [
-            [
-                "7aa07a53.1c8ec4"
-            ]
+            []
         ]
     },
     {
@@ -4754,7 +4767,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 130,
-        "y": 420,
+        "y": 480,
         "wires": [
             [
                 "e9667844.7ff518"
@@ -4795,166 +4808,6 @@
         ]
     },
     {
-        "id": "a5ababbd.b45f98",
-        "type": "switch",
-        "z": "93cb4937.6fc068",
-        "name": "opciones start menu",
-        "property": "payload.content",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "/start@rednodetest_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/start@TodosContraElFuego_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/inicio@rednodetest_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/inicio@TodosContraElFuego_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "⬅️ Volver",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "⬅️ Cancelar",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "📣 Suscribirme a fuegos en mi zona",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/suscribirme@rednodetest_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/suscribirme@TodosContraElFuego_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "Desuscribirme",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "🔥 Notificar un fuego nuevo",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "♥ Apoya esta iniciativa",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "📝 Escribir mi posición",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "📖 Más info",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "📝 Escribir localización fuego",
-                "vt": "str"
-            },
-            {
-                "t": "regex",
-                "v": "^(a |)[0-9]*[ ]*km( around|)",
-                "vt": "str",
-                "case": true
-            },
-            {
-                "t": "eq",
-                "v": "📣 Suscrito a nuevos fuegos",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/info@rednodetest_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/info@TodosContraElFuego_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/distancia@rednodetest_bot",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "📍 El fuego está en mi ubicación",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "/distancia@TodosContraElFuego_bot",
-                "vt": "str"
-            },
-            {
-                "t": "regex",
-                "v": "(falsa alarma|falso positivo|es una industria|industria)",
-                "vt": "str",
-                "case": true
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "false",
-        "outputs": 24,
-        "x": 1070,
-        "y": 1620,
-        "wires": [
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            []
-        ]
-    },
-    {
         "id": "b3331045.d30b3",
         "type": "subflow:4384af8e.a7409",
         "z": "76bd701f.29d0f",
@@ -4983,7 +4836,7 @@
         "id": "bb4817df.01de48",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 1530,
+        "x": 1450,
         "y": 480,
         "wires": [
             [
@@ -6147,5 +6000,147 @@
         "x": 1520,
         "y": 340,
         "wires": []
+    },
+    {
+        "id": "695ef2aa.e9174c",
+        "type": "tcp in",
+        "z": "93cb4937.6fc068",
+        "name": "modis-mod",
+        "server": "server",
+        "host": "",
+        "port": "40001",
+        "datamode": "single",
+        "datatype": "utf8",
+        "newline": "",
+        "topic": "modis-mod",
+        "base64": false,
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "4c5a12a1.31afcc"
+            ]
+        ]
+    },
+    {
+        "id": "4c5a12a1.31afcc",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "modis mod",
+        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nreturn file;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            [
+                "e2ba2944.46c208",
+                "73439cb8.e35604"
+            ]
+        ]
+    },
+    {
+        "id": "9329a152.948d2",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "viirs mod",
+        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nreturn file;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "7aa07a53.1c8ec4",
+                "73439cb8.e35604"
+            ]
+        ]
+    },
+    {
+        "id": "609b276.68e5ed8",
+        "type": "tcp in",
+        "z": "93cb4937.6fc068",
+        "name": "modis-viirs",
+        "server": "server",
+        "host": "",
+        "port": "40002",
+        "datamode": "single",
+        "datatype": "utf8",
+        "newline": "",
+        "topic": "modis-viirs",
+        "base64": false,
+        "x": 300,
+        "y": 180,
+        "wires": [
+            [
+                "9329a152.948d2"
+            ]
+        ]
+    },
+    {
+        "id": "73439cb8.e35604",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "filename",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 620,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c60831ef.7bc3a",
+        "type": "function",
+        "z": "1bbd6687.58eae9",
+        "name": "geo?",
+        "func": "var t = msg.i18n;\nif (msg.status === 'OK') {\n    return [msg, null];\n} else {\n    var noti = {};\n    noti.payload = {};\n    noti.payload.chatId = msg.chatId;\n    noti.payload.type = \"message\";\n    noti.i18n = msg.i18n;\n    noti.payload.content = t(\"Lo siento, no podemos localizar ese lugar\");\n    return [null, noti];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 250,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "1c7bb3.5a30b44e"
+            ]
+        ],
+        "outputLabels": [
+            "geo",
+            "failed to geo"
+        ]
+    },
+    {
+        "id": "1c7bb3.5a30b44e",
+        "type": "subflow:c6a40c11.dfc6b",
+        "z": "1bbd6687.58eae9",
+        "x": 390,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "b9c8c0db.ee0be",
+        "type": "subflow:1bbd6687.58eae9",
+        "z": "c644db46.3854c8",
+        "name": "",
+        "x": 930,
+        "y": 320,
+        "wires": [
+            [
+                "6d492c2d.a26024"
+            ]
+        ]
+    },
+    {
+        "id": "daebf6ef.f07908",
+        "type": "subflow:1bbd6687.58eae9",
+        "z": "93cb4937.6fc068",
+        "x": 1610,
+        "y": 540,
+        "wires": [
+            [
+                "70cddff9.2dbfb"
+            ]
+        ]
     }
 ]

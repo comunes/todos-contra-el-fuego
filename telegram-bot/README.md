@@ -19,7 +19,11 @@ node-red --userDir .
 ```
 You should re-configure the Telegram Bot (use @BotFather) with a new bot token. Also you will need a Google Map Api and a NASA ftp account.
 
-Also the `config-dev` node.
+Run via `cron` or `watch -n600` in development (every 10 min):
+```
+./ftp-get-timestamp.sh <nasa-user> <nasa-password> <directory>
+```
+to get the NASA fire data when modified in that directory. Also check the `config-dev` and `config-prod` node to mathc `directory` with `ftp-path`.
 
 ## Mongo Indexes
 
@@ -49,6 +53,10 @@ distancia - a la que monitorizar
 info - sobre tu subscripción
 lang - seleccionar idioma
 ```
+
+## Dependencies
+
+`nc` and `ncftp` to get NASA data.
 
 ## Data source acknowledgements
 
