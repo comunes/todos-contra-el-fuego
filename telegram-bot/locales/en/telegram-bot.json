@@ -40,5 +40,19 @@
     "Este es el mapa del lugar donde crees que hay un fuego": "This is the map of the place where you think there is a fire",
     "Vas a notificar a los vecinos cercanos sobre este fuego ¿estás seguro/a?": "You're going to notify nearby neighbors about this fire. Are you sure?",
     "No olvides llamar al 📞112 si no lo has hecho ya para avisar a los servicios de emergencia 🚒": "Do not forget to call 📞112 if you have not already done so to notify the emergency services 🚒",
-    "Este fuego o uno muy cercano ya ha sido notificado por otra persona anteriormente. ¡Gracias!": "This fire or a very close one has already been notified by another person previously. Thanks!"
+    "Este fuego o uno muy cercano ya ha sido notificado por otra persona anteriormente. ¡Gracias!": "This fire or a very close one has already been notified by another person previously. Thanks!",
+    "👌 Tomamos nota, ¡gracias por colaborar!": "👌 We take note of this, thanks for collaborating!",
+    "¿Sabías que los fuegos producen tanto CO² como los coches y aproximadamente ⅕ de todas nuestras emisiones?": "Did you know that wildfires produce as much CO² as cars and about ⅕ of all our carbon emissions?",
+    "Puedes ayudarnos (y al medioambiente) dando difusión a @TodosContraElFuego_bot entre tus contactos y grupos para que más gente lo use.": "You can help us (and the environment) by spreading @TodosContraElFuego_bot among your contacts and groups so that more people can use it.",
+    "También puedes apoyarnos con alguna donación. Así podremos pagar nuestros servidores, servicios de terceros, usar otras plataformas diferentes de Telegram y pagar algún café a los desarrolladores:": "You can also support us with a donation. So we can pay our servers, third-party services, to develop for other platforms different than Telegram and to pay some coffee to the developers:",
+    "LIMITACIÓN DE LA RESPONSABILIDAD:": "LIMITATION OF LIABILITY:",
+    "POLÍTICA DE PRIVACIDAD:": "PRIVACY POLICY:",
+    "No compartimos ninguna información con terceros. La información recogida por esta aplicación tiene el único fin ayudar en la prevención y extinción de fuegos principalmente forestales.": "We do not share any information with third parties. The only goal of the data collected by this application is to help in the prevention and extinction of forest wildfires.",
+    "FUENTES DE DATOS:": "DATA SOURCES:",
+    "Además de las alertas proporcionadas por nuestros usuari@s, usamos datos de fuegos activos proporcionados por la NASA (programa MODIS y VIIRS). Ver mapa: http://effis.jrc.ec.europa.eu/static/effis_current_situation/public/index.html": "In addition to the alerts provided by our users, we use active fire data provided by NASA (MODIS and VIIRS program). See map: http://effis.jrc.ec.europa.eu/static/effis_current_situation/public/index.html",
+    "Si quieres que añadamos otras fuentes de datos sobre fuegos, no dudes en contactar con nosotros: info@comunes.org": "If you want us to add other data sources about fires, do not hesitate to contact us: info@comunes.org",
+    "PREGUNTAS FRECUENTES:": "FAQ:",
+    "OTROS:": "OTHER:",
+    "Feedback, sugerencias, bugs, etc: @vj_rj": "Feedback, suggestions, bugs, etc: @vj_rj",
+    "¡Gracias!": "Thank You!"
 }
