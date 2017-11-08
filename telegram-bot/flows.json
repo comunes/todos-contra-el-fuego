@@ -74,7 +74,7 @@
         ],
         "out": [
             {
-                "x": 900,
+                "x": 680,
                 "y": 160,
                 "wires": [
                     {
@@ -257,11 +257,11 @@
                         "port": 0
                     },
                     {
-                        "id": "1f728a28.973446",
+                        "id": "eab4c7fe.fd7828",
                         "port": 0
                     },
                     {
-                        "id": "4d5be381.f478fc",
+                        "id": "364970ea.3f564",
                         "port": 0
                     }
                 ]
@@ -279,7 +279,7 @@
                 "y": 40,
                 "wires": [
                     {
-                        "id": "dd683e99.7c126"
+                        "id": "f3418b4a.16c128"
                     }
                 ]
             }
@@ -316,39 +316,10 @@
         "out": [
             {
                 "x": 1520,
-                "y": 140,
+                "y": 120,
                 "wires": [
                     {
                         "id": "e39f3d19.34c0f",
-                        "port": 0
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "id": "a7679700.0cb7a8",
-        "type": "subflow",
-        "name": "nrt3 nasa",
-        "info": "",
-        "in": [
-            {
-                "x": 80,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "9af219f9.082b88"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 740,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "5be1e81a.8eae68",
                         "port": 0
                     }
                 ]
@@ -420,11 +391,84 @@
         ],
         "out": [
             {
-                "x": 380,
+                "x": 420,
                 "y": 80,
                 "wires": [
                     {
                         "id": "c60831ef.7bc3a",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "557e0255.d1220c",
+        "type": "subflow",
+        "name": "test in",
+        "info": "",
+        "in": [],
+        "out": [
+            {
+                "x": 700,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "95b8009f.b410c",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 680,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "95b8009f.b410c",
+                        "port": 1
+                    }
+                ]
+            },
+            {
+                "x": 600,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "95b8009f.b410c",
+                        "port": 2
+                    }
+                ]
+            }
+        ],
+        "outputLabels": [
+            "/start",
+            "/lang",
+            "location, other"
+        ]
+    },
+    {
+        "id": "fe0c8b72.8a51a8",
+        "type": "subflow",
+        "name": "test out",
+        "info": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "dadeaa31.8d2c18"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 420,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "dadeaa31.8d2c18",
                         "port": 0
                     }
                 ]
@@ -588,18 +632,6 @@
         "interval": "60"
     },
     {
-        "id": "6c68017b.bba33",
-        "type": "ftp-download-server",
-        "z": "",
-        "host": "nrt3.modaps.eosdis.nasa.gov",
-        "port": "21",
-        "user": "comunes",
-        "connTimeout": "10000",
-        "pasvTimeout": "10000",
-        "keepalive": "10000",
-        "name": "nrt3 nasa"
-    },
-    {
         "id": "488013b6.1183ec",
         "type": "Cache",
         "z": "",
@@ -653,11 +685,10 @@
         "command": "/start",
         "bot": "f93d1a38.c43218",
         "x": 90,
-        "y": 360,
+        "y": 400,
         "wires": [
             [
-                "55ebd8f8.436e38",
-                "eab4e529.d13658"
+                "55ebd8f8.436e38"
             ],
             [
                 "11e83fb2.09a37"
@@ -701,25 +732,11 @@
         ]
     },
     {
-        "id": "3ce9c795.c84558",
-        "type": "telegram sender",
-        "z": "93cb4937.6fc068",
-        "name": "ask",
-        "bot": "f93d1a38.c43218",
-        "x": 1030,
-        "y": 480,
-        "wires": [
-            [
-                "57988778.321178"
-            ]
-        ]
-    },
-    {
         "id": "be0cbd6.2efaf4",
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "ask location to sub",
-        "func": "var t = msg.i18n;\n\nif (msg.payload.chatId > 0) {\n    if(context.global.keyboard.pending) {\n        context.global.keyboard.pending = false;\n        context.global.keyboard = { pending : true };\n        var opts = {\n            // reply_to_message_id: msg.payload.messageId,\n            \n            reply_markup: JSON.stringify({\n                force_reply: true,\n                keyboard: [ \n                    [{text: t('📍 Compartir mi posición'), request_location: true}, \n                     {text: t('📝 Escribir mi posición')}\n                    ],\n                    [{text: t('⬅️ Cancelar')}]\n                ], \n\n                'resize_keyboard' : true, \n                'one_time_keyboard' : true\n            })\n        };\n    }\n    msg.payload.content = t('¿Quieres compartir tu posición o escribir el nombre de la zona a vigilar (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    global.set('locationtopic', 'sus');\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'sus');\n    return [null, msg];\n}",
+        "func": "var t = msg.i18n;\nvar key = 'locationtopic-' + msg.payload.chatId;\nglobal.set(key, 'sus');\n\nif (msg.payload.chatId > 0) {\n    if(context.global.keyboard.pending) {\n        context.global.keyboard.pending = false;\n        context.global.keyboard = { pending : true };\n        var opts = {\n            // reply_to_message_id: msg.payload.messageId,\n            \n            reply_markup: JSON.stringify({\n                force_reply: true,\n                keyboard: [ \n                    [{text: t('📍 Compartir mi posición'), request_location: true}, \n                     {text: t('📝 Escribir mi posición')}\n                    ],\n                    [{text: t('⬅️ Cancelar')}]\n                ], \n\n                'resize_keyboard' : true, \n                'one_time_keyboard' : true\n            })\n        };\n    }\n    msg.payload.content = t('¿Quieres compartir tu posición o escribir el nombre de la zona a vigilar (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 610,
@@ -775,14 +792,14 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "ask fire",
-        "func": "var t = msg.i18n;\nif (msg.payload.chatId > 0) {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: t('📍 El fuego está en mi ubicación'), request_location: true}, \n                 {text: t('📝 Escribir localización fuego')}\n                ],\n                [{text: t('⬅️ Cancelar')}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = t('¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    global.set('locationtopic', 'nuevofuego');\n    // msg.payload.topic = \"nuevofuego\";\n    return [msg, null];\n} else {\n    global.set('locationtopic', 'nuevofuego');\n    return [null, msg];\n}\n",
+        "func": "var t = msg.i18n;\nvar key = 'locationtopic-' + msg.payload.chatId;\nglobal.set(key, 'newfire');\nif (msg.payload.chatId > 0) {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: t('📍 El fuego está en mi ubicación'), request_location: true}, \n                 {text: t('📝 Escribir localización fuego')}\n                ],\n                [{text: t('⬅️ Cancelar')}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = t('¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    \n    return [msg, null];\n} else {\n    return [null, msg];\n}\n",
         "outputs": "2",
         "noerr": 0,
         "x": 860,
         "y": 440,
         "wires": [
             [
-                "ff13d2ac.cce79"
+                "574b0512.1f89ac"
             ],
             [
                 "60ee8a37.032aa4"
@@ -980,10 +997,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "test id",
-        "func": "var newMsg = {\n    payload: {\n        chatId: 666,\n        content : \"Plaza de la Luna, Madrid\"\n    }}\nreturn newMsg;",
+        "func": "var newMsg = {\n    payload: {\n        chatId: 9998999,\n        content : \"Plaza de la Luna, Madrid\"\n    }}\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 370,
+        "x": 330,
         "y": 720,
         "wires": [
             [
@@ -1086,18 +1103,6 @@
             [
                 "c0e6a5d.fb1e058"
             ]
-        ]
-    },
-    {
-        "id": "4fe5e164.e7dc",
-        "type": "telegram sender",
-        "z": "2b8628df.fdcca8",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 2270,
-        "y": 400,
-        "wires": [
-            []
         ]
     },
     {
@@ -1345,18 +1350,6 @@
         ]
     },
     {
-        "id": "ff13d2ac.cce79",
-        "type": "telegram sender",
-        "z": "93cb4937.6fc068",
-        "name": "keyb",
-        "bot": "f93d1a38.c43218",
-        "x": 1030,
-        "y": 440,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "70cddff9.2dbfb",
         "type": "function",
         "z": "93cb4937.6fc068",
@@ -1383,8 +1376,8 @@
         "func": "var newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    // payload $set for updates\n    payload: {\n       $set: {        \n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    // _id: msg.payload.chatId,\n    chatId: msg.payload.chatId,\n    geo: {\n        type: \"Point\",\n        coordinates: [\n            msg.payload.content.longitude, \n            msg.payload.content.latitude]\n    },\n    distance: 5\n       }\n    },\n    location: {\n        lat: msg.payload.content.latitude,\n        lon: msg.payload.content.longitude\n    },\n    chatId: msg.payload.chatId,\n    i18n: msg.i18n\n}\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1720,
-        "y": 640,
+        "x": 1650,
+        "y": 600,
         "wires": [
             [
                 "bed1aee.d1d745",
@@ -1521,18 +1514,6 @@
         ]
     },
     {
-        "id": "c57b248a.0f3fc8",
-        "type": "telegram sender",
-        "z": "93cb4937.6fc068",
-        "name": "keyb",
-        "bot": "f93d1a38.c43218",
-        "x": 930,
-        "y": 380,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "f3249bab.90eae8",
         "type": "delay",
         "z": "93cb4937.6fc068",
@@ -1597,7 +1578,7 @@
         "y": 380,
         "wires": [
             [
-                "c57b248a.0f3fc8"
+                "b870e649.02f3a8"
             ]
         ]
     },
@@ -1643,7 +1624,7 @@
         "y": 480,
         "wires": [
             [
-                "3ce9c795.c84558"
+                "9951a307.647d"
             ]
         ]
     },
@@ -1666,8 +1647,8 @@
         "y": 400,
         "wires": [
             [
-                "4fe5e164.e7dc",
-                "a890056b.ebcff8"
+                "a890056b.ebcff8",
+                "ca9ae1e8.6507f"
             ]
         ]
     },
@@ -1989,219 +1970,6 @@
         "wires": []
     },
     {
-        "id": "f71f4cac.9481d",
-        "type": "inject",
-        "z": "93cb4937.6fc068",
-        "name": "update stats",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "1800",
-        "crontab": "",
-        "once": false,
-        "x": 110,
-        "y": 1100,
-        "wires": [
-            [
-                "e412e0fb.c0301"
-            ]
-        ]
-    },
-    {
-        "id": "df770305.a8826",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "current susc",
-        "func": "msg.payload = {};\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 490,
-        "y": 1100,
-        "wires": [
-            [
-                "f35da4d0.4efea8",
-                "77f46e84.2260f"
-            ]
-        ]
-    },
-    {
-        "id": "f35da4d0.4efea8",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "count susc",
-        "collection": "subscriptions",
-        "operation": "count",
-        "x": 710,
-        "y": 1100,
-        "wires": [
-            [
-                "a4557bc7.dd66a8",
-                "ba04416.3b1bbc"
-            ]
-        ]
-    },
-    {
-        "id": "6a5b9f6.b6d256",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "count susc",
-        "func": "var newMsg = {\n    payload : {\n        name: \"numsus\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 490,
-        "y": 1140,
-        "wires": [
-            [
-                "bfb8ba04.b55468"
-            ]
-        ]
-    },
-    {
-        "id": "bfb8ba04.b55468",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find stats",
-        "collection": "fstats",
-        "operation": "find",
-        "x": 700,
-        "y": 1140,
-        "wires": [
-            [
-                "d510ac6b.541af"
-            ]
-        ]
-    },
-    {
-        "id": "d510ac6b.541af",
-        "type": "ui_text",
-        "z": "93cb4937.6fc068",
-        "group": "601660c.cd104a",
-        "order": 5,
-        "width": 0,
-        "height": 0,
-        "name": "sus",
-        "label": "Suscripciones en el tiempo",
-        "format": "{{msg.payload[0].value}}",
-        "layout": "row-spread",
-        "x": 870,
-        "y": 1140,
-        "wires": []
-    },
-    {
-        "id": "a4557bc7.dd66a8",
-        "type": "ui_text",
-        "z": "93cb4937.6fc068",
-        "group": "601660c.cd104a",
-        "order": 4,
-        "width": 0,
-        "height": 0,
-        "name": "subs real",
-        "label": "Subscripciones actuales",
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 880,
-        "y": 1100,
-        "wires": []
-    },
-    {
-        "id": "b59087e9.b1e7b8",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "count susc",
-        "func": "var newMsg = {\n    payload : {\n        name: \"numdesus\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 490,
-        "y": 1180,
-        "wires": [
-            [
-                "6ed74184.fdc72"
-            ]
-        ]
-    },
-    {
-        "id": "6ed74184.fdc72",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find stats",
-        "collection": "fstats",
-        "operation": "find",
-        "x": 700,
-        "y": 1180,
-        "wires": [
-            [
-                "c4132465.859b28"
-            ]
-        ]
-    },
-    {
-        "id": "c4132465.859b28",
-        "type": "ui_text",
-        "z": "93cb4937.6fc068",
-        "group": "601660c.cd104a",
-        "order": 6,
-        "width": 0,
-        "height": 0,
-        "name": "desus",
-        "label": "Desucripciones",
-        "format": "{{msg.payload[0].value}}",
-        "layout": "row-spread",
-        "x": 870,
-        "y": 1180,
-        "wires": []
-    },
-    {
-        "id": "bc571a7f.119508",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "count notis",
-        "func": "var newMsg = {\n    payload : {\n        name: \"sendnotis\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 490,
-        "y": 1220,
-        "wires": [
-            [
-                "fefae1e8.b0dba"
-            ]
-        ]
-    },
-    {
-        "id": "fefae1e8.b0dba",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find stats",
-        "collection": "fstats",
-        "operation": "find",
-        "x": 700,
-        "y": 1220,
-        "wires": [
-            [
-                "88bb2a1d.559188"
-            ]
-        ]
-    },
-    {
-        "id": "88bb2a1d.559188",
-        "type": "ui_text",
-        "z": "93cb4937.6fc068",
-        "group": "601660c.cd104a",
-        "order": 7,
-        "width": 0,
-        "height": 0,
-        "name": "notis",
-        "label": "Notificaciones enviadas",
-        "format": "{{msg.payload[0].value}}",
-        "layout": "row-spread",
-        "x": 870,
-        "y": 1220,
-        "wires": []
-    },
-    {
         "id": "cbe0e85b.a53018",
         "type": "function",
         "z": "93cb4937.6fc068",
@@ -2237,38 +2005,6 @@
         "wires": [
             [
                 "b0289aa8.88a968"
-            ]
-        ]
-    },
-    {
-        "id": "3d60861f.0f7cea",
-        "type": "switch",
-        "z": "93cb4937.6fc068",
-        "name": "susc o fuego?",
-        "property": "locationtopic",
-        "propertyType": "global",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "sus",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "nuevofuego",
-                "vt": "str"
-            }
-        ],
-        "checkall": "false",
-        "outputs": 2,
-        "x": 1280,
-        "y": 640,
-        "wires": [
-            [
-                "cab2f268.5157"
-            ],
-            [
-                "aed10823.c1e808"
             ]
         ]
     },
@@ -2318,20 +2054,6 @@
         ]
     },
     {
-        "id": "d5052529.791c48",
-        "type": "telegram sender",
-        "z": "c644db46.3854c8",
-        "name": "ask",
-        "bot": "f93d1a38.c43218",
-        "x": 230,
-        "y": 320,
-        "wires": [
-            [
-                "5c52af18.0b854"
-            ]
-        ]
-    },
-    {
         "id": "5c52af18.0b854",
         "type": "telegram reply",
         "z": "c644db46.3854c8",
@@ -2357,7 +2079,7 @@
         "y": 320,
         "wires": [
             [
-                "d5052529.791c48"
+                "320b1cf9.d609d4"
             ]
         ]
     },
@@ -2382,20 +2104,8 @@
         "y": 120,
         "wires": [
             [
-                "5f2a32ba.eaa58c"
+                "1e1d9c8f.87ccc3"
             ]
-        ]
-    },
-    {
-        "id": "5f2a32ba.eaa58c",
-        "type": "telegram sender",
-        "z": "c6a40c11.dfc6b",
-        "name": "show keyb",
-        "bot": "f93d1a38.c43218",
-        "x": 470,
-        "y": 120,
-        "wires": [
-            []
         ]
     },
     {
@@ -2412,27 +2122,15 @@
         "type": "function",
         "z": "c644db46.3854c8",
         "name": "ask confirmation",
-        "func": "var t = msg.i18n;\n\nvar isUser = msg.payload.chatId > 0;\n\ncontext.global.keyboard = { pending : true };\n\nvar opts = {\n  reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": t('Sí'),\n                    \"callback_data\": \"notify_fire\"\n                },\n                {\n                    \"text\": t('No'),\n                    \"callback_data\": \"no_notify_fire\"\n                }]\n            ]\n  })\n};\n\nglobal.set('location', msg);\n\nvar newMsg = {\n    payload : {\n        chatId: msg.payload.chatId,\n        type: 'message',\n        content: t('Vas a notificar a los vecinos cercanos sobre este fuego ¿estás seguro/a?'),\n        options: opts\n    }\n};\n\nif (isUser) {\n  //  msg.payload.content += ' Te solicitaremos tú contacto como medida de seguridad.';\n}\n\nreturn [newMsg, null];",
+        "func": "var t = msg.i18n;\n\nvar isUser = msg.payload.chatId > 0;\n\ncontext.global.keyboard = { pending : true };\n\nvar opts = {\n  reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": t('Sí'),\n                    \"callback_data\": \"notify_fire\"\n                },\n                {\n                    \"text\": t('No'),\n                    \"callback_data\": \"no_notify_fire\"\n                }]\n            ]\n  })\n};\n\nvar key = 'location-' + msg.payload.chatId;\nglobal.set(key, msg);\n\nvar newMsg = {\n    payload : {\n        chatId: msg.payload.chatId,\n        type: 'message',\n        content: t('Vas a notificar a los vecinos cercanos sobre este fuego ¿estás seguro/a?'),\n        options: opts\n    }\n};\n\nif (isUser) {\n  //  msg.payload.content += ' Te solicitaremos tú contacto como medida de seguridad.';\n}\n\nreturn [newMsg, null];",
         "outputs": "1",
         "noerr": 0,
         "x": 1310,
         "y": 220,
         "wires": [
             [
-                "ac714246.d3333"
+                "eda1038.09ff8"
             ]
-        ]
-    },
-    {
-        "id": "32f96431.64f9bc",
-        "type": "telegram sender",
-        "z": "156e20df.86399f",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 530,
-        "y": 280,
-        "wires": [
-            []
         ]
     },
     {
@@ -2443,7 +2141,7 @@
         "func": "var caption = {\n    payload : {\n      chatId : msg.chatId,\n      type : \"message\",\n      content: msg.caption\n    }\n}\n\nvar location = {\n    payload : {\n      chatId : msg.chatId,\n      type : \"location\",\n      content: {\n         longitude: msg.location.lon,\n         latitude: msg.location.lat\n      }\n    }\n}\nreturn [msg, location, caption];",
         "outputs": "3",
         "noerr": 0,
-        "x": 320,
+        "x": 310,
         "y": 160,
         "wires": [
             [
@@ -2453,13 +2151,13 @@
                 "dac16e62.49529"
             ],
             [
-                "32f96431.64f9bc"
+                "4617874.e42eb78"
             ]
         ],
         "outputLabels": [
+            "msg",
             "location",
-            "caption",
-            ""
+            "caption"
         ]
     },
     {
@@ -2502,18 +2200,6 @@
             [
                 "ad92a3e7.bb743"
             ]
-        ]
-    },
-    {
-        "id": "ac714246.d3333",
-        "type": "telegram sender",
-        "z": "c644db46.3854c8",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 1470,
-        "y": 220,
-        "wires": [
-            []
         ]
     },
     {
@@ -2564,23 +2250,11 @@
         "randomUnits": "seconds",
         "drop": false,
         "x": 540,
-        "y": 200,
+        "y": 220,
         "wires": [
             [
-                "b1629107.5c873"
+                "307c3839.005448"
             ]
-        ]
-    },
-    {
-        "id": "b1629107.5c873",
-        "type": "telegram sender",
-        "z": "156e20df.86399f",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 670,
-        "y": 200,
-        "wires": [
-            []
         ]
     },
     {
@@ -2598,7 +2272,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 620,
+        "x": 540,
         "y": 160,
         "wires": [
             []
@@ -2640,20 +2314,8 @@
         "y": 120,
         "wires": [
             [
-                "c4cc6a46.5d2af8"
+                "aa2956c1.cdd168"
             ]
-        ]
-    },
-    {
-        "id": "c4cc6a46.5d2af8",
-        "type": "telegram sender",
-        "z": "9968fcc5.ed33c",
-        "name": "show keyb",
-        "bot": "f93d1a38.c43218",
-        "x": 570,
-        "y": 120,
-        "wires": [
-            []
         ]
     },
     {
@@ -2673,7 +2335,7 @@
         "command": "/distancia",
         "bot": "f93d1a38.c43218",
         "x": 100,
-        "y": 1460,
+        "y": 1060,
         "wires": [
             [
                 "192c6f7a.054a91"
@@ -2697,7 +2359,7 @@
         "randomUnits": "seconds",
         "drop": true,
         "x": 290,
-        "y": 1460,
+        "y": 1060,
         "wires": [
             [
                 "16c436c8.0c8dc9"
@@ -2710,7 +2372,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 620,
-        "y": 1460,
+        "y": 1060,
         "wires": []
     },
     {
@@ -2721,131 +2383,6 @@
         "x": 600,
         "y": 860,
         "wires": []
-    },
-    {
-        "id": "7828fbe3.e03084",
-        "type": "ui_text",
-        "z": "93cb4937.6fc068",
-        "group": "601660c.cd104a",
-        "order": 8,
-        "width": 0,
-        "height": 0,
-        "name": "avisos",
-        "label": "Avisos recibidos",
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 870,
-        "y": 1260,
-        "wires": []
-    },
-    {
-        "id": "6c8eed1.c193f14",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "count all",
-        "func": "msg.payload = {};\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 480,
-        "y": 1260,
-        "wires": [
-            [
-                "5cf05a49.4afdd4"
-            ]
-        ]
-    },
-    {
-        "id": "5cf05a49.4afdd4",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "count fuegos",
-        "collection": "avisosfuego",
-        "operation": "count",
-        "x": 710,
-        "y": 1260,
-        "wires": [
-            [
-                "7828fbe3.e03084"
-            ]
-        ]
-    },
-    {
-        "id": "3bff2447.c4441c",
-        "type": "ui_chart",
-        "z": "93cb4937.6fc068",
-        "name": "to dash",
-        "group": "601660c.cd104a",
-        "order": 3,
-        "width": "0",
-        "height": "0",
-        "label": "Avisos diarios",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "Y-M-D",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
-        "ymin": "",
-        "ymax": "",
-        "removeOlder": 1,
-        "removeOlderPoints": "",
-        "removeOlderUnit": "3600",
-        "cutout": 0,
-        "useOneColor": false,
-        "colors": [
-            "#1f77b4",
-            "#aec7e8",
-            "#ff7f0e",
-            "#2ca02c",
-            "#98df8a",
-            "#d62728",
-            "#ff9896",
-            "#9467bd",
-            "#c5b0d5"
-        ],
-        "useOldStyle": false,
-        "x": 880,
-        "y": 1300,
-        "wires": [
-            [
-                "cd1388d0.3f8418"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "4461acb0.5f2df4",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "alertas hoy",
-        "func": "var today = context.global.moment(new Date()).format('YYYYMMDD');\nmsg.payload = {\n    dateformat: today\n};\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 490,
-        "y": 1300,
-        "wires": [
-            [
-                "1f09ffa2.dbce4",
-                "39f00c4b.5f7974"
-            ]
-        ]
-    },
-    {
-        "id": "1f09ffa2.dbce4",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "count fuegos",
-        "collection": "avisosfuego",
-        "operation": "count",
-        "x": 710,
-        "y": 1300,
-        "wires": [
-            [
-                "3bff2447.c4441c"
-            ]
-        ]
     },
     {
         "id": "d6336a1e.3ad888",
@@ -2904,7 +2441,7 @@
         "func": "msg.chatId = msg.payload.chatId;\nmsg.payload = {\"chatId\": msg.payload.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 590,
+        "x": 560,
         "y": 100,
         "wires": [
             [
@@ -2920,7 +2457,7 @@
         "name": "find sub",
         "collection": "subscriptions",
         "operation": "find",
-        "x": 800,
+        "x": 750,
         "y": 100,
         "wires": [
             [
@@ -2933,27 +2470,15 @@
         "type": "function",
         "z": "76bd701f.29d0f",
         "name": "start menu",
-        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\nif (msg.payload.length === 0) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\nmsg.payload.content = t('Elige una de las opciones:');\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nopts.disable_notification = true;\nmsg.payload.options = opts;\n\nreturn [ msg ];",
+        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\nvar subs = msg.payload.length === 0;\n\nmsg.payload = {};\n\nif (subs) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\nmsg.payload.content = t('Elige una de las opciones:');\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nopts.disable_notification = true;\nmsg.payload.options = opts;\n\nreturn [ msg ];",
         "outputs": "1",
         "noerr": 0,
-        "x": 990,
+        "x": 940,
         "y": 100,
         "wires": [
             [
-                "12a4adcb.c93232"
+                "b2e2ccf3.f0498"
             ]
-        ]
-    },
-    {
-        "id": "12a4adcb.c93232",
-        "type": "telegram sender",
-        "z": "76bd701f.29d0f",
-        "name": "keyb",
-        "bot": "f93d1a38.c43218",
-        "x": 1190,
-        "y": 100,
-        "wires": [
-            []
         ]
     },
     {
@@ -3032,40 +2557,6 @@
         ]
     },
     {
-        "id": "cab2f268.5157",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "reset g.loc",
-        "func": "global.set('locationtopic', null);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1470,
-        "y": 600,
-        "wires": [
-            [
-                "10eb3fd5.6d416",
-                "1e112e4e.062b82"
-            ]
-        ]
-    },
-    {
-        "id": "aed10823.c1e808",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "reset g.loc",
-        "func": "global.set('locationtopic', null);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1470,
-        "y": 680,
-        "wires": [
-            [
-                "d982859c.d8dea8",
-                "9c0ff2b9.ff7bc"
-            ]
-        ]
-    },
-    {
         "id": "349ef6f8.98e88a",
         "type": "function",
         "z": "93cb4937.6fc068",
@@ -3073,7 +2564,7 @@
         "func": "if (msg.payload.type === 'location' && \n    typeof msg.geo === 'undefined') {\n    // node.log(\"Location received\");  \n    return msg;\n} else {\n    return null;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1090,
+        "x": 1110,
         "y": 640,
         "wires": [
             [
@@ -3089,8 +2580,8 @@
         "active": false,
         "console": "false",
         "complete": "payload",
-        "x": 1690,
-        "y": 600,
+        "x": 1410,
+        "y": 560,
         "wires": []
     },
     {
@@ -3101,8 +2592,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1260,
-        "y": 580,
+        "x": 1420,
+        "y": 600,
         "wires": []
     },
     {
@@ -3460,30 +2951,6 @@
         "wires": []
     },
     {
-        "id": "cd1388d0.3f8418",
-        "type": "persist in",
-        "z": "93cb4937.6fc068",
-        "name": "dayly-file-alerts",
-        "storageNode": "103d89d5.f04ab6",
-        "x": 1060,
-        "y": 1300,
-        "wires": []
-    },
-    {
-        "id": "be491f6d.7c5b4",
-        "type": "persist out",
-        "z": "93cb4937.6fc068",
-        "name": "dayly-file-alerts",
-        "storageNode": "103d89d5.f04ab6",
-        "x": 900,
-        "y": 1340,
-        "wires": [
-            [
-                "3bff2447.c4441c"
-            ]
-        ]
-    },
-    {
         "id": "c4c96710.0c14f8",
         "type": "persist in",
         "z": "93cb4937.6fc068",
@@ -3504,22 +2971,6 @@
         "wires": [
             [
                 "44fbc396.81360c"
-            ]
-        ]
-    },
-    {
-        "id": "39f00c4b.5f7974",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find fuegos",
-        "collection": "avisosfuego",
-        "operation": "find",
-        "x": 710,
-        "y": 1380,
-        "wires": [
-            [
-                "13c7c7d2.416a58"
             ]
         ]
     },
@@ -3578,78 +3029,6 @@
                 "8cffd8ff.5786d8"
             ]
         ]
-    },
-    {
-        "id": "daa4db99.b70ba8",
-        "type": "subflow:d29a1c6a.5a89e",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1060,
-        "y": 1380,
-        "wires": []
-    },
-    {
-        "id": "13c7c7d2.416a58",
-        "type": "split",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 870,
-        "y": 1380,
-        "wires": [
-            [
-                "daa4db99.b70ba8"
-            ]
-        ]
-    },
-    {
-        "id": "77f46e84.2260f",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find susc",
-        "collection": "subscriptions",
-        "operation": "find",
-        "x": 700,
-        "y": 1060,
-        "wires": [
-            [
-                "c3d36a6d.6a20e8"
-            ]
-        ]
-    },
-    {
-        "id": "c3d36a6d.6a20e8",
-        "type": "split",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 870,
-        "y": 1060,
-        "wires": [
-            [
-                "d54d18e1.75e718"
-            ]
-        ]
-    },
-    {
-        "id": "d54d18e1.75e718",
-        "type": "subflow:d29a1c6a.5a89e",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1060,
-        "y": 1060,
-        "wires": []
     },
     {
         "id": "cf23a5a.9eacd58",
@@ -3826,74 +3205,6 @@
         "wires": []
     },
     {
-        "id": "ba04416.3b1bbc",
-        "type": "ui_chart",
-        "z": "93cb4937.6fc068",
-        "name": "to dash",
-        "group": "601660c.cd104a",
-        "order": 2,
-        "width": "0",
-        "height": "0",
-        "label": "Suscripciones",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "Y-M-D",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
-        "ymin": "",
-        "ymax": "",
-        "removeOlder": 1,
-        "removeOlderPoints": "",
-        "removeOlderUnit": "3600",
-        "cutout": 0,
-        "useOneColor": false,
-        "colors": [
-            "#1f77b4",
-            "#aec7e8",
-            "#ff7f0e",
-            "#2ca02c",
-            "#98df8a",
-            "#d62728",
-            "#ff9896",
-            "#9467bd",
-            "#c5b0d5"
-        ],
-        "useOldStyle": false,
-        "x": 1040,
-        "y": 1100,
-        "wires": [
-            [
-                "976cab1d.ec9f38"
-            ],
-            []
-        ]
-    },
-    {
-        "id": "169d1b28.74fda5",
-        "type": "persist out",
-        "z": "93cb4937.6fc068",
-        "name": "suscriptions-in-time",
-        "storageNode": "cb34ee3.be2b31",
-        "x": 1070,
-        "y": 1140,
-        "wires": [
-            [
-                "ba04416.3b1bbc"
-            ]
-        ]
-    },
-    {
-        "id": "976cab1d.ec9f38",
-        "type": "persist in",
-        "z": "93cb4937.6fc068",
-        "name": "suscriptions-in-time",
-        "storageNode": "cb34ee3.be2b31",
-        "x": 1250,
-        "y": 1100,
-        "wires": []
-    },
-    {
         "id": "57d802c7.63cd2c",
         "type": "worldmap in",
         "z": "91777bb3.922328",
@@ -3917,24 +3228,6 @@
         "x": 470,
         "y": 160,
         "wires": []
-    },
-    {
-        "id": "e412e0fb.c0301",
-        "type": "subflow:91777bb3.922328",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 230,
-        "y": 1160,
-        "wires": [
-            [
-                "df770305.a8826",
-                "6a5b9f6.b6d256",
-                "b59087e9.b1e7b8",
-                "bc571a7f.119508",
-                "6c8eed1.c193f14",
-                "4461acb0.5f2df4"
-            ]
-        ]
     },
     {
         "id": "620ec824.128428",
@@ -4128,20 +3421,8 @@
         "y": 260,
         "wires": [
             [
-                "1f728a28.973446"
+                "eab4c7fe.fd7828"
             ]
-        ]
-    },
-    {
-        "id": "1f728a28.973446",
-        "type": "telegram sender",
-        "z": "2f0217a5.051978",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 1170,
-        "y": 260,
-        "wires": [
-            []
         ]
     },
     {
@@ -4156,20 +3437,8 @@
         "y": 100,
         "wires": [
             [
-                "4d5be381.f478fc"
+                "364970ea.3f564"
             ]
-        ]
-    },
-    {
-        "id": "4d5be381.f478fc",
-        "type": "telegram sender",
-        "z": "2f0217a5.051978",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 1170,
-        "y": 100,
-        "wires": [
-            []
         ]
     },
     {
@@ -4291,7 +3560,7 @@
         "z": "e81a68fa.695e38",
         "name": "",
         "bot": "f93d1a38.c43218",
-        "x": 350,
+        "x": 450,
         "y": 40,
         "wires": [
             []
@@ -4333,66 +3602,6 @@
         "y": 60,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "9af219f9.082b88",
-        "type": "ftp-download",
-        "z": "a7679700.0cb7a8",
-        "server": "6c68017b.bba33",
-        "files": "files",
-        "directory": "ftp-path",
-        "name": "nrt3 nasa",
-        "output": "payload",
-        "filesType": "msg",
-        "directoryType": "global",
-        "x": 220,
-        "y": 40,
-        "wires": [
-            [
-                "7b95048a.80eaac"
-            ]
-        ]
-    },
-    {
-        "id": "5be1e81a.8eae68",
-        "type": "change",
-        "z": "a7679700.0cb7a8",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "filename",
-                "pt": "msg",
-                "to": "payload",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 580,
-        "y": 40,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "7b95048a.80eaac",
-        "type": "function",
-        "z": "a7679700.0cb7a8",
-        "name": "split",
-        "func": "for (var i = 0; i < msg.payload.length; i++) {\n    var newM = {};\n    newM.payload = msg.payload[i];\n    node.send(newM);\n}",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 370,
-        "y": 40,
-        "wires": [
-            [
-                "5be1e81a.8eae68"
-            ]
         ]
     },
     {
@@ -4492,7 +3701,7 @@
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 130,
+        "x": 150,
         "y": 480,
         "wires": [
             [
@@ -4882,7 +4091,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "send to all",
-        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    node.send(noti);\n}\n\n",
+        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    if (chatId !== 9998999)  // test chatId\n        node.send(noti);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1030,
@@ -4895,25 +4104,13 @@
         ]
     },
     {
-        "id": "782fbdaf.bd36f4",
-        "type": "debug",
-        "z": "76bd701f.29d0f",
-        "name": "all",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 190,
-        "y": 60,
-        "wires": []
-    },
-    {
         "id": "152ee632.13c3fa",
         "type": "comment",
         "z": "93cb4937.6fc068",
         "name": "Warning: Listeners like /commands in subflows can be duplicated",
         "info": "",
         "x": 270,
-        "y": 1540,
+        "y": 1140,
         "wires": []
     },
     {
@@ -4925,7 +4122,7 @@
         "outputs": "2",
         "noerr": 0,
         "x": 340,
-        "y": 1660,
+        "y": 1260,
         "wires": [
             [
                 "f6fa435d.52b8f",
@@ -4949,7 +4146,7 @@
         "console": "false",
         "complete": "true",
         "x": 580,
-        "y": 1720,
+        "y": 1320,
         "wires": []
     },
     {
@@ -4961,7 +4158,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 570,
-        "y": 1660,
+        "y": 1260,
         "wires": [
             [
                 "fed0561d.343aa8",
@@ -4981,7 +4178,7 @@
         "multi": false,
         "operation": "update",
         "x": 790,
-        "y": 1660,
+        "y": 1260,
         "wires": []
     },
     {
@@ -4998,7 +4195,7 @@
         "ttlProperty": "",
         "useString": true,
         "x": 790,
-        "y": 1720,
+        "y": 1320,
         "wires": []
     },
     {
@@ -5007,7 +4204,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 800,
-        "y": 1600,
+        "y": 1200,
         "wires": []
     },
     {
@@ -5015,7 +4212,7 @@
         "type": "function",
         "z": "4384af8e.a7409",
         "name": "user? no:ask-lang",
-        "func": "if (msg.payload.length === 0) {\n    return [msg, null];\n} else {\n    // user register\n    var lang = msg.payload[0].lang;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    return [null, msg];\n}\n\n",
+        "func": "if (msg.payload.length === 0) {\n    msg.payload = msg.originalPayload;\n    return [msg, null];\n} else {\n    // user register\n    var lang = msg.payload[0].lang;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    return [null, msg];\n}\n\n",
         "outputs": "2",
         "noerr": 0,
         "x": 1150,
@@ -5108,21 +4305,6 @@
         ]
     },
     {
-        "id": "b06e64a2.4501c8",
-        "type": "function",
-        "z": "4384af8e.a7409",
-        "name": "old set lang if not set",
-        "func": "if (msg.originalMessage && msg.originalMessage.from && msg.originalMessage.from.language_code &&\n    typeof msg.i18n === 'undefined') {\n    var current = msg.originalMessage.from.language_code;\n    if (current.match(/^en/)) {\n        node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Current language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    node.log(\"i18n already configured\");\n} \n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; \n\n/*\nif (msg.originalMessage && msg.originalMessage.from && msg.originalMessage.from.language_code &&\n    typeof msg.i18n === 'undefined') { \n\n    var i = context.global.i18next;\n    \n    node.log(msg.i18n);\n    node.log(\"User lang: \"+ msg.originalMessage.from.language_code);\n    \n    var lang = msg.originalMessage.from.language_code;\n    \n    i.changeLanguage(lang);\n    // i.changeLanguage('es');\n    // node.log(\"langs len \"+ i.languages.length);\n    // node.log(\"langs \"+ i.languages);\n    \n    var i18n;\n    var currentLang;\n    for (var l = 0; l < i.languages.length && typeof i18n === 'undefined'; l++) {\n        var cl = i.languages[l];\n        // node.log(\"Trying: \" + cl);\n        i18n = i.getResourceBundle(cl, 'telegram-bot');\n        currentLang = cl;\n        // node.log(i18n);\n    }\n    if (typeof i18n === 'undefined') {\n        // node.log(\"Falling back to 'es'\");\n        i18n = i.getResourceBundle('es', 'telegram-bot');\n        currentLang = 'es';\n    }\n    i18n.currentLang = lang;\n    msg.i18n = i18n;\n    return [msg, null]; \n}\n/* else if (msg.originalMessage && msg.originalMessage.from && msg.originalMessage.from.language_code &&\n    msg.i18n.currentLang !== msg.originalMessage.from.language_code) {\n    // user lang changed!!!\n    node.log(\"User lang change detected, old lang: \" + msg.i18n.currentLang + \", new lang: \" + msg.originalMessage.from.language_code);\n    msg.i18n = undefined;\n    // return to /start (with a the language)\n    return [null, msg]; \n}\nreturn [msg, null];  */",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 380,
-        "y": 360,
-        "wires": [
-            [],
-            []
-        ]
-    },
-    {
         "id": "faffc082.4386a",
         "type": "telegram receiver",
         "z": "93cb4937.6fc068",
@@ -5130,7 +4312,7 @@
         "bot": "f93d1a38.c43218",
         "saveDataDir": "",
         "x": 120,
-        "y": 1660,
+        "y": 1260,
         "wires": [
             [
                 "9d03d653.8cca68"
@@ -5148,7 +4330,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 440,
+        "x": 370,
         "y": 140,
         "wires": []
     },
@@ -5161,7 +4343,7 @@
         "console": "false",
         "complete": "true",
         "x": 310,
-        "y": 1740,
+        "y": 1340,
         "wires": []
     },
     {
@@ -5172,8 +4354,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 210,
-        "y": 120,
+        "x": 190,
+        "y": 140,
         "wires": []
     },
     {
@@ -5212,8 +4394,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 940,
-        "y": 80,
+        "x": 960,
+        "y": 140,
         "wires": []
     },
     {
@@ -5222,7 +4404,7 @@
         "z": "e6f3db8c.48eac8",
         "name": "send",
         "bot": "f93d1a38.c43218",
-        "x": 450,
+        "x": 590,
         "y": 100,
         "wires": [
             []
@@ -5233,14 +4415,14 @@
         "type": "function",
         "z": "e6f3db8c.48eac8",
         "name": "ask-lang",
-        "func": "context.global.keyboardlang = { pending : true };\n// no user\nvar opts = {\n    disable_notification : true,\n    reply_to_message_id: msg.payload.messageId,\n    reply_markup: JSON.stringify({\n        keyboard: [ \n            [{text: 'Asturianu'}, {text: 'Español'}, ],\n            [{text: 'English'}, {text: 'Galego'}, ],\n            [{text: 'Português'}, /* {text: 'Português do Brasil'}, */ ]\n            ],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n      \n    })\n};\nmsg.payload.chatId = msg.payload.chatId? msg.payload.chatId : msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.content = 'Escoge tu idioma / Choose your language:';\nmsg.payload.options = opts;\nreturn [msg, null];\n",
+        "func": "context.global.keyboardlang = { pending : true };\n// no user\nvar opts = {\n    disable_notification : true,\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup: JSON.stringify({\n        keyboard: [ \n            [{text: 'Asturianu'}, {text: 'Español'}, ],\n            [{text: 'English'}, {text: 'Galego'}, ],\n            [{text: 'Português'}, /* {text: 'Português do Brasil'}, */ ]\n            ],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n      \n    })\n};\nmsg.payload.chatId = msg.payload.chatId? msg.payload.chatId : msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.content = 'Escoge tu idioma / Choose your language:';\nmsg.payload.options = opts;\nreturn [msg, null];\n",
         "outputs": "2",
         "noerr": 0,
         "x": 260,
         "y": 100,
         "wires": [
             [
-                "a2c7e3af.c055f"
+                "3d9b789b.37b188"
             ],
             []
         ],
@@ -5257,7 +4439,7 @@
         "command": "/lang",
         "bot": "f93d1a38.c43218",
         "x": 90,
-        "y": 1580,
+        "y": 1180,
         "wires": [
             [
                 "5e792abd.c19084"
@@ -5271,14 +4453,15 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 385,
-        "y": 1580,
+        "y": 1180,
         "wires": []
     },
     {
         "id": "4e79d201.8c93bc",
         "type": "subflow:e6f3db8c.48eac8",
         "z": "4384af8e.a7409",
-        "x": 1340,
+        "name": "",
+        "x": 1380,
         "y": 40,
         "wires": []
     },
@@ -5286,12 +4469,12 @@
         "id": "69a62d00.26b314",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 1090,
-        "y": 580,
+        "x": 1250,
+        "y": 640,
         "wires": [
             [
-                "3d60861f.0f7cea",
-                "5b42be73.7ac18"
+                "5b42be73.7ac18",
+                "fdba8b7a.1a1b08"
             ]
         ]
     },
@@ -5432,8 +4615,8 @@
         "type": "subflow:6995c6a.1a0bf38",
         "z": "4384af8e.a7409",
         "name": "",
-        "x": 1370,
-        "y": 140,
+        "x": 1380,
+        "y": 120,
         "wires": [
             []
         ]
@@ -5459,7 +4642,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 690,
-        "y": 2080,
+        "y": 1560,
         "wires": [
             [
                 "3980d36e.8c5dfc",
@@ -5479,7 +4662,7 @@
         "multi": false,
         "operation": "update",
         "x": 970,
-        "y": 2080,
+        "y": 1560,
         "wires": []
     },
     {
@@ -5491,7 +4674,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 710,
-        "y": 2040,
+        "y": 1520,
         "wires": [
             [
                 "b9afc1e.d78db4"
@@ -5510,7 +4693,7 @@
         "multi": false,
         "operation": "update",
         "x": 970,
-        "y": 2040,
+        "y": 1520,
         "wires": []
     },
     {
@@ -5521,7 +4704,7 @@
         "command": "",
         "bot": "f93d1a38.c43218",
         "x": 120,
-        "y": 2000,
+        "y": 1480,
         "wires": [
             [
                 "b81751c6.f7b84"
@@ -5533,15 +4716,15 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "answer confirm",
-        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar location = global.get('location');\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set('location', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
+        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar key = 'location-' + msg.payload.chatId;\nvar location = global.get(key);\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set(key, null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
         "outputs": "3",
         "noerr": 0,
         "x": 480,
-        "y": 2000,
+        "y": 1480,
         "wires": [
             [
                 "a1aac5f6.cf0228",
-                "a13314cd.bfdb78"
+                "9cc764dc.591728"
             ],
             [
                 "76cd31f0.40e6",
@@ -5559,23 +4742,11 @@
         ]
     },
     {
-        "id": "a13314cd.bfdb78",
-        "type": "telegram sender",
-        "z": "93cb4937.6fc068",
-        "name": "send",
-        "bot": "f93d1a38.c43218",
-        "x": 690,
-        "y": 1960,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "a1aac5f6.cf0228",
         "type": "subflow:c6a40c11.dfc6b",
         "z": "93cb4937.6fc068",
         "x": 770,
-        "y": 2000,
+        "y": 1480,
         "wires": []
     },
     {
@@ -5583,11 +4754,11 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "previous confirm",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
-        "x": 470,
-        "y": 2160,
+        "x": 480,
+        "y": 1540,
         "wires": []
     },
     {
@@ -5595,11 +4766,11 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "send notis!",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
         "x": 870,
-        "y": 2220,
+        "y": 1700,
         "wires": []
     },
     {
@@ -5608,7 +4779,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 990,
-        "y": 2160,
+        "y": 1640,
         "wires": []
     },
     {
@@ -5620,7 +4791,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 690,
-        "y": 2160,
+        "y": 1640,
         "wires": [
             [
                 "311b07de.9a7238",
@@ -5633,7 +4804,7 @@
         "type": "subflow:d29a1c6a.5a89e",
         "z": "93cb4937.6fc068",
         "x": 990,
-        "y": 2120,
+        "y": 1600,
         "wires": []
     },
     {
@@ -5643,7 +4814,7 @@
         "name": "location attached is received also in the switch",
         "info": "",
         "x": 210,
-        "y": 1940,
+        "y": 1420,
         "wires": []
     },
     {
@@ -5651,7 +4822,7 @@
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
         "x": 270,
-        "y": 2000,
+        "y": 1480,
         "wires": [
             [
                 "4964dee.a0c6e2",
@@ -5889,92 +5060,6 @@
         ]
     },
     {
-        "id": "c0c6b098.1fe63",
-        "type": "inject",
-        "z": "5501c3cc.11327c",
-        "name": "20m down",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 140,
-        "y": 280,
-        "wires": [
-            [
-                "ac7840e1.f9429"
-            ]
-        ]
-    },
-    {
-        "id": "ac7840e1.f9429",
-        "type": "function",
-        "z": "5501c3cc.11327c",
-        "name": "set ftp files",
-        "func": "var moment = context.global.moment.utc();\nvar day = moment.dayOfYear();\nvar year = moment.year();\n\n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data\n// Cada 60 * 125 min\n\nvar msgV = {};\nvar msgM = {};\n\nvar area = global.get('ftp-area');\n\nvar filesV = [\n            {'src': '/FIRMS/viirs/' + area + '/VIIRS_I_'+ area + '_VNP14IMGTDL_NRT_' + year + day + '.txt', 'dest': 'viir.txt'}\n            ];\nvar filesM = [\n            {'src': '/FIRMS/c6/' + area + '/MODIS_C6_'+ area + '_MCD14DL_NRT_' + year + day + '.txt', 'dest': 'modis.txt'}\n            ];\n\n// VIIRS Fields (adquisition is in UTC)      \n// https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/v1-vnp14imgt      \n// Acq_Date\tAcquisition Date\tDate of VIIRS acquisition.\n// Acq_Time\tAcquisition Time\tTime of acquisition/overpass of the satellite (in UTC).\n\n// newMsg.files = global.get('ftp-files');\n// global.set('ftp-files', files);\n// global.get('ftp-files');\n\nmsgV.files = filesV;\nmsgM.files = filesM; \n\nreturn [msgM, msgV];\n\n/*\nAlaska\nAustralia_NewZealand\nCanada\nCentral_America\nEurope\nGlobal\nNorthern_and_Central_Africa\nRussia_Asia\nSouthEast_Asia\nSouth_America\nSouth_Asia\nSouthern_Africa\nUSA_contiguous_and_Hawaii\n*/\n",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 310,
-        "y": 280,
-        "wires": [
-            [
-                "32d8a2d5.a76cbe"
-            ],
-            [
-                "b5f1f5b1.744e18"
-            ]
-        ],
-        "outputLabels": [
-            "modis",
-            "viirs "
-        ]
-    },
-    {
-        "id": "b5f1f5b1.744e18",
-        "type": "delay",
-        "z": "5501c3cc.11327c",
-        "name": "d 10s",
-        "pauseType": "delay",
-        "timeout": "10",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 450,
-        "y": 320,
-        "wires": [
-            [
-                "e645a172.5ccb"
-            ]
-        ]
-    },
-    {
-        "id": "32d8a2d5.a76cbe",
-        "type": "subflow:a7679700.0cb7a8",
-        "z": "5501c3cc.11327c",
-        "name": "",
-        "x": 640,
-        "y": 280,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "e645a172.5ccb",
-        "type": "subflow:a7679700.0cb7a8",
-        "z": "5501c3cc.11327c",
-        "x": 640,
-        "y": 320,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "d5cbb344.cf8db",
         "type": "function",
         "z": "128790f6.dee0df",
@@ -6063,16 +5148,16 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1010,
-        "y": 260,
+        "x": 970,
+        "y": 200,
         "wires": []
     },
     {
         "id": "d1767c0c.2aaad",
         "type": "subflow:76bd701f.29d0f",
         "z": "5501c3cc.11327c",
-        "x": 1010,
-        "y": 220,
+        "x": 990,
+        "y": 160,
         "wires": []
     },
     {
@@ -6084,7 +5169,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 360,
-        "y": 480,
+        "y": 280,
         "wires": [
             []
         ]
@@ -6101,7 +5186,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 480,
+        "y": 280,
         "wires": [
             [
                 "59bde767.a4c4a8"
@@ -6117,7 +5202,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 580,
-        "y": 480,
+        "y": 280,
         "wires": [
             []
         ]
@@ -6154,7 +5239,7 @@
         "console": "false",
         "complete": "payload",
         "x": 590,
-        "y": 620,
+        "y": 420,
         "wires": []
     },
     {
@@ -6169,7 +5254,7 @@
         "mode": "increment",
         "outputs": "2",
         "x": 360,
-        "y": 620,
+        "y": 420,
         "wires": [
             [
                 "84ca29a9.d24e08"
@@ -6191,7 +5276,7 @@
         "crontab": "",
         "once": false,
         "x": 90,
-        "y": 620,
+        "y": 420,
         "wires": [
             [
                 "49d41b40.bf2534"
@@ -6207,7 +5292,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 230,
-        "y": 620,
+        "y": 420,
         "wires": [
             [
                 "f9d61dff.db714"
@@ -6221,7 +5306,7 @@
         "name": "lang response",
         "info": "",
         "x": 110,
-        "y": 1720,
+        "y": 1320,
         "wires": []
     },
     {
@@ -6231,7 +5316,7 @@
         "name": "new fire response",
         "info": "",
         "x": 130,
-        "y": 2060,
+        "y": 1540,
         "wires": []
     },
     {
@@ -6249,11 +5334,11 @@
         "type": "function",
         "z": "5501c3cc.11327c",
         "name": "on/off",
-        "func": "if (msg.payload.switch) {\n    c = context.get('switch') || false;\n    c = !c;\n    context.set('switch', c);\n\n    node.status({fill:c? \"green\": \"red\",shape:c? \"dot\":\"ring\",text:c? \"on\": \"off\"});\n} else {\n    if (c) {\n    return msg;\n    }\n}",
+        "func": "var c = context.get('switch') || false;\n\nvar update = function (c) {\n    node.status({fill:c? \"green\": \"red\",shape: c? \"dot\":\"ring\", text: c? \"on\": \"off\"});\n}\n\nif (msg.payload.switch) {\n    c = !c;\n    context.set('switch', c);\n    update(c);\n} else {\n    update(c);\n    if (c) {\n        return msg;\n    }    \n}\n",
         "outputs": 1,
         "noerr": 0,
         "x": 510,
-        "y": 800,
+        "y": 600,
         "wires": [
             [
                 "785425b4.1d028c"
@@ -6272,7 +5357,7 @@
         "crontab": "",
         "once": false,
         "x": 330,
-        "y": 720,
+        "y": 540,
         "wires": [
             [
                 "9b050a0a.961c38"
@@ -6285,13 +5370,13 @@
         "z": "5501c3cc.11327c",
         "name": "",
         "topic": "",
-        "payload": "",
-        "payloadType": "date",
+        "payload": "Hello!",
+        "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 340,
-        "y": 800,
+        "x": 330,
+        "y": 600,
         "wires": [
             [
                 "9b050a0a.961c38"
@@ -6307,7 +5392,7 @@
         "console": "false",
         "complete": "true",
         "x": 650,
-        "y": 800,
+        "y": 600,
         "wires": []
     },
     {
@@ -6315,7 +5400,7 @@
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
         "x": 450,
-        "y": 1460,
+        "y": 1060,
         "wires": [
             [
                 "7d6a8c23.8b1694"
@@ -6349,18 +5434,18 @@
     {
         "id": "3abe9bb7.e50244",
         "type": "tcp in",
-        "z": "5501c3cc.11327c",
-        "name": "test;6789 ",
+        "z": "557e0255.d1220c",
+        "name": "test :6789 ",
         "server": "server",
         "host": "",
         "port": "6789",
-        "datamode": "single",
+        "datamode": "stream",
         "datatype": "utf8",
-        "newline": "",
+        "newline": "\\n",
         "topic": "",
         "base64": false,
-        "x": 840,
-        "y": 560,
+        "x": 120,
+        "y": 80,
         "wires": [
             [
                 "95b8009f.b410c"
@@ -6370,82 +5455,1014 @@
     {
         "id": "95b8009f.b410c",
         "type": "function",
-        "z": "5501c3cc.11327c",
+        "z": "557e0255.d1220c",
         "name": "input msg test",
-        "func": "var chatId = 9998999;\n\nvar m = \n{\"payload\": {\n    \"chatId\": chatId,\n    \"messageId\":99999,\n    \"type\": \"message\",\n    \"content\":\"\"\n    },\n\"originalMessage\":{\n    \"message_id\":99999,\n    \"from\": {\n        \"id\": chatId,\n        \"is_bot\":false,\n        \"first_name\":\"testnick\",\n        \"username\":\"test_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\": chatId,\n            \"first_name\":\"testnick\",\n            \"username\": \"test_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\": msg.payload,\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n    },\n};\nif (msg.payload === \"/start\") {\n    return [m, null];\n} else {\n    return [null, m];\n}\n\n/* REAL one:\n{\"payload\": {\n    \"chatId\":7777777,\n    \"messageId\":11442,\n    \"type\": \"message\",\n    \"content\":\"\"\n    },\n\"originalMessage\":{\n    \"message_id\":11442,\n    \"from\": {\n        \"id\":7777777,\n        \"is_bot\":false,\n        \"first_name\":\"somenick\",\n        \"username\":\"some_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\":7777777,\n            \"first_name\":\"somenick\",\n            \"username\": \"some_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\":\"/start\",\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n    },\n\"_msgid\":\"79e9eba6.722994\"\n} */",
-        "outputs": "2",
+        "func": "var chatId = 9998999;\nvar rec = msg.payload;\n\nmsg.payload = {\n    \"chatId\": chatId,\n    \"messageId\":99999,\n    \"type\": \"message\",\n    \"content\":\"\"\n    };\nmsg.originalMessage = {\n    \"message_id\":99999,\n    \"from\": {\n        \"id\": chatId,\n        \"is_bot\":false,\n        \"first_name\":\"testnick\",\n        \"username\":\"test_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\": chatId,\n            \"first_name\":\"testnick\",\n            \"username\": \"test_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\": rec,\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n};\n\nif (rec === \"/start\") {\n    context.global.keyboardlang = { pending : false };\n    return [msg, null, null];\n} else if (rec === \"/lang\") {\n    context.global.keyboardlang = { pending : false };\n    return [null, msg, null];\n} else if (rec === \"location\") {\n    msg.payload = {\"chatId\":chatId,\"messageId\":11563,\"type\":\"location\",\"content\":{\"latitude\":21.197681,\"longitude\":-13.312859}};\n    return [null, null, msg];\n} else {\n    msg.payload.content = rec;\n    return [null, null, msg];\n}\n\n/*\n{\"payload\":{\"chatId\":4885772,\"messageId\":11563,\"type\":\"location\",\"content\":{\"latitude\":21.197681,\"longitude\":-13.312859}},\"originalMessage\":{\"message_id\":11563,\"from\":{\"id\":4885772,\"is_bot\":false,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"language_code\":\"es-ES\"},\"chat\":{\"id\":4885772,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"type\":\"private\"},\"date\":1510114140,\"reply_to_message\":{\"message_id\":11562,\"from\":{\"id\":457126364,\"is_bot\":true,\"first_name\":\"¡Tod@s contra el Desarrollo!\",\"username\":\"rednodetest_bot\"},\"chat\":{\"id\":4885772,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"type\":\"private\"},\"date\":1510114109,\"text\":\"Indica cal a posición a vixiar (por ex. a túa aldea, rúa, vivenda,  etc). Se estás a utilizar un móbil podes anexar tamén unha localización premendo no clip\"},\"location\":{\"latitude\":21.197681,\"longitude\":-13.312859}},\"_msgid\":\"872d3ee7.01903\"} */\n/* REAL one:\n{\"payload\": {\n    \"chatId\":7777777,\n    \"messageId\":11442,\n    \"type\": \"message\",\n    \"content\":\"\"\n    },\n\"originalMessage\":{\n    \"message_id\":11442,\n    \"from\": {\n        \"id\":7777777,\n        \"is_bot\":false,\n        \"first_name\":\"somenick\",\n        \"username\":\"some_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\":7777777,\n            \"first_name\":\"somenick\",\n            \"username\": \"some_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\":\"/start\",\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n    },\n\"_msgid\":\"79e9eba6.722994\"\n} */",
+        "outputs": "3",
         "noerr": 0,
-        "x": 1060,
-        "y": 560,
+        "x": 340,
+        "y": 80,
         "wires": [
-            [
-                "f784506.cfc70b"
-            ],
+            [],
+            [],
             []
         ],
         "outputLabels": [
             "start",
+            "lang",
             "others"
         ]
     },
     {
-        "id": "f784506.cfc70b",
+        "id": "dadeaa31.8d2c18",
+        "type": "function",
+        "z": "fe0c8b72.8a51a8",
+        "name": "is a test?",
+        "func": "if (msg.payload && msg.payload.chatId === 9998999) {\n    // Is a test message, print output in payload for send via tcp\n    if (msg.payload && msg.payload.content) {\n        var cnt = msg.payload.content;\n        var pay = msg.payload;\n        msg.payload = cnt + \"\\n\";\n        \n        if (pay.options && pay.options.reply_markup) {\n            var reply = JSON.parse(pay.options.reply_markup);\n            var keys = reply.keyboard || reply.inline_keyboard;\n            if (keys) {\n                for (var i = 0; i < keys.length; i++) {\n                    if (Array.isArray(keys[i])) {\n                        for (var j = 0; j < keys[i].length; j++) {\n                            msg.payload += \"[\" + keys[i][j].text + \"]\";\n                        }\n                        msg.payload += \"\\n\";\n                    } else {\n                        msg.payload += \"[\" + keys[i].text + \"]\";\n                    }\n                }\n                //msg.payload += \"\\n\";\n            }\n            //msg.payload += \"\\n\";\n        }\n    } else {\n        msg.payload = \"ack\\n\";\n    }\n    return [null, msg];\n} else {\n    return [msg, null];\n}\n    /* Real\n    payload: {\n            \"content\": \"Elige una de las opciones:\",\"chatId\":4885772,\"type\":\"message\",\"options\":{\"reply_markup\":\"{\\\"keyboard\\\":[[{\\\"text\\\":\\\"📣 Suscrito a nuevos fuegos\\\"}],[{\\\"text\\\":\\\"Desuscribirme\\\"},{\\\"text\\\":\\\"🔥 Notificar un fuego nuevo\\\"}],[{\\\"text\\\":\\\"♥ Apoya esta iniciativa\\\"},{\\\"text\\\":\\\"📖 Más info\\\"}]],\\\"resize_keyboard\\\":true}\",\"disable_notification\":true}} \n            }\n        */\n  /*      \n        var opts = {\n  // reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    force_reply: true,\n    keyboard: [ \n        [{text: t('a 5 km')}, {text: t('a 10 km')}],\n        [{text: t('a 20 km')}, {text: t('a 40 km')} ],\n        [{text: t('a 100 km')}, {text: t('⬅️ Cancelar')} ]],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n  })\n};\n*/",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 220,
+        "y": 60,
+        "wires": [
+            [],
+            [
+                "c1c4b1a2.fcf2f"
+            ]
+        ],
+        "outputLabels": [
+            "real msg",
+            "test msg"
+        ]
+    },
+    {
+        "id": "4e437841.9b8a58",
         "type": "debug",
-        "z": "5501c3cc.11327c",
-        "name": "all",
+        "z": "76bd701f.29d0f",
+        "name": "",
         "active": true,
         "console": "false",
-        "complete": "true",
-        "x": 1390,
-        "y": 560,
+        "complete": "payload",
+        "x": 1130,
+        "y": 180,
         "wires": []
     },
     {
-        "id": "eab4e529.d13658",
+        "id": "c1c4b1a2.fcf2f",
+        "type": "tcp out",
+        "z": "fe0c8b72.8a51a8",
+        "host": "",
+        "port": "6789",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "name": "tcp :6789",
+        "x": 400,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "3d9b789b.37b188",
+        "type": "subflow:fe0c8b72.8a51a8",
+        "z": "e6f3db8c.48eac8",
+        "x": 440,
+        "y": 100,
+        "wires": [
+            [
+                "a2c7e3af.c055f"
+            ]
+        ]
+    },
+    {
+        "id": "5fb93052.0736a",
         "type": "debug",
+        "z": "fe0c8b72.8a51a8",
+        "name": "tcp out",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 390,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f3418b4a.16c128",
+        "type": "subflow:fe0c8b72.8a51a8",
+        "z": "e81a68fa.695e38",
+        "x": 240,
+        "y": 40,
+        "wires": [
+            [
+                "dd683e99.7c126"
+            ]
+        ]
+    },
+    {
+        "id": "b870e649.02f3a8",
+        "type": "subflow:e81a68fa.695e38",
         "z": "93cb4937.6fc068",
-        "name": "all",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 310,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "53c014ba.0d291c",
-        "type": "template",
-        "z": "5501c3cc.11327c",
-        "name": "telegram input",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "{\n    \"chatId\":{{chatId}},\n    \"messageId\":11442,\n    \"type\": \"message\",\n    \"content\":\"\"\n}",
-        "output": "json",
-        "x": 1100,
-        "y": 780,
+        "x": 950,
+        "y": 380,
         "wires": [
             []
         ]
     },
     {
-        "id": "5e4afe71.0daea",
-        "type": "inject",
-        "z": "5501c3cc.11327c",
+        "id": "574b0512.1f89ac",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "x": 1030,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1e1d9c8f.87ccc3",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "c6a40c11.dfc6b",
+        "x": 490,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aa2956c1.cdd168",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "9968fcc5.ed33c",
+        "x": 570,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9951a307.647d",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "x": 1030,
+        "y": 480,
+        "wires": [
+            [
+                "57988778.321178"
+            ]
+        ]
+    },
+    {
+        "id": "ab21b44a.c7dbb8",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "all",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 1110,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "2b4ae0ff.b8f4a",
+        "type": "link in",
+        "z": "93cb4937.6fc068",
+        "name": "/start",
+        "links": [
+            "e0c7d1c8.f4c64",
+            "cfcc965c.921128"
+        ],
+        "x": 215,
+        "y": 320,
+        "wires": [
+            [
+                "55ebd8f8.436e38"
+            ]
+        ]
+    },
+    {
+        "id": "73d9c14e.3f5d8",
+        "type": "link in",
+        "z": "93cb4937.6fc068",
+        "name": "location",
+        "links": [
+            "ef39738e.0c383",
+            "6d50e228.268eac"
+        ],
+        "x": 955,
+        "y": 600,
+        "wires": [
+            [
+                "349ef6f8.98e88a"
+            ]
+        ]
+    },
+    {
+        "id": "89c5dc5e.6c881",
+        "type": "link in",
+        "z": "93cb4937.6fc068",
+        "name": "other",
+        "links": [
+            "b77cd057.d584d",
+            "da0408ba.8cc8b8"
+        ],
+        "x": 55,
+        "y": 480,
+        "wires": [
+            [
+                "11e83fb2.09a37"
+            ]
+        ]
+    },
+    {
+        "id": "77f4e314.54a59c",
+        "type": "link in",
+        "z": "93cb4937.6fc068",
+        "name": "lang",
+        "links": [
+            "4ec55575.36665c",
+            "7f1d2825.26cab8"
+        ],
+        "x": 275,
+        "y": 1220,
+        "wires": [
+            [
+                "5e792abd.c19084"
+            ]
+        ]
+    },
+    {
+        "id": "f4ebe282.6a894",
+        "type": "link in",
+        "z": "93cb4937.6fc068",
+        "name": "lang-resp",
+        "links": [
+            "849e7348.7e94c",
+            "3f59d0ce.bdd8d"
+        ],
+        "x": 195,
+        "y": 1220,
+        "wires": [
+            [
+                "9d03d653.8cca68"
+            ]
+        ]
+    },
+    {
+        "id": "b53c3cf6.699f6",
+        "type": "subflow:557e0255.d1220c",
+        "z": "93cb4937.6fc068",
         "name": "",
+        "x": 90,
+        "y": 620,
+        "wires": [
+            [
+                "e0c7d1c8.f4c64"
+            ],
+            [
+                "4ec55575.36665c"
+            ],
+            [
+                "ef39738e.0c383",
+                "b77cd057.d584d",
+                "849e7348.7e94c"
+            ]
+        ]
+    },
+    {
+        "id": "e0c7d1c8.f4c64",
+        "type": "link out",
+        "z": "93cb4937.6fc068",
+        "name": "/start",
+        "links": [
+            "2b4ae0ff.b8f4a"
+        ],
+        "x": 175,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "ef39738e.0c383",
+        "type": "link out",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "links": [
+            "73d9c14e.3f5d8"
+        ],
+        "x": 195,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "b77cd057.d584d",
+        "type": "link out",
+        "z": "93cb4937.6fc068",
+        "name": "other",
+        "links": [
+            "89c5dc5e.6c881"
+        ],
+        "x": 195,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "4ec55575.36665c",
+        "type": "link out",
+        "z": "93cb4937.6fc068",
+        "name": "lang",
+        "links": [
+            "77f4e314.54a59c"
+        ],
+        "x": 215,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "849e7348.7e94c",
+        "type": "link out",
+        "z": "93cb4937.6fc068",
+        "name": "lang resp",
+        "links": [
+            "f4ebe282.6a894"
+        ],
+        "x": 215,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "99d32045.c775e",
+        "type": "inject",
+        "z": "93cb4937.6fc068",
+        "name": "update stats",
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "repeat": "",
+        "repeat": "1800",
         "crontab": "",
         "once": false,
-        "x": 840,
+        "x": 130,
+        "y": 1900,
+        "wires": [
+            [
+                "a2c70f7c.ebd19"
+            ]
+        ]
+    },
+    {
+        "id": "8be77355.e4b82",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "current susc",
+        "func": "msg.payload = {};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 1840,
+        "wires": [
+            [
+                "c674c40f.c7e778",
+                "9b0a38a9.07b988"
+            ]
+        ]
+    },
+    {
+        "id": "c674c40f.c7e778",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "count susc",
+        "collection": "subscriptions",
+        "operation": "count",
+        "x": 790,
+        "y": 1840,
+        "wires": [
+            [
+                "58ad5a16.021874",
+                "fdcc349d.ccb418"
+            ]
+        ]
+    },
+    {
+        "id": "df3b630.a229ea",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count susc",
+        "func": "var newMsg = {\n    payload : {\n        name: \"numsus\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 1880,
+        "wires": [
+            [
+                "f129ff2a.f2843"
+            ]
+        ]
+    },
+    {
+        "id": "f129ff2a.f2843",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "find stats",
+        "collection": "fstats",
+        "operation": "find",
+        "x": 780,
+        "y": 1880,
+        "wires": [
+            [
+                "39f43b07.3083e4"
+            ]
+        ]
+    },
+    {
+        "id": "39f43b07.3083e4",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "sus",
+        "label": "Suscripciones en el tiempo",
+        "format": "{{msg.payload[0].value}}",
+        "layout": "row-spread",
+        "x": 950,
+        "y": 1880,
+        "wires": []
+    },
+    {
+        "id": "58ad5a16.021874",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "subs real",
+        "label": "Subscripciones actuales",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 960,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "6e94e3ec.29eafc",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count susc",
+        "func": "var newMsg = {\n    payload : {\n        name: \"numdesus\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 1920,
+        "wires": [
+            [
+                "d790d688.c755c8"
+            ]
+        ]
+    },
+    {
+        "id": "d790d688.c755c8",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "find stats",
+        "collection": "fstats",
+        "operation": "find",
+        "x": 780,
+        "y": 1920,
+        "wires": [
+            [
+                "92dfe851.a1b278"
+            ]
+        ]
+    },
+    {
+        "id": "92dfe851.a1b278",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "desus",
+        "label": "Desucripciones",
+        "format": "{{msg.payload[0].value}}",
+        "layout": "row-spread",
+        "x": 950,
+        "y": 1920,
+        "wires": []
+    },
+    {
+        "id": "a7eaa9d3.8d2808",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count notis",
+        "func": "var newMsg = {\n    payload : {\n        name: \"sendnotis\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 1960,
+        "wires": [
+            [
+                "ca5bbef.da2244"
+            ]
+        ]
+    },
+    {
+        "id": "ca5bbef.da2244",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "find stats",
+        "collection": "fstats",
+        "operation": "find",
+        "x": 780,
+        "y": 1960,
+        "wires": [
+            [
+                "3c951498.389fac"
+            ]
+        ]
+    },
+    {
+        "id": "3c951498.389fac",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "name": "notis",
+        "label": "Notificaciones enviadas",
+        "format": "{{msg.payload[0].value}}",
+        "layout": "row-spread",
+        "x": 950,
+        "y": 1960,
+        "wires": []
+    },
+    {
+        "id": "28213612.28e18a",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "name": "avisos",
+        "label": "Avisos recibidos",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 950,
+        "y": 2000,
+        "wires": []
+    },
+    {
+        "id": "2cb7dc7e.180204",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count all",
+        "func": "msg.payload = {};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 560,
+        "y": 2000,
+        "wires": [
+            [
+                "a7f24748.36afe8"
+            ]
+        ]
+    },
+    {
+        "id": "a7f24748.36afe8",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "count fuegos",
+        "collection": "avisosfuego",
+        "operation": "count",
+        "x": 790,
+        "y": 2000,
+        "wires": [
+            [
+                "28213612.28e18a"
+            ]
+        ]
+    },
+    {
+        "id": "61f539b5.950d08",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "to dash",
+        "group": "601660c.cd104a",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "label": "Avisos diarios",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 960,
+        "y": 2040,
+        "wires": [
+            [
+                "c36fe8.87636018"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "997b33bf.c90ae",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "alertas hoy",
+        "func": "var today = context.global.moment(new Date()).format('YYYYMMDD');\nmsg.payload = {\n    dateformat: today\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 2040,
+        "wires": [
+            [
+                "709eb6b4.327e58",
+                "3d1aa6a7.5a128a"
+            ]
+        ]
+    },
+    {
+        "id": "709eb6b4.327e58",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "count fuegos",
+        "collection": "avisosfuego",
+        "operation": "count",
+        "x": 790,
+        "y": 2040,
+        "wires": [
+            [
+                "61f539b5.950d08"
+            ]
+        ]
+    },
+    {
+        "id": "c36fe8.87636018",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "dayly-file-alerts",
+        "storageNode": "103d89d5.f04ab6",
+        "x": 1140,
+        "y": 2040,
+        "wires": []
+    },
+    {
+        "id": "64e6a443.2ab69c",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "dayly-file-alerts",
+        "storageNode": "103d89d5.f04ab6",
+        "x": 980,
+        "y": 2080,
+        "wires": [
+            [
+                "61f539b5.950d08"
+            ]
+        ]
+    },
+    {
+        "id": "3d1aa6a7.5a128a",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "find fuegos",
+        "collection": "avisosfuego",
+        "operation": "find",
+        "x": 790,
+        "y": 2120,
+        "wires": [
+            [
+                "3de8df77.b4acb"
+            ]
+        ]
+    },
+    {
+        "id": "d0f89010.cdf26",
+        "type": "subflow:d29a1c6a.5a89e",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1140,
+        "y": 2120,
+        "wires": []
+    },
+    {
+        "id": "3de8df77.b4acb",
+        "type": "split",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 950,
+        "y": 2120,
+        "wires": [
+            [
+                "d0f89010.cdf26"
+            ]
+        ]
+    },
+    {
+        "id": "9b0a38a9.07b988",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "find susc",
+        "collection": "subscriptions",
+        "operation": "find",
+        "x": 780,
+        "y": 1800,
+        "wires": [
+            [
+                "ebb1176c.563dd8"
+            ]
+        ]
+    },
+    {
+        "id": "ebb1176c.563dd8",
+        "type": "split",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 950,
+        "y": 1800,
+        "wires": [
+            [
+                "b952a17b.820bb"
+            ]
+        ]
+    },
+    {
+        "id": "b952a17b.820bb",
+        "type": "subflow:d29a1c6a.5a89e",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1140,
+        "y": 1800,
+        "wires": []
+    },
+    {
+        "id": "fdcc349d.ccb418",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "to dash",
+        "group": "601660c.cd104a",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Suscripciones",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1120,
+        "y": 1840,
+        "wires": [
+            [
+                "b6ba07c8.358c38"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "d5c8bece.6075c",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "suscriptions-in-time",
+        "storageNode": "cb34ee3.be2b31",
+        "x": 1150,
+        "y": 1880,
+        "wires": [
+            [
+                "fdcc349d.ccb418"
+            ]
+        ]
+    },
+    {
+        "id": "b6ba07c8.358c38",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "suscriptions-in-time",
+        "storageNode": "cb34ee3.be2b31",
+        "x": 1330,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "a2c70f7c.ebd19",
+        "type": "subflow:91777bb3.922328",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 310,
+        "y": 1900,
+        "wires": [
+            [
+                "8be77355.e4b82",
+                "df3b630.a229ea",
+                "6e94e3ec.29eafc",
+                "a7eaa9d3.8d2808",
+                "2cb7dc7e.180204",
+                "997b33bf.c90ae"
+            ]
+        ]
+    },
+    {
+        "id": "b2e2ccf3.f0498",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "76bd701f.29d0f",
+        "x": 1150,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9cc764dc.591728",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "x": 690,
+        "y": 1440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eda1038.09ff8",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "c644db46.3854c8",
+        "x": 1490,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "320b1cf9.d609d4",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "c644db46.3854c8",
+        "x": 230,
+        "y": 320,
+        "wires": [
+            [
+                "5c52af18.0b854"
+            ]
+        ]
+    },
+    {
+        "id": "fdba8b7a.1a1b08",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "sus o fire?",
+        "func": "var key = 'locationtopic-' + msg.payload.chatId;\nvar type = global.get(key);\nglobal.set(key, null);\nif (type == 'sus') {\n    return [msg, null];\n} else if (type == 'newfire') {\n    return [null, msg];\n}\nnode.warm(\"Wrong location received\")",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 1430,
         "y": 640,
         "wires": [
             [
-                "95b8009f.b410c"
+                "10eb3fd5.6d416"
+            ],
+            [
+                "d982859c.d8dea8"
             ]
+        ],
+        "outputLabels": [
+            "sus",
+            "fire"
+        ]
+    },
+    {
+        "id": "26070084.ca2db",
+        "type": "switch",
+        "z": "5501c3cc.11327c",
+        "name": "susc o fuego?",
+        "property": "locationtopic",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "sus",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "nuevofuego",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "outputs": 2,
+        "x": 140,
+        "y": 680,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "4617874.e42eb78",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "156e20df.86399f",
+        "x": 530,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "307c3839.005448",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "156e20df.86399f",
+        "x": 710,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ca9ae1e8.6507f",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "2b8628df.fdcca8",
+        "x": 2270,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eab4c7fe.fd7828",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "2f0217a5.051978",
+        "x": 1170,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "364970ea.3f564",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "2f0217a5.051978",
+        "x": 1170,
+        "y": 100,
+        "wires": [
+            []
         ]
     }
 ]
