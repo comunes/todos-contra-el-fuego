@@ -18,6 +18,7 @@
     "node-red-dashboard": "^2.5.1",
     "node-red-node-google": "^0.1.1",
     "node-red-node-mongodb": "0.0.13",
-    "node-red-node-rbe": "^0.1.13"
+    "node-red-node-rbe": "^0.1.13",
+    "node-telegram-bot-api": "^0.29.0"
   }
 }

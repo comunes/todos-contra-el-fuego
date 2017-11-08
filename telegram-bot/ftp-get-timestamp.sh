@@ -26,7 +26,7 @@ function ftp-get {
     ncftpget -c -u $USER -p $PASS ftp://$1/$2 > $DEST/$3.tmp 2> /dev/null
 
     if [[ $? != 0 ]]; then
-        echo "Error getting ftp data" >> $DEST/nada-download.errors.log
+        echo "Error getting ftp data: "$? >> $DEST/nasa-download-errors.log
     else
         mv $DEST/$3.tmp $DEST/$3
     fi
