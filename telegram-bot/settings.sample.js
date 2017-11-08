@@ -199,7 +199,9 @@ module.exports = {
 
     functionGlobalContext: {
         geolib:require('geolib'),
-        moment:require('moment-timezone')
+        moment:require('moment-timezone'),
+        i18next:require('i18next'),
+        i18nextbackend:require('i18next-node-fs-backend'),
         // os:require('os'),
         // octalbonescript:require('octalbonescript'),
         // jfive:require("johnny-five"),
