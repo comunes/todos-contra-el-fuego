@@ -5457,20 +5457,24 @@
         "type": "function",
         "z": "557e0255.d1220c",
         "name": "input msg test",
-        "func": "var chatId = 9998999;\nvar rec = msg.payload;\n\nmsg.payload = {\n    \"chatId\": chatId,\n    \"messageId\":99999,\n    \"type\": \"message\",\n    \"content\":\"\"\n    };\nmsg.originalMessage = {\n    \"message_id\":99999,\n    \"from\": {\n        \"id\": chatId,\n        \"is_bot\":false,\n        \"first_name\":\"testnick\",\n        \"username\":\"test_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\": chatId,\n            \"first_name\":\"testnick\",\n            \"username\": \"test_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\": rec,\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n};\n\nif (rec === \"/start\") {\n    context.global.keyboardlang = { pending : false };\n    return [msg, null, null];\n} else if (rec === \"/lang\") {\n    context.global.keyboardlang = { pending : false };\n    return [null, msg, null];\n} else if (rec === \"location\") {\n    msg.payload = {\"chatId\":chatId,\"messageId\":11563,\"type\":\"location\",\"content\":{\"latitude\":21.197681,\"longitude\":-13.312859}};\n    return [null, null, msg];\n} else {\n    msg.payload.content = rec;\n    return [null, null, msg];\n}\n\n/*\n{\"payload\":{\"chatId\":4885772,\"messageId\":11563,\"type\":\"location\",\"content\":{\"latitude\":21.197681,\"longitude\":-13.312859}},\"originalMessage\":{\"message_id\":11563,\"from\":{\"id\":4885772,\"is_bot\":false,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"language_code\":\"es-ES\"},\"chat\":{\"id\":4885772,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"type\":\"private\"},\"date\":1510114140,\"reply_to_message\":{\"message_id\":11562,\"from\":{\"id\":457126364,\"is_bot\":true,\"first_name\":\"¡Tod@s contra el Desarrollo!\",\"username\":\"rednodetest_bot\"},\"chat\":{\"id\":4885772,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"type\":\"private\"},\"date\":1510114109,\"text\":\"Indica cal a posición a vixiar (por ex. a túa aldea, rúa, vivenda,  etc). Se estás a utilizar un móbil podes anexar tamén unha localización premendo no clip\"},\"location\":{\"latitude\":21.197681,\"longitude\":-13.312859}},\"_msgid\":\"872d3ee7.01903\"} */\n/* REAL one:\n{\"payload\": {\n    \"chatId\":7777777,\n    \"messageId\":11442,\n    \"type\": \"message\",\n    \"content\":\"\"\n    },\n\"originalMessage\":{\n    \"message_id\":11442,\n    \"from\": {\n        \"id\":7777777,\n        \"is_bot\":false,\n        \"first_name\":\"somenick\",\n        \"username\":\"some_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\":7777777,\n            \"first_name\":\"somenick\",\n            \"username\": \"some_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\":\"/start\",\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n    },\n\"_msgid\":\"79e9eba6.722994\"\n} */",
-        "outputs": "3",
+        "func": "var chatId = 9998999;\nvar rec = msg.payload;\n\nmsg.payload = {\n    \"chatId\": chatId,\n    \"messageId\":99999,\n    \"type\": \"message\",\n    \"content\":\"\"\n    };\nmsg.originalMessage = {\n    \"message_id\":99999,\n    \"from\": {\n        \"id\": chatId,\n        \"is_bot\":false,\n        \"first_name\":\"testnick\",\n        \"username\":\"test_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\": chatId,\n            \"first_name\":\"testnick\",\n            \"username\": \"test_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\": rec,\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n};\n\nif (rec === \"/start\") {\n    context.global.keyboardlang = { pending : false };\n    return [msg, null, null, null];\n} else if (rec === \"/lang\") {\n    context.global.keyboardlang = { pending : false };\n    return [null, msg, null, null];\n} else if (rec === \"location\") {\n    msg.payload = {\"chatId\":chatId,\"messageId\":11563,\"type\":\"location\",\"content\":{\"latitude\":21.197681,\"longitude\":-13.312859}};\n    return [null, null, msg, null];\n} else if (rec === \"\") {\n    msg.payload = \"Ready!\\n\";\n    return [null, null, null, msg];\n} else {\n    msg.payload.content = rec;\n    return [null, null, msg, null];\n}\n\n/*\n{\"payload\":{\"chatId\":4885772,\"messageId\":11563,\"type\":\"location\",\"content\":{\"latitude\":21.197681,\"longitude\":-13.312859}},\"originalMessage\":{\"message_id\":11563,\"from\":{\"id\":4885772,\"is_bot\":false,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"language_code\":\"es-ES\"},\"chat\":{\"id\":4885772,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"type\":\"private\"},\"date\":1510114140,\"reply_to_message\":{\"message_id\":11562,\"from\":{\"id\":457126364,\"is_bot\":true,\"first_name\":\"¡Tod@s contra el Desarrollo!\",\"username\":\"rednodetest_bot\"},\"chat\":{\"id\":4885772,\"first_name\":\"vjrj\",\"username\":\"vj_rj\",\"type\":\"private\"},\"date\":1510114109,\"text\":\"Indica cal a posición a vixiar (por ex. a túa aldea, rúa, vivenda,  etc). Se estás a utilizar un móbil podes anexar tamén unha localización premendo no clip\"},\"location\":{\"latitude\":21.197681,\"longitude\":-13.312859}},\"_msgid\":\"872d3ee7.01903\"} */\n/* REAL one:\n{\"payload\": {\n    \"chatId\":7777777,\n    \"messageId\":11442,\n    \"type\": \"message\",\n    \"content\":\"\"\n    },\n\"originalMessage\":{\n    \"message_id\":11442,\n    \"from\": {\n        \"id\":7777777,\n        \"is_bot\":false,\n        \"first_name\":\"somenick\",\n        \"username\":\"some_nick\",\n        \"language_code\": \"es-ES\"},\n        \"chat\": {\n            \"id\":7777777,\n            \"first_name\":\"somenick\",\n            \"username\": \"some_nick\",\n            \"type\": \"private\"\n        },\"date\":1510102651,\n        \"text\":\"/start\",\n        \"entities\":[{\"offset\":0,\"length\":6,\"type\":\"bot_command\"}]\n    },\n\"_msgid\":\"79e9eba6.722994\"\n} */",
+        "outputs": "4",
         "noerr": 0,
         "x": 340,
         "y": 80,
         "wires": [
             [],
             [],
-            []
+            [],
+            [
+                "6604bcf8.bf3a84"
+            ]
         ],
         "outputLabels": [
             "start",
             "lang",
-            "others"
+            "others",
+            "ack"
         ]
     },
     {
@@ -6464,5 +6468,31 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "6604bcf8.bf3a84",
+        "type": "tcp out",
+        "z": "557e0255.d1220c",
+        "host": "",
+        "port": "",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "name": "tcp reply",
+        "x": 530,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "e2056e63.a9e84",
+        "type": "debug",
+        "z": "557e0255.d1220c",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 530,
+        "y": 320,
+        "wires": []
     }
 ]
