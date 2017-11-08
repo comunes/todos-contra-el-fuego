@@ -58,6 +58,21 @@ lang - seleccionar idioma
 
 `nc` and `ncftp` to get NASA data.
 
+## Testing
+
+You need to install also:
+
+```bash
+npm i cucumber
+npm i chai
+npm i i18next-sync-fs-backend
+```
+
+And run test with commands like:
+```bash
+node_modules/cucumber/bin/cucumber.js --tags "not @ignore"
+```
+
 ## Data source acknowledgements
 
 *We acknowledge the use of data and imagery from LANCE FIRMS operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ*.

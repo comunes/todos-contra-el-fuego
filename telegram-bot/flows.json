@@ -410,8 +410,8 @@
         "in": [],
         "out": [
             {
-                "x": 700,
-                "y": 40,
+                "x": 680,
+                "y": 60,
                 "wires": [
                     {
                         "id": "95b8009f.b410c",
@@ -430,7 +430,7 @@
                 ]
             },
             {
-                "x": 600,
+                "x": 680,
                 "y": 180,
                 "wires": [
                     {
@@ -6478,9 +6478,9 @@
         "beserver": "reply",
         "base64": false,
         "end": false,
-        "name": "tcp reply",
-        "x": 530,
-        "y": 260,
+        "name": "tcp reply empty msgs",
+        "x": 760,
+        "y": 240,
         "wires": []
     },
     {
@@ -6491,8 +6491,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 530,
-        "y": 320,
+        "x": 710,
+        "y": 300,
         "wires": []
     }
 ]
