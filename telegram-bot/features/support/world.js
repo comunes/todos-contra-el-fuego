@@ -1,13 +1,51 @@
-const { setWorldConstructor } = require('cucumber')
+const { defineSupportCode, setWorldConstructor } = require('cucumber')
 var i18next = require('i18next')
 var moment = require('moment-timezone')
 var backend = require('i18next-sync-fs-backend')
+var net = require('net');
 
+class Bot {
+  constructor() {
+    this.robot = new net.Socket();
+
+    this.robot.on('close', function() {
+      console.log('Connection closed');
+    });
+  }
+
+  read(callback) {
+    this.robot.on('data', function(data) {
+      // console.log('Received: ' + data);
+      callback(data);
+    });
+  }
+
+  connect() {
+    this.robot.connect(6789, '127.0.0.1', function() {
+      console.log('Connected\n');
+      // this.write('/start\n');
+    });
+  }
+
+  send(data) {
+    this.robot.write(data);
+  }
+
+  destroy() {
+    this.robot.destroy();
+  }
+}
+
+var bot = new Bot();
+
+// https://github.com/cucumber/cucumber-js/blob/master/docs/support_files/world.md
 class CustomWorld {
 
   constructor() {
     this.variable = 0;
     this.i18n = i18next;
+    this.bot = bot;
+
     var backOpts = {
       // path where resources get loaded from
       loadPath: 'locales/{{lng}}/{{ns}}.json',
@@ -18,6 +56,7 @@ class CustomWorld {
       // jsonIndent to use when storing json files
       jsonIndent: 2
     };
+
 
     i18next.use(backend)
            .init({
@@ -73,3 +112,29 @@ class CustomWorld {
 }
 
 setWorldConstructor(CustomWorld)
+
+
+// https://github.com/cucumber/cucumber-js/blob/master/docs/support_files/hooks.md
+
+defineSupportCode(function({AfterAll, BeforeAll}) {
+  // Synchronous
+  BeforeAll(function () {
+ // perform some shared setup
+  });
+
+  // Asynchronous Callback
+  BeforeAll(function (callback) {
+    // bot.connect();
+    callback();
+
+    // perform some shared setup
+    // execute the callback (optionally passing an error when done)
+  });
+
+  // Asynchronous Promise
+  AfterAll(function () {
+    bot.destroy();
+    // perform some shared teardown
+    return Promise.resolve()
+  });
+});

@@ -238,19 +238,22 @@
         "info": "",
         "in": [
             {
-                "x": 80,
-                "y": 80,
+                "x": 60,
+                "y": 100,
                 "wires": [
                     {
                         "id": "a30ccf58.3a1e"
+                    },
+                    {
+                        "id": "ef71cdfb.1f93"
                     }
                 ]
             }
         ],
         "out": [
             {
-                "x": 1320,
-                "y": 160,
+                "x": 1280,
+                "y": 100,
                 "wires": [
                     {
                         "id": "7f8ce0c9.99ac4",
@@ -476,6 +479,76 @@
         ]
     },
     {
+        "id": "11cb3f4d.6e0081",
+        "type": "subflow",
+        "name": "find new active fires",
+        "info": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "9ef9c4c5.a68d08"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 660,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "21ccbcd9.05a984",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 580,
+                "y": 200,
+                "wires": []
+            }
+        ]
+    },
+    {
+        "id": "c8522537.c6f908",
+        "type": "subflow",
+        "name": "count new fire actives",
+        "info": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "8d910d3f.7ff39"
+                    }
+                ]
+            }
+        ],
+        "out": []
+    },
+    {
+        "id": "3f0768a7.1fac78",
+        "type": "subflow",
+        "name": "count active fires",
+        "info": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "d8b00aa6.5027f8"
+                    }
+                ]
+            }
+        ],
+        "out": []
+    },
+    {
         "id": "f93d1a38.c43218",
         "type": "telegram bot",
         "z": "",
@@ -640,6 +713,27 @@
         "checkPeriod": "100"
     },
     {
+        "id": "4aa75271.38879c",
+        "type": "semaphore-config",
+        "z": 0,
+        "name": "modis",
+        "capacity": "1"
+    },
+    {
+        "id": "ce56e26a.71d74",
+        "type": "semaphore-config",
+        "z": 0,
+        "name": "viirs",
+        "capacity": "1"
+    },
+    {
+        "id": "9a28d188.bb94e",
+        "type": "persist-store",
+        "z": "c8522537.c6f908",
+        "filename": "nasa-new-fire-actives.json",
+        "interval": "60"
+    },
+    {
         "id": "7aa07a53.1c8ec4",
         "type": "file in",
         "z": "93cb4937.6fc068",
@@ -648,12 +742,12 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 650,
+        "x": 430,
         "y": 180,
         "wires": [
             [
-                "b599e89d.2138b8",
-                "3a5ab6ad.0e340a"
+                "3a5ab6ad.0e340a",
+                "b599e89d.2138b8"
             ]
         ]
     },
@@ -668,11 +762,10 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 820,
-        "y": 180,
+        "x": 680,
+        "y": 140,
         "wires": [
             [
-                "9ef9c4c5.a68d08",
                 "56fafc54.228824"
             ]
         ]
@@ -720,7 +813,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "escribir posición",
-        "func": "var t = msg.i18n;\nif(context.global.keyboard.pending)\n{\n    context.global.keyboard.pending = false;\n    msg.payload.type = 'message';\n    msg.payload.content = t('Indícanos la posición a vigilar (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip');\n    msg.payload.topic = \"sus\";\n    \n    var opts = {\n      reply_markup: JSON.stringify({\n        force_reply: true,\n      })\n    };\n    msg.payload.options = opts;\n    return msg;\n}\n",
+        "func": "var t = msg.i18n;\n/* if (context.global.keyboard & context.global.keyboard.pending) {\n    context.global.keyboard.pending = false; */\n    msg.payload.type = 'message';\n    msg.payload.content = t('Indícanos la posición a vigilar (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip');\n    msg.payload.topic = \"sus\";\n    \n    var opts = {\n      reply_markup: JSON.stringify({\n        force_reply: true,\n      })\n    };\n    msg.payload.options = opts;\n    return msg;\n/* } */\n",
         "outputs": "1",
         "noerr": 0,
         "x": 730,
@@ -736,7 +829,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "ask location to sub",
-        "func": "var t = msg.i18n;\nvar key = 'locationtopic-' + msg.payload.chatId;\nglobal.set(key, 'sus');\n\nif (msg.payload.chatId > 0) {\n    if(context.global.keyboard.pending) {\n        context.global.keyboard.pending = false;\n        context.global.keyboard = { pending : true };\n        var opts = {\n            // reply_to_message_id: msg.payload.messageId,\n            \n            reply_markup: JSON.stringify({\n                force_reply: true,\n                keyboard: [ \n                    [{text: t('📍 Compartir mi posición'), request_location: true}, \n                     {text: t('📝 Escribir mi posición')}\n                    ],\n                    [{text: t('⬅️ Cancelar')}]\n                ], \n\n                'resize_keyboard' : true, \n                'one_time_keyboard' : true\n            })\n        };\n    }\n    msg.payload.content = t('¿Quieres compartir tu posición o escribir el nombre de la zona a vigilar (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
+        "func": "var t = msg.i18n;\nvar key = 'locationtopic-' + msg.payload.chatId;\nglobal.set(key, 'sus');\n\nif (msg.payload.chatId > 0) {\n    if (context.global.keyboard && context.global.keyboard.pending) {\n        context.global.keyboard.pending = false;\n        var opts = {\n            // reply_to_message_id: msg.payload.messageId,\n            \n            reply_markup: JSON.stringify({\n                force_reply: true,\n                keyboard: [ \n                    [{text: t('📍 Compartir mi posición'), request_location: true}, \n                     {text: t('📝 Escribir mi posición')}\n                    ],\n                    [{text: t('⬅️ Cancelar')}]\n                ], \n    \n                'resize_keyboard' : true, \n                'one_time_keyboard' : true\n            })\n        };\n        msg.payload.content = t('¿Quieres compartir tu posición o escribir el nombre de la zona a vigilar (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n        msg.payload.options = opts;\n    }\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 610,
@@ -764,7 +857,7 @@
         "language": "",
         "region": "",
         "components": "",
-        "x": 1590,
+        "x": 1630,
         "y": 480,
         "wires": [
             [
@@ -783,7 +876,7 @@
         "y": 480,
         "wires": [
             [
-                "79a24d67.be0024"
+                "d35010eb.26fdd"
             ]
         ]
     },
@@ -792,7 +885,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "ask fire",
-        "func": "var t = msg.i18n;\nvar key = 'locationtopic-' + msg.payload.chatId;\nglobal.set(key, 'newfire');\nif (msg.payload.chatId > 0) {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: t('📍 El fuego está en mi ubicación'), request_location: true}, \n                 {text: t('📝 Escribir localización fuego')}\n                ],\n                [{text: t('⬅️ Cancelar')}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = t('¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    \n    return [msg, null];\n} else {\n    return [null, msg];\n}\n",
+        "func": "var t = msg.i18n;\nvar key = 'locationtopic-' + msg.payload.chatId;\nglobal.set(key, 'newfire');\nif (msg.payload.chatId > 0) {\n    // use of locationtopic instead\n    context.global.keyboard = { pending : true };\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n            \n        reply_markup: JSON.stringify({\n            force_reply: true,\n            keyboard: [ \n                [{text: t('📍 El fuego está en mi ubicación'), request_location: true}, \n                 {text: t('📝 Escribir localización fuego')}\n                ],\n                [{text: t('⬅️ Cancelar')}]\n            ], \n            'resize_keyboard' : true, \n            'one_time_keyboard' : true\n        })\n    };\n\n    msg.payload.content = t('¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación');\n    msg.payload.options = opts;\n    \n    return [msg, null];\n} else {\n    return [null, msg];\n}\n",
         "outputs": "2",
         "noerr": 0,
         "x": 860,
@@ -820,47 +913,6 @@
         "x": 1990,
         "y": 580,
         "wires": []
-    },
-    {
-        "id": "79a24d67.be0024",
-        "type": "change",
-        "z": "93cb4937.6fc068",
-        "name": "set location",
-        "rules": [
-            {
-                "t": "set",
-                "p": "location.address",
-                "pt": "msg",
-                "to": "payload.content",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "chatId",
-                "pt": "msg",
-                "to": "payload.chatId",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "address",
-                "pt": "msg",
-                "to": "payload.content",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 1310,
-        "y": 480,
-        "wires": [
-            [
-                "bb4817df.01de48"
-            ]
-        ]
     },
     {
         "id": "10d562eb.b0de5d",
@@ -1094,7 +1146,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "calc distances",
-        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA):''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"nasa\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia:''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
+        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA):''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia:''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1140,
@@ -1102,20 +1154,6 @@
         "wires": [
             [
                 "c0e6a5d.fb1e058"
-            ]
-        ]
-    },
-    {
-        "id": "ce0d4bec.4fc9e8",
-        "type": "catch",
-        "z": "93cb4937.6fc068",
-        "name": "catch all",
-        "scope": null,
-        "x": 510,
-        "y": 40,
-        "wires": [
-            [
-                "a1ab1dbf.8d35d"
             ]
         ]
     },
@@ -1157,18 +1195,6 @@
                 "fbac8488.5194a8"
             ]
         ]
-    },
-    {
-        "id": "a1ab1dbf.8d35d",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "catch error",
-        "active": true,
-        "console": "true",
-        "complete": "true",
-        "x": 680,
-        "y": 40,
-        "wires": []
     },
     {
         "id": "82292481.dd9428",
@@ -1320,12 +1346,12 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 650,
+        "x": 430,
         "y": 140,
         "wires": [
             [
-                "6cb3b14e.a135a",
-                "a27f7210.58aa1"
+                "a27f7210.58aa1",
+                "6cb3b14e.a135a"
             ]
         ]
     },
@@ -1340,11 +1366,10 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 820,
-        "y": 140,
+        "x": 680,
+        "y": 100,
         "wires": [
             [
-                "9ef9c4c5.a68d08",
                 "56fafc54.228824"
             ]
         ]
@@ -1713,37 +1738,23 @@
         ]
     },
     {
-        "id": "8f83bfc5.cfb9b",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "count active",
-        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos en Europa (VIRR)\"\n    }\n    return newMsg;\n}\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 970,
-        "y": 240,
-        "wires": [
-            [
-                "44fbc396.81360c"
-            ]
-        ]
-    },
-    {
         "id": "a27f7210.58aa1",
         "type": "csv",
         "z": "93cb4937.6fc068",
-        "name": "viir count",
+        "name": "viirs array",
         "sep": ",",
         "hdrin": true,
         "hdrout": "",
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 800,
-        "y": 240,
+        "x": 620,
+        "y": 180,
         "wires": [
             [
-                "8f83bfc5.cfb9b"
+                "ffb09865.4f74f8",
+                "d7205286.be0a4",
+                "ca3d918b.a07f4"
             ]
         ]
     },
@@ -1751,31 +1762,33 @@
         "id": "3a5ab6ad.0e340a",
         "type": "csv",
         "z": "93cb4937.6fc068",
-        "name": "modis count",
+        "name": "modis array",
         "sep": ",",
         "hdrin": true,
         "hdrout": "",
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 810,
-        "y": 280,
+        "x": 630,
+        "y": 220,
         "wires": [
             [
-                "d8b00aa6.5027f8"
+                "ffb09865.4f74f8",
+                "c2b69ae.d793668",
+                "ca3d918b.a07f4"
             ]
         ]
     },
     {
         "id": "d8b00aa6.5027f8",
         "type": "function",
-        "z": "93cb4937.6fc068",
+        "z": "3f0768a7.1fac78",
         "name": "count active",
-        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos en Europa (MODIS)\"\n    }\n    return newMsg;\n}\n",
+        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos (\" + msg.type + \"\"\n    }\n    return newMsg;\n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 970,
-        "y": 280,
+        "x": 210,
+        "y": 60,
         "wires": [
             [
                 "44fbc396.81360c"
@@ -1785,13 +1798,13 @@
     {
         "id": "44fbc396.81360c",
         "type": "ui_chart",
-        "z": "93cb4937.6fc068",
+        "z": "3f0768a7.1fac78",
         "name": "to dash",
         "group": "601660c.cd104a",
         "order": 2,
         "width": "0",
         "height": "0",
-        "label": "Fuegos activos en Europas según NASA",
+        "label": "Fuegos activos en el mundo (fuente NASA)",
         "chartType": "line",
         "legend": "false",
         "xformat": "Y-M-D",
@@ -1817,8 +1830,8 @@
             "#c5b0d5"
         ],
         "useOldStyle": false,
-        "x": 1180,
-        "y": 240,
+        "x": 400,
+        "y": 60,
         "wires": [
             [
                 "c4c96710.0c14f8"
@@ -1885,7 +1898,7 @@
         "multi": false,
         "operation": "update",
         "x": 1110,
-        "y": 520,
+        "y": 540,
         "wires": []
     },
     {
@@ -2604,7 +2617,7 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1750,
+        "x": 1790,
         "y": 480,
         "wires": []
     },
@@ -2861,24 +2874,36 @@
         "type": "subflow:2b8628df.fdcca8",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1350,
+        "x": 1930,
         "y": 180,
         "wires": []
     },
     {
         "id": "9ef9c4c5.a68d08",
         "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "args",
-        "func": "var lat = msg.payload.latitude;\nvar lon = msg.payload.longitude;\n\n// Sometimes the data is not well formed/downloaded\nif (typeof lat === 'number' && typeof lon === 'number')  {\n    var newMsg = {\n        type: \"nasa\",\n        lon: lon,\n        lat: lat\n    }\n    return newMsg;\n}",
-        "outputs": 1,
+        "z": "11cb3f4d.6e0081",
+        "name": "diff active fires",
+        "func": "if (Array.isArray(msg.payload)) {\n    // ok, we have read this correctly\n    \n    var type = msg.type;\n    /* var col = !(global.get('current-nasa-collection') || 0) | 0;*/\n    var collection = \"activefires\" + type; // to detect new fires \n    /* var prevCollection = \"activefires\" + type + (!col|0); \n    global.set('current-nasa-collection', col); // current*/\n    /* node.log(collection);\n    node.log(prevCollection) */\n    \n    var now = new Date();\n\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        var lat = pay.latitude;\n        var lon = pay.longitude;\n        if (typeof lat === 'number' && typeof lon === 'number')  {\n            // Sometimes the data is not well formed/downloaded\n            var id = {\n                type: \"Point\",\n                coordinates: [ lon, lat ]\n            };\n            \n            // dates sample\n            // acq_date: \"2017-11-09\"\n            ///acq_time: \"06:30\"\n            var acdate = pay.acq_date;\n            var actime = pay.acq_time;\n            var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n\n            var setcommon = {\n                _id: id,\n                updatedAt: now,\n                type: type,\n                when : when,\n                acq_date: acdate,\n                acq_time: actime,\n                scan : pay.scan,\n                track : pay.track,\n                satellite : pay.satellite,\n                confidence : pay.confidence,\n                version : pay.version,\n                frp : pay.frp,\n                daynight : pay.daynight,\n            };\n            var setdiff;\n            if (type === \"modis\") {\n                setdiff = {\n                    brightness : pay.brightness,\n                    bright_t31 : pay.bright_t31\n                };\n            } else { // viirs\n                setdiff = {\n                    bright_ti4 : pay.bright_ti4,\n                    bright_ti5 : pay.bright_ti5,\n                };\n            }\n            var setjoin = Object.assign(setcommon, setdiff);\n            \n            var update = {};\n            update.payload = { \n                $set: setjoin,\n                $setOnInsert: { createdAt: now }\n            };\n            update.query = { _id:  id };\n            update.collection = collection;\n            \n            node.send([null, update, null]);\n        }\n    }\n    \n    // del not active fires\n    var del = {};\n    del.payload = {\n        updatedAt: {$ne: now}\n    };\n    del.collection = collection;\n    node.send([del, null, null]);\n    \n    // Now we notify only the new active fires\n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    newfires.payload = {\n        createdAt: now\n    };\n    \n    // https://github.com/node-red/node-red/wiki/API-Reference#server-Node-send\n    node.send([null, null, newfires]);\n}\n",
+        "outputs": "3",
         "noerr": 0,
-        "x": 970,
-        "y": 180,
+        "x": 240,
+        "y": 80,
         "wires": [
             [
-                "279d7275.dfa1fe"
+                "b2b4d4d4.7f54d8",
+                "ab21b44a.c7dbb8"
+            ],
+            [
+                "86f7a5f7.ccebf8"
+            ],
+            [
+                "21ccbcd9.05a984"
             ]
+        ],
+        "outputLabels": [
+            "remove",
+            "update/save",
+            "find"
         ]
     },
     {
@@ -2927,8 +2952,8 @@
         "type": "subflow:4a3c7cc0.965dd4",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1210,
-        "y": 140,
+        "x": 1230,
+        "y": 80,
         "wires": []
     },
     {
@@ -2953,21 +2978,21 @@
     {
         "id": "c4c96710.0c14f8",
         "type": "persist in",
-        "z": "93cb4937.6fc068",
+        "z": "3f0768a7.1fac78",
         "name": "nasa-fire-active",
         "storageNode": "2c23f46.8edd30c",
-        "x": 1380,
-        "y": 240,
+        "x": 580,
+        "y": 60,
         "wires": []
     },
     {
         "id": "b3460bb5.6fb918",
         "type": "persist out",
-        "z": "93cb4937.6fc068",
+        "z": "3f0768a7.1fac78",
         "name": "nasa-fire-active",
         "storageNode": "2c23f46.8edd30c",
-        "x": 1200,
-        "y": 280,
+        "x": 420,
+        "y": 100,
         "wires": [
             [
                 "44fbc396.81360c"
@@ -2998,8 +3023,8 @@
         "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar lat = msg.payload.latitude;\nvar lon = msg.payload.longitude;\nvar pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\npname += \", satelite: \" + msg.payload.satellite;\nvar maxkevin = 373;\nvar intensity =\n    (msg.payload.bright_ti4? msg.payload.bright_ti4: \n    (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\nvar radius = msg.payload.scan * 1000;\n\nvar newMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: \"NASA\",\n        // icon: \"earthquake\",\n        color: \"red\",\n        fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        radius: radius,\n        fillOpacity: 1,\n        iconColor:'red', // obligatorio\n        stroke: false,\n        addtoheatmap: false,\n        // fillOpacity: 0.8,\n        clickable: true,\n        weblink: {url: \"http://example.com\", name: \"Más info\"}\n        \n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 980,
-        "y": 140,
+        "x": 1060,
+        "y": 100,
         "wires": [
             [
                 "9ad7b6d1.a6e748"
@@ -3156,7 +3181,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 1060,
-        "y": 80,
+        "y": 60,
         "wires": [
             [
                 "9ad7b6d1.a6e748"
@@ -3175,7 +3200,7 @@
         "crontab": "",
         "once": true,
         "x": 910,
-        "y": 40,
+        "y": 20,
         "wires": [
             [
                 "c0867d8e.a5999",
@@ -3259,7 +3284,7 @@
         "randomUnits": "seconds",
         "drop": false,
         "x": 910,
-        "y": 80,
+        "y": 60,
         "wires": [
             [
                 "c0867d8e.a5999"
@@ -3271,7 +3296,7 @@
         "type": "subflow:91777bb3.922328",
         "z": "93cb4937.6fc068",
         "x": 750,
-        "y": 80,
+        "y": 60,
         "wires": [
             [
                 "de887fc7.5e54"
@@ -3283,11 +3308,11 @@
         "type": "function",
         "z": "2f0217a5.051978",
         "name": "find prev false positive register",
-        "func": "if (msg.originalMessage && \n    msg.originalMessage.reply_to_message &&\n    msg.originalMessage.reply_to_message.location) {\n    var lon = msg.originalMessage.reply_to_message.location.longitude;\n    var lat = msg.originalMessage.reply_to_message.location.latitude;\n    var find = {};\n    find.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n        },\n        chatId: msg.payload.chatId\n    };\n    find.originalMessage = msg.originalMessage;\n    find.chatId = msg.payload.chatId;\n    return find;\n}\n\n",
+        "func": "if (msg.originalMessage && \n    msg.originalMessage.reply_to_message &&\n    msg.originalMessage.reply_to_message.location) {\n    var lon = msg.originalMessage.reply_to_message.location.longitude;\n    var lat = msg.originalMessage.reply_to_message.location.latitude;\n    // TODO: must be a NASA fire\n    var find = {};\n    find.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n        },\n        chatId: msg.payload.chatId\n    };\n    find.originalMessage = msg.originalMessage;\n    find.chatId = msg.payload.chatId;\n    find.i18n = msg.i18n;\n    return find;\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 390,
-        "y": 160,
+        "x": 310,
+        "y": 100,
         "wires": [
             [
                 "9eef9e79.27f5b"
@@ -3302,8 +3327,8 @@
         "name": "falsepositives count",
         "collection": "falsepositives",
         "operation": "find",
-        "x": 640,
-        "y": 160,
+        "x": 600,
+        "y": 100,
         "wires": [
             [
                 "7f8ce0c9.99ac4"
@@ -3329,8 +3354,8 @@
         ],
         "checkall": "false",
         "outputs": 2,
-        "x": 820,
-        "y": 160,
+        "x": 780,
+        "y": 100,
         "wires": [
             [
                 "d7931057.66ab7"
@@ -3349,8 +3374,8 @@
         "func": "var date = new Date();\nvar formated = context.global.moment(date).format('YYYYMMDD');\n\nvar orig = msg.originalMessage;\nvar lon = orig.reply_to_message.location.longitude;\nvar lat = orig.reply_to_message.location.latitude;\n\nvar chatId = msg.chatId;\n\nvar reg = {\n    query : {\n        // solo un fuego por usuario por ahora\n        chatId : chatId,\n        geo: {\n            type: \"Point\",\n            coordinates: [lon, lat]\n        }\n    },\n    payload: {\n        $set: {        \n            chatId: chatId,\n            when: date,\n            whendateformat: formated,\n            geo: {\n                type: \"Point\",\n                coordinates: [lon, lat]\n            }\n        }\n    },\n}\nreturn reg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1010,
-        "y": 220,
+        "x": 970,
+        "y": 160,
         "wires": [
             [
                 "88e9dc11.5af31"
@@ -3368,8 +3393,8 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 1170,
-        "y": 220,
+        "x": 1130,
+        "y": 160,
         "wires": []
     },
     {
@@ -3401,12 +3426,12 @@
         "id": "ef71cdfb.1f93",
         "type": "debug",
         "z": "2f0217a5.051978",
-        "name": "all",
+        "name": "false positive entry",
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 590,
-        "y": 220,
+        "x": 270,
+        "y": 140,
         "wires": []
     },
     {
@@ -3417,8 +3442,8 @@
         "func": "var t = msg.i18n;\n\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = t('👌 Tomamos nota, ¡gracias por colaborar!');\nreturn thx;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1020,
-        "y": 260,
+        "x": 970,
+        "y": 200,
         "wires": [
             [
                 "eab4c7fe.fd7828"
@@ -3433,8 +3458,8 @@
         "func": "var t = msg.i18n;\n\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = t(\"Ya marcaste este fuego como 'falso positivo'. Gracias en cualquier caso...\");\nreturn thx;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1020,
-        "y": 100,
+        "x": 980,
+        "y": 40,
         "wires": [
             [
                 "364970ea.3f564"
@@ -3524,7 +3549,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 1060,
-        "y": 40,
+        "y": 20,
         "wires": [
             [
                 "1f93ce66.41da62"
@@ -3540,7 +3565,7 @@
         "console": "false",
         "complete": "true",
         "x": 1210,
-        "y": 40,
+        "y": 20,
         "wires": []
     },
     {
@@ -3771,7 +3796,7 @@
         "id": "bb4817df.01de48",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 1450,
+        "x": 1510,
         "y": 480,
         "wires": [
             [
@@ -4911,7 +4936,7 @@
         "newline": "",
         "topic": "modis-mod",
         "base64": false,
-        "x": 300,
+        "x": 100,
         "y": 140,
         "wires": [
             [
@@ -4924,10 +4949,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "modis mod",
-        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nreturn file;\n",
+        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 490,
+        "x": 270,
         "y": 140,
         "wires": [
             [
@@ -4941,10 +4966,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "viirs mod",
-        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nreturn file;",
+        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nfile.type = \"viirs\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 500,
+        "x": 260,
         "y": 180,
         "wires": [
             [
@@ -4966,7 +4991,7 @@
         "newline": "",
         "topic": "modis-viirs",
         "base64": false,
-        "x": 300,
+        "x": 100,
         "y": 180,
         "wires": [
             [
@@ -4982,7 +5007,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 620,
+        "x": 460,
         "y": 240,
         "wires": []
     },
@@ -5222,7 +5247,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1140,
+        "x": 1720,
         "y": 180,
         "wires": [
             [
@@ -5448,7 +5473,8 @@
         "y": 80,
         "wires": [
             [
-                "95b8009f.b410c"
+                "95b8009f.b410c",
+                "e2056e63.a9e84"
             ]
         ]
     },
@@ -5463,7 +5489,9 @@
         "x": 340,
         "y": 80,
         "wires": [
-            [],
+            [
+                "e2056e63.a9e84"
+            ],
             [],
             [],
             [
@@ -5615,13 +5643,13 @@
     {
         "id": "ab21b44a.c7dbb8",
         "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "all",
+        "z": "11cb3f4d.6e0081",
+        "name": "remove",
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1110,
-        "y": 380,
+        "x": 640,
+        "y": 60,
         "wires": []
     },
     {
@@ -6453,8 +6481,8 @@
         "id": "eab4c7fe.fd7828",
         "type": "subflow:e81a68fa.695e38",
         "z": "2f0217a5.051978",
-        "x": 1170,
-        "y": 260,
+        "x": 1130,
+        "y": 200,
         "wires": [
             []
         ]
@@ -6463,8 +6491,8 @@
         "id": "364970ea.3f564",
         "type": "subflow:e81a68fa.695e38",
         "z": "2f0217a5.051978",
-        "x": 1170,
-        "y": 100,
+        "x": 1130,
+        "y": 40,
         "wires": [
             []
         ]
@@ -6493,6 +6521,348 @@
         "complete": "true",
         "x": 710,
         "y": 300,
+        "wires": []
+    },
+    {
+        "id": "5031ecc8.ccb184",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "catch error ----------------------",
+        "active": true,
+        "console": "true",
+        "complete": "true",
+        "x": 1030,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "2c822866.453948",
+        "type": "catch",
+        "z": "93cb4937.6fc068",
+        "name": "catch all",
+        "scope": null,
+        "x": 800,
+        "y": 980,
+        "wires": [
+            [
+                "5031ecc8.ccb184"
+            ]
+        ]
+    },
+    {
+        "id": "d35010eb.26fdd",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "set location",
+        "func": "msg.chatId = msg.payload.chatId;\nvar content = msg.payload.content;\n\nmsg.location = {};\n\nif (content && content.latitude) {\n    // Is a shared location (clip)\n    msg.location.lat = content.latitude;\n    msg.location.lon = content.longitude;\n    return [null, msg];\n} else {\n    // Is a writen location\n    msg.address = content;\n    msg.location.address = content;\n    return [msg, null];\n}\n\nreturn msg;",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 1330,
+        "y": 480,
+        "wires": [
+            [
+                "bb4817df.01de48"
+            ],
+            []
+        ],
+        "outputLabels": [
+            "address",
+            "shared location"
+        ]
+    },
+    {
+        "id": "21ccbcd9.05a984",
+        "type": "mongodb in",
+        "z": "11cb3f4d.6e0081",
+        "mongodb": "51a7af07.93444",
+        "name": "new active fires",
+        "collection": "",
+        "operation": "find",
+        "x": 500,
+        "y": 120,
+        "wires": [
+            [
+                "a2423eee.3b086"
+            ]
+        ]
+    },
+    {
+        "id": "b2b4d4d4.7f54d8",
+        "type": "mongodb out",
+        "z": "11cb3f4d.6e0081",
+        "mongodb": "51a7af07.93444",
+        "name": "remove",
+        "collection": "",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "delete",
+        "x": 480,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "86f7a5f7.ccebf8",
+        "type": "mongodb out",
+        "z": "11cb3f4d.6e0081",
+        "mongodb": "51a7af07.93444",
+        "name": "save/update",
+        "collection": "",
+        "payonly": false,
+        "upsert": true,
+        "multi": false,
+        "operation": "update",
+        "x": 490,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "a2423eee.3b086",
+        "type": "debug",
+        "z": "11cb3f4d.6e0081",
+        "name": "count new active fires",
+        "active": true,
+        "console": "false",
+        "complete": "payload.length",
+        "x": 780,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "43c0f0b4.29a2a",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "set lat/lon",
+        "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1540,
+        "y": 180,
+        "wires": [
+            [
+                "279d7275.dfa1fe"
+            ]
+        ]
+    },
+    {
+        "id": "8ab3ff7d.a30d",
+        "type": "split",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1390,
+        "y": 180,
+        "wires": [
+            [
+                "43c0f0b4.29a2a"
+            ]
+        ]
+    },
+    {
+        "id": "ffb09865.4f74f8",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "count active fires",
+        "active": true,
+        "console": "false",
+        "complete": "payload.length",
+        "x": 850,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "b2a582b8.95928",
+        "type": "subflow:11cb3f4d.6e0081",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1020,
+        "y": 160,
+        "wires": [
+            [
+                "6418206e.32692"
+            ],
+            [
+                "141c5502.36394b"
+            ]
+        ]
+    },
+    {
+        "id": "c2b69ae.d793668",
+        "type": "semaphore-take",
+        "z": "93cb4937.6fc068",
+        "config": "4aa75271.38879c",
+        "name": "modis take",
+        "x": 830,
+        "y": 200,
+        "wires": [
+            [
+                "93aea6aa.7d6398"
+            ]
+        ]
+    },
+    {
+        "id": "bc17356b.e37bf8",
+        "type": "semaphore-leave",
+        "z": "93cb4937.6fc068",
+        "config": "4aa75271.38879c",
+        "name": "modis leave",
+        "x": 1230,
+        "y": 200,
+        "wires": [
+            [
+                "8ab3ff7d.a30d"
+            ]
+        ]
+    },
+    {
+        "id": "d7205286.be0a4",
+        "type": "semaphore-take",
+        "z": "93cb4937.6fc068",
+        "config": "ce56e26a.71d74",
+        "name": "viirs take",
+        "x": 820,
+        "y": 160,
+        "wires": [
+            [
+                "b2a582b8.95928"
+            ]
+        ]
+    },
+    {
+        "id": "6418206e.32692",
+        "type": "semaphore-leave",
+        "z": "93cb4937.6fc068",
+        "config": "ce56e26a.71d74",
+        "name": "viirs leave",
+        "x": 1220,
+        "y": 160,
+        "wires": [
+            [
+                "8ab3ff7d.a30d"
+            ]
+        ]
+    },
+    {
+        "id": "93aea6aa.7d6398",
+        "type": "subflow:11cb3f4d.6e0081",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1020,
+        "y": 200,
+        "wires": [
+            [
+                "bc17356b.e37bf8"
+            ],
+            [
+                "141c5502.36394b"
+            ]
+        ]
+    },
+    {
+        "id": "62f992fa.519cec",
+        "type": "persist out",
+        "z": "c8522537.c6f908",
+        "name": "nasa-fire-active-news",
+        "storageNode": "9a28d188.bb94e",
+        "x": 440,
+        "y": 80,
+        "wires": [
+            [
+                "796f3781.151c38"
+            ]
+        ]
+    },
+    {
+        "id": "796f3781.151c38",
+        "type": "ui_chart",
+        "z": "c8522537.c6f908",
+        "name": "to dash",
+        "group": "601660c.cd104a",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Fuegos activos nuevos",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 400,
+        "y": 40,
+        "wires": [
+            [
+                "67495f5f.e8643"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "67495f5f.e8643",
+        "type": "persist in",
+        "z": "c8522537.c6f908",
+        "name": "nasa-fire-active-news",
+        "storageNode": "9a28d188.bb94e",
+        "x": 600,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8d910d3f.7ff39",
+        "type": "function",
+        "z": "c8522537.c6f908",
+        "name": "count active",
+        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos nuevos (\" + msg.type + \")\"\n    }\n    return newMsg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 210,
+        "y": 40,
+        "wires": [
+            [
+                "796f3781.151c38"
+            ]
+        ]
+    },
+    {
+        "id": "141c5502.36394b",
+        "type": "subflow:c8522537.c6f908",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1260,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "ca3d918b.a07f4",
+        "type": "subflow:3f0768a7.1fac78",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 840,
+        "y": 260,
         "wires": []
     }
 ]

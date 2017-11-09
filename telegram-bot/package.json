@@ -13,6 +13,7 @@
     "node-red-contrib-ftp-download": "~1.0.4",
     "node-red-contrib-jsonpath": "~0.1.1",
     "node-red-contrib-persist": "^1.0.1",
+    "node-red-contrib-semaphore": "^1.0.1",
     "node-red-contrib-telegrambot": "^2.6.1",
     "node-red-contrib-web-worldmap": "^1.1.4",
     "node-red-dashboard": "^2.5.1",

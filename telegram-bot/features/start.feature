@@ -1,9 +1,8 @@
 Feature: Simple /start
 
-  @ignore
   Scenario: initial start
-    Given connect to the bot
-    When I write /start
+    Given I open the bot
+    When I write /start for the first time
     Then I must see the /lang keyboard
 
   Scenario Outline: i18n should work

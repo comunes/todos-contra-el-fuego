@@ -24,3 +24,21 @@ Then('{string} should be translated to {string} correctly', function (something,
   expect(translated).to.eql(this.t(something));
   // callback(null, 'pending');
 });
+
+Given('I open the bot', function (callback) {
+  this.bot.connect();
+  callback();
+});
+
+When('I write /start for the first time', function (callback) {
+  this.bot.read(function(data) {
+    console.log('Received: ' + data);
+    callback();
+  });
+  this.bot.send('/start\n')
+});
+
+Then('I must see the /lang keyboard', function (callback) {
+  // Write code here that turns the phrase above into concrete actions
+  callback(null, 'pending');
+});
