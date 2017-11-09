@@ -27,36 +27,36 @@ to get the NASA fire data when modified in that directory. Also check the `confi
 
 ## Mongo Indexes
 
-Create this mongo indexes
-```mongodb
-db.subscriptions.createIndex( { geo : "2dsphere" } )
-db.subscriptions.createIndex( { chatId: 1 }
-#
-db.notifications.createIndex( { geo : "2dsphere" } )
-db.notifications.createIndex( { chatId: 1 })
-#
-db.fstats.createIndex( { name: 1 } )
-#
-db.avisosfuego.createIndex( { chatId: 1 })
-db.avisosfuego.createIndex( { geo : "2dsphere" } )
-#
-db.falsepositives.createIndex( { chatId: 1 })
-db.falsepositives.createIndex( { geo : "2dsphere" } )
-#
-db.users.createIndex( { telegramChatId: 1 } )
-db.users.createIndex( { lang: 1 } )
-db.users.createIndex( { updated: 1 } )
-#
-db.activefiresmodis.createIndex( { _id: "2dsphere" } )
-db.activefiresmodis.createIndex( { when: 1 } )
-db.activefiresmodis.createIndex( { updatedAt: 1 } )
-db.activefiresmodis.createIndex( { createdAt: 1 } )
-#
-db.activefiresviirs.createIndex( { _id: "2dsphere" } )
-db.activefiresviirs.createIndex( { when: 1 } )
-db.activefiresviirs.createIndex( { updatedAt: 1 } )
-db.activefiresviirs.createIndex( { createdAt: 1 } )
+Create this mongo indexes:
 
+```mongodb
+db.subscriptions.createIndex( { geo : "2dsphere" } );
+db.subscriptions.createIndex( { chatId: 1 });
+#
+db.notifications.createIndex( { geo : "2dsphere" } );
+db.notifications.createIndex( { chatId: 1 });
+#
+db.fstats.createIndex( { name: 1 } );
+#
+db.avisosfuego.createIndex( { chatId: 1 });
+db.avisosfuego.createIndex( { geo : "2dsphere" } );
+#
+db.falsepositives.createIndex( { chatId: 1 });
+db.falsepositives.createIndex( { geo : "2dsphere" } );
+#
+db.users.createIndex( { telegramChatId: 1 } );
+db.users.createIndex( { lang: 1 } );
+db.users.createIndex( { updated: 1 } );
+#
+db.activefiresmodis.createIndex( { _id: "2dsphere" } );
+db.activefiresmodis.createIndex( { when: 1 } );
+db.activefiresmodis.createIndex( { updatedAt: 1 } );
+db.activefiresmodis.createIndex( { createdAt: 1 } );
+#
+db.activefiresviirs.createIndex( { _id: "2dsphere" } );
+db.activefiresviirs.createIndex( { when: 1 } );
+db.activefiresviirs.createIndex( { updatedAt: 1 } );
+db.activefiresviirs.createIndex( { createdAt: 1 } );
 ```
 
 ## Telegram Comands
