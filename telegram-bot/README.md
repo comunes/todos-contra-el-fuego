@@ -89,6 +89,15 @@ And run test with commands like:
 ```bash
 node_modules/cucumber/bin/cucumber.js --tags "not @ignore"
 ```
+## Runing via docker
+
+Follow: https://nodered.org/docs/platforms/docker
+
+If you have your flows, etc in `/opt/node-red`:
+
+```
+docker run -it --restart=always -p 1880:1880 -p 40001:40001 -p 40002:40002  -v /opt/node-red-data:/data --name todos_contra_el_fuego nodered/node-red-docker
+```
 
 ## Data source acknowledgements
 
