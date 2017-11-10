@@ -1463,7 +1463,7 @@
             {
                 "p": "sends-news-to",
                 "pt": "global",
-                "to": "4885772,-253600015",
+                "to": "all",
                 "tot": "str"
             }
         ],

@@ -72,7 +72,7 @@ lang - seleccionar idioma
 
 ## Dependencies
 
-`nc` and `ncftp` to get NASA data.
+`netcat` and `ncftp` to get NASA data.
 
 ## Testing
 
