@@ -1441,24 +1441,6 @@
                 "tot": "str"
             },
             {
-                "p": "ftp-area",
-                "pt": "global",
-                "to": "Global",
-                "tot": "str"
-            },
-            {
-                "p": "ftp-area2",
-                "pt": "global",
-                "to": "Europe",
-                "tot": "str"
-            },
-            {
-                "p": "sends-news-to2",
-                "pt": "global",
-                "to": "all",
-                "tot": "str"
-            },
-            {
                 "p": "sends-news-to",
                 "pt": "global",
                 "to": "all",
@@ -1480,12 +1462,6 @@
                 "p": "ftp-path",
                 "pt": "global",
                 "to": "/data/",
-                "tot": "str"
-            },
-            {
-                "p": "ftp-area",
-                "pt": "global",
-                "to": "Global",
                 "tot": "str"
             },
             {
