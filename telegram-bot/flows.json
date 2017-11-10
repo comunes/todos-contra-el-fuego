@@ -737,17 +737,10 @@
         "checkPeriod": "100"
     },
     {
-        "id": "4aa75271.38879c",
-        "type": "semaphore-config",
-        "z": 0,
-        "name": "modis",
-        "capacity": "1"
-    },
-    {
         "id": "ce56e26a.71d74",
         "type": "semaphore-config",
-        "z": 0,
-        "name": "viirs",
+        "z": "",
+        "name": "notif",
         "capacity": "1"
     },
     {
@@ -1795,7 +1788,7 @@
         "y": 220,
         "wires": [
             [
-                "bf19942f.abc608"
+                "1a47438f.3ac60c"
             ]
         ]
     },
@@ -6667,7 +6660,7 @@
         "console": "false",
         "complete": "payload.length",
         "x": 1110,
-        "y": 280,
+        "y": 260,
         "wires": []
     },
     {
@@ -6676,7 +6669,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 1280,
-        "y": 160,
+        "y": 180,
         "wires": [
             [
                 "6418206e.32692"
@@ -6688,41 +6681,13 @@
         ]
     },
     {
-        "id": "c2b69ae.d793668",
-        "type": "semaphore-take",
-        "z": "93cb4937.6fc068",
-        "config": "4aa75271.38879c",
-        "name": "modis take",
-        "x": 1090,
-        "y": 200,
-        "wires": [
-            [
-                "93aea6aa.7d6398"
-            ]
-        ]
-    },
-    {
-        "id": "bc17356b.e37bf8",
-        "type": "semaphore-leave",
-        "z": "93cb4937.6fc068",
-        "config": "4aa75271.38879c",
-        "name": "modis leave",
-        "x": 1490,
-        "y": 200,
-        "wires": [
-            [
-                "8ab3ff7d.a30d"
-            ]
-        ]
-    },
-    {
         "id": "d7205286.be0a4",
         "type": "semaphore-take",
         "z": "93cb4937.6fc068",
         "config": "ce56e26a.71d74",
-        "name": "viirs take",
+        "name": "nofit take",
         "x": 1080,
-        "y": 160,
+        "y": 180,
         "wires": [
             [
                 "b2a582b8.95928"
@@ -6734,29 +6699,12 @@
         "type": "semaphore-leave",
         "z": "93cb4937.6fc068",
         "config": "ce56e26a.71d74",
-        "name": "viirs leave",
-        "x": 1480,
-        "y": 160,
+        "name": "notif leave",
+        "x": 1500,
+        "y": 180,
         "wires": [
             [
                 "8ab3ff7d.a30d"
-            ]
-        ]
-    },
-    {
-        "id": "93aea6aa.7d6398",
-        "type": "subflow:11cb3f4d.6e0081",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1280,
-        "y": 200,
-        "wires": [
-            [
-                "bc17356b.e37bf8"
-            ],
-            [
-                "141c5502.36394b",
-                "96e14f86.f497"
             ]
         ]
     },
@@ -6849,8 +6797,8 @@
         "type": "subflow:c8522537.c6f908",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1520,
-        "y": 240,
+        "x": 1540,
+        "y": 220,
         "wires": []
     },
     {
@@ -6859,7 +6807,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 1110,
-        "y": 240,
+        "y": 220,
         "wires": []
     },
     {
@@ -7095,8 +7043,8 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1520,
-        "y": 280,
+        "x": 1540,
+        "y": 260,
         "wires": []
     },
     {
@@ -7207,24 +7155,6 @@
         "x": 810,
         "y": 860,
         "wires": []
-    },
-    {
-        "id": "bf19942f.abc608",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "isArray",
-        "func": "if (Array.isArray(msg.payload)) {\n    return msg;\n}",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 800,
-        "y": 220,
-        "wires": [
-            [
-                "c2b69ae.d793668",
-                "ca3d918b.a07f4",
-                "ffb09865.4f74f8"
-            ]
-        ]
     },
     {
         "id": "1a47438f.3ac60c",
