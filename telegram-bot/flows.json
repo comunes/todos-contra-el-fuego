@@ -1467,7 +1467,7 @@
             {
                 "p": "sends-news-to",
                 "pt": "global",
-                "to": "4885772",
+                "to": "all",
                 "tot": "str"
             }
         ],
@@ -4056,8 +4056,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1340,
-        "y": 320,
+        "x": 1220,
+        "y": 260,
         "wires": [
             [
                 "bd6813b1.2cab5"
@@ -4079,12 +4079,11 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1350,
-        "y": 400,
+        "x": 1250,
+        "y": 340,
         "wires": [
             [
-                "49f7750c.76675c",
-                "3eff4b32.9114b4"
+                "bff4fef3.9fe3e"
             ]
         ]
     },
@@ -4113,7 +4112,7 @@
         "wires": [
             [
                 "d5cbb344.cf8db",
-                "bff4fef3.9fe3e"
+                "977bb03b.dc94f"
             ]
         ]
     },
@@ -7188,11 +7187,12 @@
         "func": "var c = context.get('switch') || false;\n\nvar update = function (c) {\n    node.status({fill:c? \"green\": \"red\",shape: c? \"dot\":\"ring\", text: c? \"on\": \"off\"});\n}\n\nif (msg.payload.switch) {\n    c = !c;\n    context.set('switch', c);\n    update(c);\n} else {\n    update(c);\n    if (c) {\n        return msg;\n    }    \n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1190,
-        "y": 320,
+        "x": 1410,
+        "y": 340,
         "wires": [
             [
-                "977bb03b.dc94f"
+                "49f7750c.76675c",
+                "3eff4b32.9114b4"
             ]
         ]
     },
@@ -7207,8 +7207,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 990,
-        "y": 320,
+        "x": 1230,
+        "y": 400,
         "wires": [
             [
                 "bff4fef3.9fe3e"
