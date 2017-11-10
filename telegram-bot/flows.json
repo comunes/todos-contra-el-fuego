@@ -3841,14 +3841,15 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "to who?",
-        "func": "var who = global.get('sends-news-to');\nif ( who === 'all') {\n    return msg;\n} else {\n    msg.payload = [];\n    var sp = who.split(\",\");\n    for (var i = 0; i < sp.length; i++) {\n        var chatId = sp[i];\n        msg.payload[i] = { chatId: chatId };\n    }\n    return msg;\n}",
+        "func": "var who = global.get('sends-news-to');\nif ( who === 'all') {\n    return msg;\n} else {\n    var newMsg = {};\n    newMsg.payload = [];\n    newMsg.notification = msg.notification;\n    var sp = who.split(\",\");\n    for (var i = 0; i < sp.length; i++) {\n        var chatId = sp[i];\n        newMsg.payload[i] = { chatId: chatId };\n    }\n    return newMsg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 860,
         "y": 200,
         "wires": [
             [
-                "199dadf2.46a4b2"
+                "199dadf2.46a4b2",
+                "26b36dd6.0fc162"
             ]
         ]
     },
@@ -4055,8 +4056,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1160,
-        "y": 300,
+        "x": 1340,
+        "y": 320,
         "wires": [
             [
                 "bd6813b1.2cab5"
@@ -4067,19 +4068,19 @@
         "id": "bd6813b1.2cab5",
         "type": "delay",
         "z": "128790f6.dee0df",
-        "name": "rate 20x1m",
+        "name": "rate 10x1m",
         "pauseType": "rate",
         "timeout": "2",
         "timeoutUnits": "seconds",
-        "rate": "20",
+        "rate": "10",
         "nbRateUnits": "1",
         "rateUnits": "minute",
         "randomFirst": "1",
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1330,
-        "y": 300,
+        "x": 1350,
+        "y": 400,
         "wires": [
             [
                 "49f7750c.76675c",
@@ -4093,8 +4094,8 @@
         "z": "128790f6.dee0df",
         "name": "send",
         "bot": "f93d1a38.c43218",
-        "x": 1490,
-        "y": 300,
+        "x": 1590,
+        "y": 340,
         "wires": [
             []
         ]
@@ -4104,15 +4105,15 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "send to all",
-        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    if (chatId !== 9998999)  // test chatId\n        node.send(noti);\n}\n\n",
+        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    if (chatId !== 9998999) {  // test chatId\n        node.send(noti);\n    }\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1030,
         "y": 200,
         "wires": [
             [
-                "977bb03b.dc94f",
-                "d5cbb344.cf8db"
+                "d5cbb344.cf8db",
+                "bff4fef3.9fe3e"
             ]
         ]
     },
@@ -4907,8 +4908,8 @@
         "id": "3eff4b32.9114b4",
         "type": "subflow:465e67f.6ebf598",
         "z": "128790f6.dee0df",
-        "x": 1520,
-        "y": 340,
+        "x": 1600,
+        "y": 400,
         "wires": []
     },
     {
@@ -4992,7 +4993,7 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "filename",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
         "x": 440,
@@ -5084,7 +5085,8 @@
         "y": 200,
         "wires": [
             [
-                "6906bc92.3ea1d4"
+                "6906bc92.3ea1d4",
+                "c3cd9894.0f4098"
             ]
         ]
     },
@@ -7165,5 +7167,64 @@
                 "10e6ffe2.fab67"
             ]
         ]
+    },
+    {
+        "id": "26b36dd6.0fc162",
+        "type": "debug",
+        "z": "128790f6.dee0df",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1010,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "bff4fef3.9fe3e",
+        "type": "function",
+        "z": "128790f6.dee0df",
+        "name": "on/off",
+        "func": "var c = context.get('switch') || false;\n\nvar update = function (c) {\n    node.status({fill:c? \"green\": \"red\",shape: c? \"dot\":\"ring\", text: c? \"on\": \"off\"});\n}\n\nif (msg.payload.switch) {\n    c = !c;\n    context.set('switch', c);\n    update(c);\n} else {\n    update(c);\n    if (c) {\n        return msg;\n    }    \n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1190,
+        "y": 320,
+        "wires": [
+            [
+                "977bb03b.dc94f"
+            ]
+        ]
+    },
+    {
+        "id": "6767dc05.9d1a14",
+        "type": "inject",
+        "z": "128790f6.dee0df",
+        "name": "on/off",
+        "topic": "",
+        "payload": "{\"switch\":true}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 990,
+        "y": 320,
+        "wires": [
+            [
+                "bff4fef3.9fe3e"
+            ]
+        ]
+    },
+    {
+        "id": "c3cd9894.0f4098",
+        "type": "debug",
+        "z": "128790f6.dee0df",
+        "name": "send to chatId",
+        "active": true,
+        "console": "false",
+        "complete": "payload.chatId",
+        "x": 1400,
+        "y": 240,
+        "wires": []
     }
 ]
