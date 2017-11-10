@@ -3,6 +3,7 @@
   "description": "A Node-RED Project",
   "version": "0.0.1",
   "dependencies": {
+    "geolib": "^2.0.24",
     "i18next": "^10.0.7",
     "i18next-node-fs-backend": "^1.0.0",
     "moment": "^2.19.1",
