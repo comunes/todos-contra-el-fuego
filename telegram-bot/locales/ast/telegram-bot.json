@@ -57,5 +57,11 @@
     "Escribir localización del fuego (por ej. tu pueblo, una calle, etc). Si usas un móvil también puedes adjuntar una ubicación pulsando el clip:": "Escribir allugamientu del fueu (por casu, el to pueblu, una cai, etc). Si uses un móvil tamién pues axuntar un allugamientu primiendo nel clip:",
     "kmvecinal": "🔥 Alerta vecinal de fueu a {{km}} км de distancia:",
     "Puedes ayudarnos (y al medioambiente) dando difusión a @TodosContraElFuego_bot entre tus contactos y grupos para que más gente lo use.": "Pues ayudanos (y a la natura) espardiendo @TodosContraElFuego_bot ente los tos contautos y grupos pa que más xente lu use.",
-    "kmnasa": "🔥 Alerta de fueu posible a {{km}} км de distancia (fonte NASA):"
+    "kmnasa": "🔥 Alerta de fueu posible a {{km}} км de distancia (fonte NASA):",
+    "Lo siento, no podemos localizar ese lugar": "Sentímoslo, nun podemos allugar esa zona",
+    "¿A que distancia a la redonda quieres recibir notificaciones?": "¿A qué distancia na redolada quies recibir avisos?",
+    "Estas suscrito/a a alertas de fuegos a {{km}} км a la redonda de esta zona": "Soscribiéstite a alertes de fueos a {{km}} км na redolada d'esti llugar",
+    "kmdistancia": "Soscribiéstite a alertes de fueos a {{km}} км na redolada d'esti llugar",
+    "¿Quieres compartir tu ubicación o escribir la localización del fuego (por ejemplo un pueblo, una dirección, etc)? Selecciona una de las opciones. Activa la información de tu ubicación 📍 en tu móvil si quieres compartir tu ubicación": "¿Quies compartir el to allugamientu o escribir l'allugamientu'l fueu (por casu, un pueblu, una direición, etc)? Esbilla una opción. Activa la información del to allugamientu 📍 nel preséu si quies compartilu",
+    "👌 Tomamos nota, ¡gracias por colaborar!": "👌 Apuntémoslo, ¡gracies por collaborar!"
 }
