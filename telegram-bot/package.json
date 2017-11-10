@@ -9,8 +9,6 @@
     "node-red-contrib-cache": "^1.0.3",
     "node-red-contrib-config": "^1.1.1",
     "node-red-contrib-counter": "^0.1.4",
-    "node-red-contrib-ftp": "0.0.2",
-    "node-red-contrib-ftp-download": "~1.0.4",
     "node-red-contrib-jsonpath": "~0.1.1",
     "node-red-contrib-persist": "^1.0.1",
     "node-red-contrib-semaphore": "^1.0.1",
@@ -19,7 +17,6 @@
     "node-red-dashboard": "^2.5.1",
     "node-red-node-google": "^0.1.1",
     "node-red-node-mongodb": "0.0.13",
-    "node-red-node-rbe": "^0.1.13",
     "node-telegram-bot-api": "^0.29.0"
   }
 }

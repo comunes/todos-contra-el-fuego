@@ -61,6 +61,8 @@ else
     if [[ $DEBUG -eq 1 ]] ; then echo "MODIS data not modified"; fi
 fi
 
+sleep 60
+
 if [[ $viirst != $oldviirst ]] ; then
     if [[ $DEBUG -eq 1 ]] ; then echo Old viirs timestamp: $oldviirst new: $viirst; fi
     echo $viirst > $VF

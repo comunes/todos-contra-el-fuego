@@ -486,8 +486,8 @@
         "info": "",
         "in": [
             {
-                "x": 80,
-                "y": 80,
+                "x": 60,
+                "y": 140,
                 "wires": [
                     {
                         "id": "9ef9c4c5.a68d08"
@@ -497,8 +497,8 @@
         ],
         "out": [
             {
-                "x": 660,
-                "y": 120,
+                "x": 920,
+                "y": 320,
                 "wires": [
                     {
                         "id": "21ccbcd9.05a984",
@@ -507,9 +507,14 @@
                 ]
             },
             {
-                "x": 580,
-                "y": 200,
-                "wires": []
+                "x": 920,
+                "y": 240,
+                "wires": [
+                    {
+                        "id": "21ccbcd9.05a984",
+                        "port": 0
+                    }
+                ]
             }
         ]
     },
@@ -1184,7 +1189,7 @@
         "func": "var t = msg.i18n;\nvar km = msg.payload[0].distance;\nif (msg.payload.length > 0) {\n    var caption = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"message\",\n          content: t('kmdistancia', {km: km})\n        }\n    }\n    \n    var location = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.payload[0].location.lon,\n             latitude: msg.payload[0].location.lat\n          }\n        }\n    }\n    return [caption, location, null];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 1060,
+        "x": 1070,
         "y": 840,
         "wires": [
             [
@@ -1207,7 +1212,7 @@
         "func": "var t = msg.i18n;\nif (msg.payload.length === 0) {\n    msg.payload.type = \"message\";\n    msg.payload.content = t('No estás suscrito/a a ninguna alerta');\n    msg.payload.chatId = msg.chatId;\n    return msg;\n}\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1040,
+        "x": 1060,
         "y": 800,
         "wires": [
             [
@@ -1468,7 +1473,7 @@
             }
         ],
         "active": true,
-        "x": 120,
+        "x": 130,
         "y": 40,
         "wires": []
     },
@@ -1771,9 +1776,7 @@
         "y": 180,
         "wires": [
             [
-                "ffb09865.4f74f8",
-                "d7205286.be0a4",
-                "ca3d918b.a07f4"
+                "1a47438f.3ac60c"
             ]
         ]
     },
@@ -1792,9 +1795,7 @@
         "y": 220,
         "wires": [
             [
-                "ffb09865.4f74f8",
-                "c2b69ae.d793668",
-                "ca3d918b.a07f4"
+                "bf19942f.abc608"
             ]
         ]
     },
@@ -2654,7 +2655,7 @@
         "type": "subflow:465e67f.6ebf598",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1410,
+        "x": 1420,
         "y": 800,
         "wires": []
     },
@@ -2893,7 +2894,7 @@
         "type": "subflow:2b8628df.fdcca8",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1930,
+        "x": 2190,
         "y": 180,
         "wires": []
     },
@@ -2902,26 +2903,25 @@
         "type": "function",
         "z": "11cb3f4d.6e0081",
         "name": "diff active fires",
-        "func": "if (Array.isArray(msg.payload)) {\n    // ok, we have read this correctly\n    \n    var type = msg.type;\n    /* var col = !(global.get('current-nasa-collection') || 0) | 0;*/\n    var collection = \"activefires\" + type; // to detect new fires \n    /* var prevCollection = \"activefires\" + type + (!col|0); \n    global.set('current-nasa-collection', col); // current*/\n    /* node.log(collection);\n    node.log(prevCollection) */\n    \n    var now = new Date();\n\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        var lat = pay.latitude;\n        var lon = pay.longitude;\n        if (typeof lat === 'number' && typeof lon === 'number')  {\n            // Sometimes the data is not well formed/downloaded\n            var id = {\n                type: \"Point\",\n                coordinates: [ lon, lat ]\n            };\n            \n            // dates sample\n            // acq_date: \"2017-11-09\"\n            ///acq_time: \"06:30\"\n            var acdate = pay.acq_date;\n            var actime = pay.acq_time;\n            var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n\n            var setcommon = {\n                _id: id,\n                updatedAt: now,\n                type: type,\n                when : when,\n                acq_date: acdate,\n                acq_time: actime,\n                scan : pay.scan,\n                track : pay.track,\n                satellite : pay.satellite,\n                confidence : pay.confidence,\n                version : pay.version,\n                frp : pay.frp,\n                daynight : pay.daynight,\n            };\n            var setdiff;\n            if (type === \"modis\") {\n                setdiff = {\n                    brightness : pay.brightness,\n                    bright_t31 : pay.bright_t31\n                };\n            } else { // viirs\n                setdiff = {\n                    bright_ti4 : pay.bright_ti4,\n                    bright_ti5 : pay.bright_ti5,\n                };\n            }\n            var setjoin = Object.assign(setcommon, setdiff);\n            \n            var update = {};\n            update.payload = { \n                $set: setjoin,\n                $setOnInsert: { createdAt: now }\n            };\n            update.query = { _id:  id };\n            update.collection = collection;\n            \n            node.send([null, update, null]);\n        }\n    }\n    \n    // del not active fires\n    var del = {};\n    del.payload = {\n        updatedAt: {$ne: now}\n    };\n    del.collection = collection;\n    node.send([del, null, null]);\n    \n    // Now we notify only the new active fires\n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    newfires.payload = {\n        createdAt: now\n    };\n    \n    // https://github.com/node-red/node-red/wiki/API-Reference#server-Node-send\n    node.send([null, null, newfires]);\n}\n",
+        "func": "var type = msg.type;\nvar collection = \"activefires\" + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('lastact', now);\n\nvar updates = [];\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var id = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n\n        var setcommon = {\n            _id: id,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n        }\n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        var update = {};\n        update.payload = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        update.query = { _id:  id };\n        update.collection = collection;\n        updates.push(update);\n    }\n}\n// node.send([null, updates, null]);\n\n// del not active fires\nvar del = {};\ndel.payload = {\n    updatedAt: {$ne: now}\n};\ndel.collection = collection;\n// node.send([del, null, null]);\n\n// Now we notify only the new active fires\nvar newfires = {};\nnewfires.type = type;\nnewfires.collection = collection;\nnewfires.payload = {\n    createdAt: now\n};\n// https://github.com/node-red/node-red/wiki/API-Reference#server-Node-send\n// node.send([null, null, newfires]);\nreturn [updates, del, newfires];\n",
         "outputs": "3",
         "noerr": 0,
-        "x": 240,
-        "y": 80,
+        "x": 260,
+        "y": 140,
         "wires": [
-            [
-                "b2b4d4d4.7f54d8",
-                "ab21b44a.c7dbb8"
-            ],
             [
                 "86f7a5f7.ccebf8"
             ],
             [
-                "21ccbcd9.05a984"
+                "8c48556c.193d88"
+            ],
+            [
+                "b3a83868.537148"
             ]
         ],
         "outputLabels": [
-            "remove",
             "update/save",
+            "remove",
             "find"
         ]
     },
@@ -3628,7 +3628,7 @@
         "type": "subflow:e81a68fa.695e38",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1400,
+        "x": 1390,
         "y": 840,
         "wires": [
             []
@@ -4946,16 +4946,16 @@
         "id": "695ef2aa.e9174c",
         "type": "tcp in",
         "z": "93cb4937.6fc068",
-        "name": "modis-mod",
+        "name": "modis-listen",
         "server": "server",
         "host": "",
         "port": "40001",
         "datamode": "single",
         "datatype": "utf8",
         "newline": "",
-        "topic": "modis-mod",
+        "topic": "",
         "base64": false,
-        "x": 100,
+        "x": 110,
         "y": 140,
         "wires": [
             [
@@ -4967,11 +4967,11 @@
         "id": "4c5a12a1.31afcc",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "modis mod",
-        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;\n",
+        "name": "modis file",
+        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 270,
+        "x": 260,
         "y": 140,
         "wires": [
             [
@@ -4984,7 +4984,7 @@
         "id": "9329a152.948d2",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "viirs mod",
+        "name": "viirs file",
         "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nfile.type = \"viirs\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
@@ -4992,8 +4992,8 @@
         "y": 180,
         "wires": [
             [
-                "7aa07a53.1c8ec4",
-                "73439cb8.e35604"
+                "73439cb8.e35604",
+                "7aa07a53.1c8ec4"
             ]
         ]
     },
@@ -5001,7 +5001,7 @@
         "id": "609b276.68e5ed8",
         "type": "tcp in",
         "z": "93cb4937.6fc068",
-        "name": "modis-viirs",
+        "name": "viirs-listen",
         "server": "server",
         "host": "",
         "port": "40002",
@@ -5026,8 +5026,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 460,
-        "y": 240,
+        "x": 440,
+        "y": 220,
         "wires": []
     },
     {
@@ -5266,7 +5266,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1720,
+        "x": 1980,
         "y": 180,
         "wires": [
             [
@@ -5658,18 +5658,6 @@
                 "57988778.321178"
             ]
         ]
-    },
-    {
-        "id": "ab21b44a.c7dbb8",
-        "type": "debug",
-        "z": "11cb3f4d.6e0081",
-        "name": "remove",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 640,
-        "y": 60,
-        "wires": []
     },
     {
         "id": "2b4ae0ff.b8f4a",
@@ -6599,12 +6587,10 @@
         "name": "new active fires",
         "collection": "",
         "operation": "find",
-        "x": 500,
-        "y": 120,
+        "x": 740,
+        "y": 280,
         "wires": [
-            [
-                "a2423eee.3b086"
-            ]
+            []
         ]
     },
     {
@@ -6618,8 +6604,8 @@
         "upsert": false,
         "multi": false,
         "operation": "delete",
-        "x": 480,
-        "y": 40,
+        "x": 720,
+        "y": 160,
         "wires": []
     },
     {
@@ -6633,20 +6619,8 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 490,
+        "x": 630,
         "y": 80,
-        "wires": []
-    },
-    {
-        "id": "a2423eee.3b086",
-        "type": "debug",
-        "z": "11cb3f4d.6e0081",
-        "name": "count new active fires",
-        "active": true,
-        "console": "false",
-        "complete": "payload.length",
-        "x": 780,
-        "y": 160,
         "wires": []
     },
     {
@@ -6657,7 +6631,7 @@
         "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1540,
+        "x": 1800,
         "y": 180,
         "wires": [
             [
@@ -6676,7 +6650,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1390,
+        "x": 1650,
         "y": 180,
         "wires": [
             [
@@ -6692,7 +6666,7 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 850,
+        "x": 1110,
         "y": 280,
         "wires": []
     },
@@ -6701,14 +6675,15 @@
         "type": "subflow:11cb3f4d.6e0081",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1020,
+        "x": 1280,
         "y": 160,
         "wires": [
             [
                 "6418206e.32692"
             ],
             [
-                "141c5502.36394b"
+                "141c5502.36394b",
+                "96e14f86.f497"
             ]
         ]
     },
@@ -6718,7 +6693,7 @@
         "z": "93cb4937.6fc068",
         "config": "4aa75271.38879c",
         "name": "modis take",
-        "x": 830,
+        "x": 1090,
         "y": 200,
         "wires": [
             [
@@ -6732,7 +6707,7 @@
         "z": "93cb4937.6fc068",
         "config": "4aa75271.38879c",
         "name": "modis leave",
-        "x": 1230,
+        "x": 1490,
         "y": 200,
         "wires": [
             [
@@ -6746,7 +6721,7 @@
         "z": "93cb4937.6fc068",
         "config": "ce56e26a.71d74",
         "name": "viirs take",
-        "x": 820,
+        "x": 1080,
         "y": 160,
         "wires": [
             [
@@ -6760,7 +6735,7 @@
         "z": "93cb4937.6fc068",
         "config": "ce56e26a.71d74",
         "name": "viirs leave",
-        "x": 1220,
+        "x": 1480,
         "y": 160,
         "wires": [
             [
@@ -6773,14 +6748,15 @@
         "type": "subflow:11cb3f4d.6e0081",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1020,
+        "x": 1280,
         "y": 200,
         "wires": [
             [
                 "bc17356b.e37bf8"
             ],
             [
-                "141c5502.36394b"
+                "141c5502.36394b",
+                "96e14f86.f497"
             ]
         ]
     },
@@ -6873,7 +6849,7 @@
         "type": "subflow:c8522537.c6f908",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1260,
+        "x": 1520,
         "y": 240,
         "wires": []
     },
@@ -6882,7 +6858,7 @@
         "type": "subflow:3f0768a7.1fac78",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 850,
+        "x": 1110,
         "y": 240,
         "wires": []
     },
@@ -7110,5 +7086,178 @@
         "x": 1520,
         "y": 100,
         "wires": []
+    },
+    {
+        "id": "96e14f86.f497",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "count NEW active fires",
+        "active": true,
+        "console": "false",
+        "complete": "payload.length",
+        "x": 1520,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ab21b44a.c7dbb8",
+        "type": "debug",
+        "z": "11cb3f4d.6e0081",
+        "name": "remove",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 760,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "b3a83868.537148",
+        "type": "delay",
+        "z": "11cb3f4d.6e0081",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "30",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 560,
+        "y": 280,
+        "wires": [
+            [
+                "21ccbcd9.05a984"
+            ]
+        ]
+    },
+    {
+        "id": "8c48556c.193d88",
+        "type": "delay",
+        "z": "11cb3f4d.6e0081",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "20",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 580,
+        "y": 160,
+        "wires": [
+            [
+                "b2b4d4d4.7f54d8"
+            ]
+        ]
+    },
+    {
+        "id": "59bd465d.f6ae48",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test active fires",
+        "func": "var type = \"viirs\";\nvar collection = \"activefires\" + type; // to detect new fires \nvar now = global.get('lastact');\nvar newfires = {};\nnewfires.type = type;\nnewfires.collection = collection;\nnewfires.payload = {\n    createdAt: new Date(now)\n};\nreturn newfires;\n",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 540,
+        "y": 760,
+        "wires": [
+            [
+                "9484585b.8339a8",
+                "10e6ffe2.fab67"
+            ]
+        ],
+        "outputLabels": [
+            "update/save"
+        ]
+    },
+    {
+        "id": "e6581364.42858",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 340,
+        "y": 760,
+        "wires": [
+            [
+                "59bd465d.f6ae48"
+            ]
+        ]
+    },
+    {
+        "id": "10e6ffe2.fab67",
+        "type": "debug",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 810,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "bf19942f.abc608",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "isArray",
+        "func": "if (Array.isArray(msg.payload)) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800,
+        "y": 220,
+        "wires": [
+            [
+                "c2b69ae.d793668",
+                "ca3d918b.a07f4",
+                "ffb09865.4f74f8"
+            ]
+        ]
+    },
+    {
+        "id": "1a47438f.3ac60c",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "isArray",
+        "func": "if (Array.isArray(msg.payload)) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800,
+        "y": 180,
+        "wires": [
+            [
+                "d7205286.be0a4",
+                "ca3d918b.a07f4",
+                "ffb09865.4f74f8"
+            ]
+        ]
+    },
+    {
+        "id": "9484585b.8339a8",
+        "type": "mongodb in",
+        "z": "5501c3cc.11327c",
+        "mongodb": "51a7af07.93444",
+        "name": "new active fires",
+        "collection": "",
+        "operation": "find",
+        "x": 760,
+        "y": 740,
+        "wires": [
+            [
+                "10e6ffe2.fab67"
+            ]
+        ]
     }
 ]
