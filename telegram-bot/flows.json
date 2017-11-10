@@ -3557,7 +3557,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "i18n conf",
-        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'pt-BR': ['pt'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: false,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    const gl = i.getFixedT('gl');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    global.set('lang-gl', gl);\n    i.loadLanguages(['es', 'en', 'pt', 'ast', 'gl'], function() {\n        // var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
+        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: global.get('ftp-path') + './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: global.get('ftp-path') + './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'pt-BR': ['pt'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: false,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    const gl = i.getFixedT('gl');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    global.set('lang-gl', gl);\n    i.loadLanguages(['es', 'en', 'pt', 'ast', 'gl'], function() {\n        // var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1060,
@@ -6659,7 +6659,7 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1110,
+        "x": 1130,
         "y": 260,
         "wires": []
     },
@@ -6686,7 +6686,7 @@
         "z": "93cb4937.6fc068",
         "config": "ce56e26a.71d74",
         "name": "nofit take",
-        "x": 1080,
+        "x": 1100,
         "y": 180,
         "wires": [
             [
@@ -6806,7 +6806,7 @@
         "type": "subflow:3f0768a7.1fac78",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1110,
+        "x": 1130,
         "y": 220,
         "wires": []
     },
@@ -7168,9 +7168,9 @@
         "y": 180,
         "wires": [
             [
-                "d7205286.be0a4",
                 "ca3d918b.a07f4",
-                "ffb09865.4f74f8"
+                "ffb09865.4f74f8",
+                "d7205286.be0a4"
             ]
         ]
     },
