@@ -74,3 +74,4 @@ viir-*.txt
 viirs-timestamp-*.txt
 modis-*.txt
 modis-timestamp-*.txt
+*.seg
