@@ -497,21 +497,21 @@
         ],
         "out": [
             {
-                "x": 920,
-                "y": 320,
+                "x": 1360,
+                "y": 200,
                 "wires": [
                     {
-                        "id": "21ccbcd9.05a984",
+                        "id": "e548f509.8b1958",
                         "port": 0
                     }
                 ]
             },
             {
-                "x": 920,
-                "y": 240,
+                "x": 1360,
+                "y": 140,
                 "wires": [
                     {
-                        "id": "21ccbcd9.05a984",
+                        "id": "e548f509.8b1958",
                         "port": 0
                     }
                 ]
@@ -749,6 +749,15 @@
         "z": "c8522537.c6f908",
         "filename": "nasa-new-fire-actives.json",
         "interval": "60"
+    },
+    {
+        "id": "d5287e69.2b449",
+        "type": "mongodb2",
+        "z": "11cb3f4d.6e0081",
+        "uri": "mongodb://127.0.0.1:27017/fuegos",
+        "name": "fires",
+        "options": "{\"poolSize\": 10}",
+        "parallelism": "-1"
     },
     {
         "id": "7aa07a53.1c8ec4",
@@ -1445,10 +1454,16 @@
                 "pt": "global",
                 "to": "all",
                 "tot": "str"
+            },
+            {
+                "p": "conf-path",
+                "pt": "global",
+                "to": "./",
+                "tot": "str"
             }
         ],
         "active": true,
-        "x": 130,
+        "x": 120,
         "y": 40,
         "wires": []
     },
@@ -1468,6 +1483,12 @@
                 "p": "sends-news-to",
                 "pt": "global",
                 "to": "all",
+                "tot": "str"
+            },
+            {
+                "p": "conf-path",
+                "pt": "global",
+                "to": "/data/",
                 "tot": "str"
             }
         ],
@@ -2871,27 +2892,19 @@
         "id": "9ef9c4c5.a68d08",
         "type": "function",
         "z": "11cb3f4d.6e0081",
-        "name": "diff active fires",
-        "func": "var type = msg.type;\nvar collection = \"activefires\" + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('lastact', now);\n\nvar updates = [];\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var id = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n\n        var setcommon = {\n            _id: id,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n        }\n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        var update = {};\n        update.payload = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        update.query = { _id:  id };\n        update.collection = collection;\n        updates.push(update);\n    }\n}\n// node.send([null, updates, null]);\n\n// del not active fires\nvar del = {};\ndel.payload = {\n    updatedAt: {$ne: now}\n};\ndel.collection = collection;\n// node.send([del, null, null]);\n\n// Now we notify only the new active fires\nvar newfires = {};\nnewfires.type = type;\nnewfires.collection = collection;\nnewfires.payload = {\n    createdAt: now\n};\n// https://github.com/node-red/node-red/wiki/API-Reference#server-Node-send\n// node.send([null, null, newfires]);\nreturn [updates, del, newfires];\n",
-        "outputs": "3",
+        "name": "update active fires",
+        "func": "var type = msg.type;\nvar collection = \"activefires\" + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var id = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n\n        var setcommon = {\n            _id: id,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {_id: id}, update: set, upsert:true } });\n    }\n}\n\nvar bulkUpdate = {};\nbulkUpdate.collection = collection;\n// http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n// https://docs.mongodb.com/manual/reference/write-concern/\nbulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\nreturn bulkUpdate;",
+        "outputs": "1",
         "noerr": 0,
-        "x": 260,
+        "x": 210,
         "y": 140,
         "wires": [
             [
-                "86f7a5f7.ccebf8"
-            ],
-            [
-                "8c48556c.193d88"
-            ],
-            [
-                "b3a83868.537148"
+                "54968e5b.432b1"
             ]
         ],
         "outputLabels": [
-            "update/save",
-            "remove",
-            "find"
+            "update/save"
         ]
     },
     {
@@ -3533,7 +3546,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "i18n conf",
-        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: global.get('ftp-path') + './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: global.get('ftp-path') + './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'pt-BR': ['pt'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: false,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    const gl = i.getFixedT('gl');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    global.set('lang-gl', gl);\n    i.loadLanguages(['es', 'en', 'pt', 'ast', 'gl'], function() {\n        // var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
+        "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: global.get('conf-path') + './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: global.get('conf-path') + './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'pt-BR': ['pt'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: false,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    const gl = i.getFixedT('gl');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    global.set('lang-gl', gl);\n    i.loadLanguages(['es', 'en', 'pt', 'ast', 'gl'], function() {\n        // var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1060,
@@ -3690,7 +3703,8 @@
                 "529f65ba.a3f03c"
             ],
             [
-                "e0bc7e33.2a795"
+                "e0bc7e33.2a795",
+                "c37e7408.e43de8"
             ]
         ],
         "outputLabels": [
@@ -6510,8 +6524,8 @@
         "active": true,
         "console": "true",
         "complete": "true",
-        "x": 1030,
-        "y": 980,
+        "x": 1150,
+        "y": 920,
         "wires": []
     },
     {
@@ -6520,8 +6534,8 @@
         "z": "93cb4937.6fc068",
         "name": "catch all",
         "scope": null,
-        "x": 800,
-        "y": 980,
+        "x": 920,
+        "y": 920,
         "wires": [
             [
                 "5031ecc8.ccb184"
@@ -6548,50 +6562,6 @@
             "address",
             "shared location"
         ]
-    },
-    {
-        "id": "21ccbcd9.05a984",
-        "type": "mongodb in",
-        "z": "11cb3f4d.6e0081",
-        "mongodb": "51a7af07.93444",
-        "name": "new active fires",
-        "collection": "",
-        "operation": "find",
-        "x": 740,
-        "y": 280,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "b2b4d4d4.7f54d8",
-        "type": "mongodb out",
-        "z": "11cb3f4d.6e0081",
-        "mongodb": "51a7af07.93444",
-        "name": "remove",
-        "collection": "",
-        "payonly": false,
-        "upsert": false,
-        "multi": false,
-        "operation": "delete",
-        "x": 720,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "86f7a5f7.ccebf8",
-        "type": "mongodb out",
-        "z": "11cb3f4d.6e0081",
-        "mongodb": "51a7af07.93444",
-        "name": "save/update",
-        "collection": "",
-        "payonly": false,
-        "upsert": true,
-        "multi": false,
-        "operation": "update",
-        "x": 630,
-        "y": 80,
-        "wires": []
     },
     {
         "id": "43c0f0b4.29a2a",
@@ -6645,7 +6615,7 @@
         "type": "subflow:11cb3f4d.6e0081",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1280,
+        "x": 1220,
         "y": 180,
         "wires": [
             [
@@ -6663,7 +6633,7 @@
         "z": "93cb4937.6fc068",
         "config": "ce56e26a.71d74",
         "name": "nofit take",
-        "x": 1100,
+        "x": 1020,
         "y": 180,
         "wires": [
             [
@@ -6677,7 +6647,7 @@
         "z": "93cb4937.6fc068",
         "config": "ce56e26a.71d74",
         "name": "notif leave",
-        "x": 1500,
+        "x": 1480,
         "y": 180,
         "wires": [
             [
@@ -6774,7 +6744,7 @@
         "type": "subflow:c8522537.c6f908",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1540,
+        "x": 1520,
         "y": 220,
         "wires": []
     },
@@ -7020,67 +6990,9 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1540,
+        "x": 1530,
         "y": 260,
         "wires": []
-    },
-    {
-        "id": "ab21b44a.c7dbb8",
-        "type": "debug",
-        "z": "11cb3f4d.6e0081",
-        "name": "remove",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 760,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "b3a83868.537148",
-        "type": "delay",
-        "z": "11cb3f4d.6e0081",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "30",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 560,
-        "y": 280,
-        "wires": [
-            [
-                "21ccbcd9.05a984"
-            ]
-        ]
-    },
-    {
-        "id": "8c48556c.193d88",
-        "type": "delay",
-        "z": "11cb3f4d.6e0081",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "20",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 580,
-        "y": 160,
-        "wires": [
-            [
-                "b2b4d4d4.7f54d8"
-            ]
-        ]
     },
     {
         "id": "59bd465d.f6ae48",
@@ -7225,6 +7137,235 @@
         "complete": "payload.chatId",
         "x": 1400,
         "y": 240,
+        "wires": []
+    },
+    {
+        "id": "54968e5b.432b1",
+        "type": "mongodb2 in",
+        "z": "11cb3f4d.6e0081",
+        "service": "_ext_",
+        "configNode": "d5287e69.2b449",
+        "name": "bulkWrite",
+        "collection": "",
+        "operation": "bulkWrite",
+        "x": 400,
+        "y": 140,
+        "wires": [
+            [
+                "9c69454c.af1928"
+            ]
+        ]
+    },
+    {
+        "id": "35871943.67ee96",
+        "type": "debug",
+        "z": "11cb3f4d.6e0081",
+        "name": "update",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 550,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2f350204.d4c09e",
+        "type": "mongodb2 in",
+        "z": "11cb3f4d.6e0081",
+        "service": "_ext_",
+        "configNode": "d5287e69.2b449",
+        "name": "deleteMany",
+        "collection": "",
+        "operation": "deleteMany",
+        "x": 790,
+        "y": 140,
+        "wires": [
+            [
+                "3150215a.5e429e"
+            ]
+        ]
+    },
+    {
+        "id": "e548f509.8b1958",
+        "type": "mongodb2 in",
+        "z": "11cb3f4d.6e0081",
+        "service": "_ext_",
+        "configNode": "d5287e69.2b449",
+        "name": "find",
+        "collection": "",
+        "operation": "find.toArray",
+        "x": 1190,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6c4b8a1f.1c02a4",
+        "type": "debug",
+        "z": "11cb3f4d.6e0081",
+        "name": "find all",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1390,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "e58b1a65.b4b888",
+        "type": "debug",
+        "z": "11cb3f4d.6e0081",
+        "name": "del",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 950,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "9c69454c.af1928",
+        "type": "function",
+        "z": "11cb3f4d.6e0081",
+        "name": "del not active fires",
+        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}}, null];\n    return del;\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return msg;\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 590,
+        "y": 140,
+        "wires": [
+            [
+                "2f350204.d4c09e"
+            ]
+        ]
+    },
+    {
+        "id": "3150215a.5e429e",
+        "type": "function",
+        "z": "11cb3f4d.6e0081",
+        "name": "find new active fires",
+        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    global.set('active-now', null); // we disable timestamp to semaphore deadlock detection\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now }];\n    return newfires;\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return msg;\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 1000,
+        "y": 140,
+        "wires": [
+            [
+                "e548f509.8b1958"
+            ]
+        ]
+    },
+    {
+        "id": "c37e7408.e43de8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "detect lang change",
+        "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return [null, msg];\n}\nelse \n    return [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 630,
+        "y": 1020,
+        "wires": [
+            [],
+            [
+                "63abfabd.c35504",
+                "87d143dc.3e3b3"
+            ]
+        ]
+    },
+    {
+        "id": "87d143dc.3e3b3",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "lang changed?",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 880,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "63abfabd.c35504",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "93cb4937.6fc068",
+        "x": 850,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "e06b5512.7b3b48",
+        "type": "semaphore-leave",
+        "z": "93cb4937.6fc068",
+        "config": "ce56e26a.71d74",
+        "name": "notif leave on error",
+        "x": 1510,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aebb34d4.b9dcd8",
+        "type": "inject",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "900",
+        "crontab": "",
+        "once": true,
+        "x": 1030,
+        "y": 300,
+        "wires": [
+            [
+                "43caf819.b497c8"
+            ]
+        ]
+    },
+    {
+        "id": "43caf819.b497c8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "timeout getting fires",
+        "func": "var last = global.get('active-now');\nif (last) {\n    // http://momentjs.com/docs/#/manipulating/add/\n    var now = context.global.moment();\n    if (context.global.moment(last).add(15, 'minutes').isBefore(now)) {\n        // release semaphore\n        var email = {};\n        email.topic = \"Bloqueo en el procesamiento de fuegos\";\n        email.payload = \"Pues eso...\";\n        return email;\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1220,
+        "y": 300,
+        "wires": [
+            [
+                "e06b5512.7b3b48",
+                "d1daa4e1.6f8f88",
+                "1614a7aa.4f2288"
+            ]
+        ]
+    },
+    {
+        "id": "d1daa4e1.6f8f88",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "released semaphore",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1520,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "1614a7aa.4f2288",
+        "type": "e-mail",
+        "z": "93cb4937.6fc068",
+        "server": "selver.comunes.org",
+        "port": "465",
+        "secure": true,
+        "name": "vjrj@ourproject.org",
+        "dname": "no-reply to vjrj",
+        "x": 1500,
+        "y": 380,
         "wires": []
     }
 ]

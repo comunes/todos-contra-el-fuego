@@ -11,6 +11,7 @@
     "node-red-contrib-config": "^1.1.1",
     "node-red-contrib-counter": "^0.1.4",
     "node-red-contrib-jsonpath": "~0.1.1",
+    "node-red-contrib-mongodb2": "^0.5.6",
     "node-red-contrib-persist": "^1.0.1",
     "node-red-contrib-semaphore": "^1.0.1",
     "node-red-contrib-telegrambot": "^2.6.1",
