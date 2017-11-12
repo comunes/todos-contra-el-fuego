@@ -4734,7 +4734,8 @@
         "y": 1480,
         "wires": [
             [
-                "b81751c6.f7b84"
+                "b81751c6.f7b84",
+                "e75ad8bd.147e48"
             ]
         ]
     },
@@ -4743,7 +4744,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "answer confirm",
-        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar key = 'location-' + msg.payload.chatId;\nvar location = global.get(key);\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set(key, null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
+        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar key = 'location-' + msg.payload.chatId;\nvar location = global.get(key);\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set(key, null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('📣 Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
         "outputs": "3",
         "noerr": 0,
         "x": 480,
@@ -4781,7 +4782,7 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "previous confirm",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "true",
         "x": 480,
