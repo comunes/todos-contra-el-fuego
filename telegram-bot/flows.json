@@ -7361,12 +7361,60 @@
         "type": "e-mail",
         "z": "93cb4937.6fc068",
         "server": "selver.comunes.org",
-        "port": "465",
-        "secure": true,
+        "port": "587",
+        "secure": false,
         "name": "vjrj@ourproject.org",
         "dname": "no-reply to vjrj",
         "x": 1500,
         "y": 380,
         "wires": []
+    },
+    {
+        "id": "765fb9d8.730558",
+        "type": "e-mail",
+        "z": "5501c3cc.11327c",
+        "server": "selver.comunes.org",
+        "port": "587",
+        "secure": false,
+        "name": "vjrj@ourproject.org",
+        "dname": "no-reply to vjrj",
+        "x": 460,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "e4fc71c5.ae308",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test email",
+        "func": "        var email = {};\n        email.topic = \"Test email\";\n        email.payload = \"Pues eso...\";\n        return email;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 180,
+        "wires": [
+            [
+                "765fb9d8.730558"
+            ]
+        ]
+    },
+    {
+        "id": "2c31df23.b95e6",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 120,
+        "y": 180,
+        "wires": [
+            [
+                "e4fc71c5.ae308"
+            ]
+        ]
     }
 ]
