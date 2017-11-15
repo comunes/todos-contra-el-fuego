@@ -7,6 +7,13 @@
         "info": ""
     },
     {
+        "id": "c1e7ebde.3e0b68",
+        "type": "tab",
+        "label": "NASA Notifications",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "128790f6.dee0df",
         "type": "tab",
         "label": "News",
@@ -760,43 +767,6 @@
         "parallelism": "-1"
     },
     {
-        "id": "7aa07a53.1c8ec4",
-        "type": "file in",
-        "z": "93cb4937.6fc068",
-        "name": "read",
-        "filename": "",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": true,
-        "x": 430,
-        "y": 180,
-        "wires": [
-            [
-                "3a5ab6ad.0e340a",
-                "b599e89d.2138b8"
-            ]
-        ]
-    },
-    {
-        "id": "b599e89d.2138b8",
-        "type": "csv",
-        "z": "93cb4937.6fc068",
-        "name": "modis csv",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "",
-        "multi": "one",
-        "ret": "\\n",
-        "temp": "",
-        "x": 680,
-        "y": 140,
-        "wires": [
-            [
-                "56fafc54.228824"
-            ]
-        ]
-    },
-    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -807,10 +777,12 @@
         "y": 360,
         "wires": [
             [
-                "55ebd8f8.436e38"
+                "55ebd8f8.436e38",
+                "17af36df.d20ff9"
             ],
             [
-                "11e83fb2.09a37"
+                "11e83fb2.09a37",
+                "17af36df.d20ff9"
             ]
         ]
     },
@@ -1364,43 +1336,6 @@
         "wires": []
     },
     {
-        "id": "e2ba2944.46c208",
-        "type": "file in",
-        "z": "93cb4937.6fc068",
-        "name": "read",
-        "filename": "",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": true,
-        "x": 430,
-        "y": 140,
-        "wires": [
-            [
-                "a27f7210.58aa1",
-                "6cb3b14e.a135a"
-            ]
-        ]
-    },
-    {
-        "id": "6cb3b14e.a135a",
-        "type": "csv",
-        "z": "93cb4937.6fc068",
-        "name": "viir csv",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "",
-        "multi": "one",
-        "ret": "\\n",
-        "temp": "",
-        "x": 680,
-        "y": 100,
-        "wires": [
-            [
-                "56fafc54.228824"
-            ]
-        ]
-    },
-    {
         "id": "70cddff9.2dbfb",
         "type": "function",
         "z": "93cb4937.6fc068",
@@ -1709,44 +1644,6 @@
         "wires": [
             [
                 "8cffd8ff.5786d8"
-            ]
-        ]
-    },
-    {
-        "id": "a27f7210.58aa1",
-        "type": "csv",
-        "z": "93cb4937.6fc068",
-        "name": "viirs array",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "",
-        "multi": "mult",
-        "ret": "\\n",
-        "temp": "",
-        "x": 620,
-        "y": 180,
-        "wires": [
-            [
-                "1a47438f.3ac60c"
-            ]
-        ]
-    },
-    {
-        "id": "3a5ab6ad.0e340a",
-        "type": "csv",
-        "z": "93cb4937.6fc068",
-        "name": "modis array",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "",
-        "multi": "mult",
-        "ret": "\\n",
-        "temp": "",
-        "x": 630,
-        "y": 220,
-        "wires": [
-            [
-                "1a47438f.3ac60c"
             ]
         ]
     },
@@ -2831,15 +2728,6 @@
         ]
     },
     {
-        "id": "e1100c9f.a5d3a",
-        "type": "subflow:2b8628df.fdcca8",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 2190,
-        "y": 180,
-        "wires": []
-    },
-    {
         "id": "9ef9c4c5.a68d08",
         "type": "function",
         "z": "11cb3f4d.6e0081",
@@ -2900,15 +2788,6 @@
         "wires": []
     },
     {
-        "id": "9ad7b6d1.a6e748",
-        "type": "subflow:4a3c7cc0.965dd4",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1230,
-        "y": 80,
-        "wires": []
-    },
-    {
         "id": "ef152257.faf05",
         "type": "comment",
         "z": "4a3c7cc0.965dd4",
@@ -2964,22 +2843,6 @@
         "wires": [
             [
                 "7a257dc0.bf8594"
-            ]
-        ]
-    },
-    {
-        "id": "56fafc54.228824",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "nasa-map",
-        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar lat = msg.payload.latitude;\nvar lon = msg.payload.longitude;\nvar pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\npname += \", satelite: \" + msg.payload.satellite;\nvar maxkevin = 373;\nvar intensity =\n    (msg.payload.bright_ti4? msg.payload.bright_ti4: \n    (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\nvar radius = msg.payload.scan * 1000;\n\nvar newMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: \"NASA\",\n        // icon: \"earthquake\",\n        color: \"red\",\n        fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        radius: radius,\n        fillOpacity: 1,\n        iconColor:'red', // obligatorio\n        stroke: false,\n        addtoheatmap: false,\n        // fillOpacity: 0.8,\n        clickable: true,\n        weblink: {url: \"http://example.com\", name: \"Más info\"}\n        \n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1060,
-        "y": 100,
-        "wires": [
-            [
-                "9ad7b6d1.a6e748"
             ]
         ]
     },
@@ -3125,22 +2988,6 @@
         ]
     },
     {
-        "id": "c0867d8e.a5999",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "conf map",
-        "func": "/* Only for tests */\nvar cfg = {};\ncfg.payload = {};\ncfg.payload.command = {\n    cluster:0,\n    layer:\"OSM grey\",\n    lat:40.4,\n    lon:-3.6833333,\n    zoom:6,\n};   \nreturn [cfg];",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1060,
-        "y": 60,
-        "wires": [
-            [
-                "9ad7b6d1.a6e748"
-            ]
-        ]
-    },
-    {
         "id": "3534f560.645aea",
         "type": "inject",
         "z": "93cb4937.6fc068",
@@ -3151,11 +2998,10 @@
         "repeat": "",
         "crontab": "",
         "once": true,
-        "x": 910,
-        "y": 20,
+        "x": 810,
+        "y": 80,
         "wires": [
             [
-                "c0867d8e.a5999",
                 "f2c9762e.6c90a8"
             ]
         ]
@@ -3218,41 +3064,6 @@
         "y": 100,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "de887fc7.5e54",
-        "type": "delay",
-        "z": "93cb4937.6fc068",
-        "name": "d 3s",
-        "pauseType": "delay",
-        "timeout": "3",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 910,
-        "y": 60,
-        "wires": [
-            [
-                "c0867d8e.a5999"
-            ]
-        ]
-    },
-    {
-        "id": "ec5c317.b1889d",
-        "type": "subflow:91777bb3.922328",
-        "z": "93cb4937.6fc068",
-        "x": 750,
-        "y": 60,
-        "wires": [
-            [
-                "de887fc7.5e54"
-            ]
         ]
     },
     {
@@ -3500,8 +3311,8 @@
         "func": "var i = context.global.i18next;\nvar backend = context.global.i18nextbackend;\n\nvar backOpts = {\n  // path where resources get loaded from\n  loadPath: global.get('conf-path') + './locales/{{lng}}/{{ns}}.json',\n\n  // path to post missing resources\n  addPath: global.get('conf-path') + './locales/{{lng}}/{{ns}}.missing.json',\n\n  // jsonIndent to use when storing json files\n  jsonIndent: 2\n};\n\ni.use(backend)\n .init({\n  backend: backOpts,\n  lng: 'es',\n  //fallbackLng: 'es',\n  fallbackLng: { \n    'en-US': ['en'], \n    'en-GB': ['en'],\n    'pt-BR': ['pt'],\n    'default': ['es']\n    },\n  whitelist: false,  \n  // whitelist: ['es', 'en'], // allowed languages\n  load: 'all', // es-ES -> es, en-US -> en\n  debug: false,\n  ns: 'telegram-bot',\n  defaultNS: 'telegram-bot',\n  saveMissing: false, // if true seems it's fails to getResourceBundle\n  saveMissingTo: 'all',\n  keySeparator: 'ß',\n  nsSeparator: 'ð',\n  pluralSeparator: 'đ',\n}, function(err, t) {\n    // initialized and ready to go!\n    const es = i.getFixedT('es');\n    const en = i.getFixedT('en');\n    const pt = i.getFixedT('pt');\n    const ast = i.getFixedT('ast');\n    const gl = i.getFixedT('gl');\n    global.set('lang-es', es);\n    global.set('lang-en', en);\n    global.set('lang-ast', ast);\n    global.set('lang-pt', pt);\n    global.set('lang-gl', gl);\n    i.loadLanguages(['es', 'en', 'pt', 'ast', 'gl'], function() {\n        // var t = global.get('lang-pt');\n        // node.log(t('Sí'));\n    });\n});\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1060,
-        "y": 20,
+        "x": 960,
+        "y": 80,
         "wires": [
             [
                 "1f93ce66.41da62"
@@ -3516,8 +3327,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1210,
-        "y": 20,
+        "x": 1110,
+        "y": 80,
         "wires": []
     },
     {
@@ -3559,7 +3370,7 @@
         "type": "function",
         "z": "6995c6a.1a0bf38",
         "name": "set i18n if not set",
-        "func": "if (typeof msg.i18n === 'undefined') {\n    var current = msg.lang;\n    if (current.match(/^es/)) {\n        //node.log(\"Current language Spanish\");\n        msg.i18n = global.get('lang-es');\n    } else if (current.match(/^gl/)) {\n        // node.log(\"Current language Galego\");\n        msg.i18n = global.get('lang-gl');\n    } else if (current.match(/^en/)) {\n        // node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        // node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        // node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Fallback language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    // node.log(\"i18n already configured\");\n} \n\nconsole.assert(typeof msg.i18n === 'function', 'wooops problem setting i18n');\n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; ",
+        "func": "if (typeof msg.i18n === 'undefined') {\n    var current = msg.lang;\n    if (current.match(/^es/)) {\n        //node.log(\"Current language Spanish\");\n        msg.i18n = global.get('lang-es');\n    } else if (current.match(/^gl/)) {\n        // node.log(\"Current language Galego\");\n        msg.i18n = global.get('lang-gl');\n    } else if (current.match(/^en/)) {\n        // node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        // node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        // node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Fallback language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    // node.log(\"i18n already configured\");\n} \n\n// console.assert(typeof msg.i18n === 'function', 'wooops problem setting i18n');\n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; ",
         "outputs": "1",
         "noerr": 0,
         "x": 310,
@@ -4061,7 +3872,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "send to all",
-        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    if (chatId !== 9998999) {  // test chatId\n        node.send(noti);\n    }\n}\n\n",
+        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    if (noti.payload.content === 'empty') {\n        noti.payload.content = '';\n    }\n    if (chatId !== 9998999) {  // test chatId\n        node.send(noti);\n    }\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1030,
@@ -4856,94 +4667,6 @@
         "wires": []
     },
     {
-        "id": "695ef2aa.e9174c",
-        "type": "tcp in",
-        "z": "93cb4937.6fc068",
-        "name": "modis-listen",
-        "server": "server",
-        "host": "",
-        "port": "40001",
-        "datamode": "single",
-        "datatype": "utf8",
-        "newline": "",
-        "topic": "",
-        "base64": false,
-        "x": 110,
-        "y": 140,
-        "wires": [
-            [
-                "4c5a12a1.31afcc"
-            ]
-        ]
-    },
-    {
-        "id": "4c5a12a1.31afcc",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "modis file",
-        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 260,
-        "y": 140,
-        "wires": [
-            [
-                "e2ba2944.46c208",
-                "73439cb8.e35604"
-            ]
-        ]
-    },
-    {
-        "id": "9329a152.948d2",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "viirs file",
-        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nfile.type = \"viirs\";\nreturn file;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 260,
-        "y": 180,
-        "wires": [
-            [
-                "73439cb8.e35604",
-                "7aa07a53.1c8ec4"
-            ]
-        ]
-    },
-    {
-        "id": "609b276.68e5ed8",
-        "type": "tcp in",
-        "z": "93cb4937.6fc068",
-        "name": "viirs-listen",
-        "server": "server",
-        "host": "",
-        "port": "40002",
-        "datamode": "single",
-        "datatype": "utf8",
-        "newline": "",
-        "topic": "modis-viirs",
-        "base64": false,
-        "x": 100,
-        "y": 180,
-        "wires": [
-            [
-                "9329a152.948d2"
-            ]
-        ]
-    },
-    {
-        "id": "73439cb8.e35604",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "filename",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 440,
-        "y": 220,
-        "wires": []
-    },
-    {
         "id": "c60831ef.7bc3a",
         "type": "function",
         "z": "1bbd6687.58eae9",
@@ -5130,29 +4853,6 @@
         "y": 480,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "279d7275.dfa1fe",
-        "type": "delay",
-        "z": "93cb4937.6fc068",
-        "name": "1000msg/5seg",
-        "pauseType": "rate",
-        "timeout": "5",
-        "timeoutUnits": "minutes",
-        "rate": "1000",
-        "nbRateUnits": "5",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 1980,
-        "y": 180,
-        "wires": [
-            [
-                "e1100c9f.a5d3a"
-            ]
         ]
     },
     {
@@ -6354,8 +6054,8 @@
         "active": true,
         "console": "true",
         "complete": "true",
-        "x": 1150,
-        "y": 920,
+        "x": 330,
+        "y": 160,
         "wires": []
     },
     {
@@ -6364,8 +6064,8 @@
         "z": "93cb4937.6fc068",
         "name": "catch all",
         "scope": null,
-        "x": 920,
-        "y": 920,
+        "x": 100,
+        "y": 160,
         "wires": [
             [
                 "5031ecc8.ccb184"
@@ -6391,98 +6091,6 @@
         "outputLabels": [
             "address",
             "shared location"
-        ]
-    },
-    {
-        "id": "43c0f0b4.29a2a",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "set lat/lon",
-        "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1800,
-        "y": 180,
-        "wires": [
-            [
-                "279d7275.dfa1fe"
-            ]
-        ]
-    },
-    {
-        "id": "8ab3ff7d.a30d",
-        "type": "split",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 1650,
-        "y": 180,
-        "wires": [
-            [
-                "43c0f0b4.29a2a"
-            ]
-        ]
-    },
-    {
-        "id": "ffb09865.4f74f8",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "count active fires",
-        "active": true,
-        "console": "false",
-        "complete": "payload.length",
-        "x": 1130,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "b2a582b8.95928",
-        "type": "subflow:11cb3f4d.6e0081",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1220,
-        "y": 180,
-        "wires": [
-            [
-                "6418206e.32692"
-            ],
-            [
-                "141c5502.36394b",
-                "96e14f86.f497"
-            ]
-        ]
-    },
-    {
-        "id": "d7205286.be0a4",
-        "type": "semaphore-take",
-        "z": "93cb4937.6fc068",
-        "config": "ce56e26a.71d74",
-        "name": "nofit take",
-        "x": 1020,
-        "y": 180,
-        "wires": [
-            [
-                "b2a582b8.95928"
-            ]
-        ]
-    },
-    {
-        "id": "6418206e.32692",
-        "type": "semaphore-leave",
-        "z": "93cb4937.6fc068",
-        "config": "ce56e26a.71d74",
-        "name": "notif leave",
-        "x": 1480,
-        "y": 180,
-        "wires": [
-            [
-                "8ab3ff7d.a30d"
-            ]
         ]
     },
     {
@@ -6568,24 +6176,6 @@
                 "796f3781.151c38"
             ]
         ]
-    },
-    {
-        "id": "141c5502.36394b",
-        "type": "subflow:c8522537.c6f908",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1520,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "ca3d918b.a07f4",
-        "type": "subflow:3f0768a7.1fac78",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1130,
-        "y": 220,
-        "wires": []
     },
     {
         "id": "17c09c20.9d4a84",
@@ -6813,18 +6403,6 @@
         "wires": []
     },
     {
-        "id": "96e14f86.f497",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "count NEW active fires",
-        "active": true,
-        "console": "false",
-        "complete": "payload.length",
-        "x": 1530,
-        "y": 260,
-        "wires": []
-    },
-    {
         "id": "59bd465d.f6ae48",
         "type": "function",
         "z": "5501c3cc.11327c",
@@ -6874,24 +6452,6 @@
         "x": 810,
         "y": 860,
         "wires": []
-    },
-    {
-        "id": "1a47438f.3ac60c",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "isArray",
-        "func": "if (Array.isArray(msg.payload)) {\n    return msg;\n}",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 800,
-        "y": 180,
-        "wires": [
-            [
-                "ca3d918b.a07f4",
-                "ffb09865.4f74f8",
-                "d7205286.be0a4"
-            ]
-        ]
     },
     {
         "id": "9484585b.8339a8",
@@ -7121,61 +6681,6 @@
         "z": "93cb4937.6fc068",
         "x": 850,
         "y": 1020,
-        "wires": []
-    },
-    {
-        "id": "e06b5512.7b3b48",
-        "type": "semaphore-leave",
-        "z": "93cb4937.6fc068",
-        "config": "ce56e26a.71d74",
-        "name": "notif leave on error",
-        "x": 1510,
-        "y": 300,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "43caf819.b497c8",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "timeout getting fires",
-        "func": "    var email = {};\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\";\n    return email;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1220,
-        "y": 320,
-        "wires": [
-            [
-                "e06b5512.7b3b48",
-                "d1daa4e1.6f8f88",
-                "1614a7aa.4f2288"
-            ]
-        ]
-    },
-    {
-        "id": "d1daa4e1.6f8f88",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "released semaphore",
-        "active": true,
-        "console": "false",
-        "complete": "payload",
-        "x": 1520,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "1614a7aa.4f2288",
-        "type": "e-mail",
-        "z": "93cb4937.6fc068",
-        "server": "selver.comunes.org",
-        "port": "587",
-        "secure": false,
-        "name": "vjrj@ourproject.org",
-        "dname": "no-reply to vjrj",
-        "x": 1500,
-        "y": 380,
         "wires": []
     },
     {
@@ -7663,22 +7168,6 @@
         ]
     },
     {
-        "id": "86e0a3ef.9995e",
-        "type": "catch",
-        "z": "93cb4937.6fc068",
-        "name": "catch fire active processing",
-        "scope": [
-            "b2a582b8.95928"
-        ],
-        "x": 920,
-        "y": 320,
-        "wires": [
-            [
-                "43caf819.b497c8"
-            ]
-        ]
-    },
-    {
         "id": "da7e1a7c.19d3c8",
         "type": "assert",
         "z": "76bd701f.29d0f",
@@ -7797,8 +7286,8 @@
         "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 300,
-        "y": 300,
+        "x": 260,
+        "y": 280,
         "wires": [
             []
         ]
@@ -8068,6 +7557,579 @@
         "wires": [
             [
                 "2c203b85.157434"
+            ]
+        ]
+    },
+    {
+        "id": "48219ca2.511564",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "timeout getting fires",
+        "func": "    var email = {};\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\";\n    return email;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 480,
+        "y": 520,
+        "wires": [
+            [
+                "fe0b3515.374378",
+                "f3054b89.b5eac8",
+                "1b05feb.f6de801"
+            ]
+        ]
+    },
+    {
+        "id": "fe0b3515.374378",
+        "type": "semaphore-leave",
+        "z": "c1e7ebde.3e0b68",
+        "config": "ce56e26a.71d74",
+        "name": "notif leave on error",
+        "x": 770,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f3054b89.b5eac8",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "released semaphore",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 780,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "1b05feb.f6de801",
+        "type": "e-mail",
+        "z": "c1e7ebde.3e0b68",
+        "server": "selver.comunes.org",
+        "port": "587",
+        "secure": false,
+        "name": "vjrj@ourproject.org",
+        "dname": "no-reply to vjrj",
+        "x": 760,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "ff4373ed.81f01",
+        "type": "catch",
+        "z": "c1e7ebde.3e0b68",
+        "name": "catch fire active processing",
+        "scope": [
+            "b2a582b8.95928"
+        ],
+        "x": 180,
+        "y": 520,
+        "wires": [
+            [
+                "48219ca2.511564"
+            ]
+        ]
+    },
+    {
+        "id": "560ecd7f.581254",
+        "type": "tcp in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "modis-listen",
+        "server": "server",
+        "host": "",
+        "port": "40001",
+        "datamode": "single",
+        "datatype": "utf8",
+        "newline": "",
+        "topic": "",
+        "base64": false,
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "2c0b967b.4cae8a"
+            ]
+        ]
+    },
+    {
+        "id": "a23a968c.a040b8",
+        "type": "tcp in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "viirs-listen",
+        "server": "server",
+        "host": "",
+        "port": "40002",
+        "datamode": "single",
+        "datatype": "utf8",
+        "newline": "",
+        "topic": "modis-viirs",
+        "base64": false,
+        "x": 120,
+        "y": 300,
+        "wires": [
+            [
+                "b8eec86.79ece38"
+            ]
+        ]
+    },
+    {
+        "id": "b8eec86.79ece38",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "viirs file",
+        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nfile.type = \"viirs\";\nreturn file;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 300,
+        "wires": [
+            [
+                "46a349eb.45da68",
+                "623c7b24.8d0e84"
+            ]
+        ]
+    },
+    {
+        "id": "2c0b967b.4cae8a",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "modis file",
+        "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 260,
+        "wires": [
+            [
+                "2005640b.f800bc",
+                "46a349eb.45da68"
+            ]
+        ]
+    },
+    {
+        "id": "2005640b.f800bc",
+        "type": "file in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "read",
+        "filename": "",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": true,
+        "x": 450,
+        "y": 260,
+        "wires": [
+            [
+                "cb6427c6.0c2058",
+                "4c9d7d67.9de2f4"
+            ]
+        ]
+    },
+    {
+        "id": "623c7b24.8d0e84",
+        "type": "file in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "read",
+        "filename": "",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": true,
+        "x": 450,
+        "y": 300,
+        "wires": [
+            [
+                "33d38060.1d916",
+                "6602919e.f6455"
+            ]
+        ]
+    },
+    {
+        "id": "46a349eb.45da68",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "filename",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 460,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "33d38060.1d916",
+        "type": "csv",
+        "z": "c1e7ebde.3e0b68",
+        "name": "modis array",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "x": 650,
+        "y": 340,
+        "wires": [
+            [
+                "ab66e9e6.ee9c48"
+            ]
+        ]
+    },
+    {
+        "id": "cb6427c6.0c2058",
+        "type": "csv",
+        "z": "c1e7ebde.3e0b68",
+        "name": "viirs array",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "x": 650,
+        "y": 300,
+        "wires": [
+            [
+                "ab66e9e6.ee9c48"
+            ]
+        ]
+    },
+    {
+        "id": "6602919e.f6455",
+        "type": "csv",
+        "z": "c1e7ebde.3e0b68",
+        "name": "modis csv",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "x": 650,
+        "y": 260,
+        "wires": [
+            [
+                "54268157.0f689"
+            ]
+        ]
+    },
+    {
+        "id": "4c9d7d67.9de2f4",
+        "type": "csv",
+        "z": "c1e7ebde.3e0b68",
+        "name": "viir csv",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "x": 640,
+        "y": 220,
+        "wires": [
+            [
+                "54268157.0f689"
+            ]
+        ]
+    },
+    {
+        "id": "54268157.0f689",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "nasa-map",
+        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar lat = msg.payload.latitude;\nvar lon = msg.payload.longitude;\nvar pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\npname += \", satelite: \" + msg.payload.satellite;\nvar maxkevin = 373;\nvar intensity =\n    (msg.payload.bright_ti4? msg.payload.bright_ti4: \n    (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\nvar radius = msg.payload.scan * 1000;\n\nvar newMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: \"NASA\",\n        // icon: \"earthquake\",\n        color: \"red\",\n        fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        radius: radius,\n        fillOpacity: 1,\n        iconColor:'red', // obligatorio\n        stroke: false,\n        addtoheatmap: false,\n        // fillOpacity: 0.8,\n        clickable: true,\n        weblink: {url: \"http://example.com\", name: \"Más info\"}\n        \n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 920,
+        "y": 220,
+        "wires": [
+            [
+                "b6b485e5.1a3ed8"
+            ]
+        ]
+    },
+    {
+        "id": "b6b485e5.1a3ed8",
+        "type": "subflow:4a3c7cc0.965dd4",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1260,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "a5303299.fefc",
+        "type": "inject",
+        "z": "c1e7ebde.3e0b68",
+        "name": "onInit",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 760,
+        "y": 100,
+        "wires": [
+            [
+                "deb9b82d.5d8028"
+            ]
+        ]
+    },
+    {
+        "id": "70007906.14a698",
+        "type": "subflow:91777bb3.922328",
+        "z": "c1e7ebde.3e0b68",
+        "x": 780,
+        "y": 140,
+        "wires": [
+            [
+                "5c43e91c.3921a8"
+            ]
+        ]
+    },
+    {
+        "id": "5c43e91c.3921a8",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "d 3s",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 940,
+        "y": 140,
+        "wires": [
+            [
+                "deb9b82d.5d8028"
+            ]
+        ]
+    },
+    {
+        "id": "deb9b82d.5d8028",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "conf map",
+        "func": "/* Only for tests */\nvar cfg = {};\ncfg.payload = {};\ncfg.payload.command = {\n    cluster:0,\n    layer:\"OSM grey\",\n    lat:40.4,\n    lon:-3.6833333,\n    zoom:6,\n};   \nreturn [cfg];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1090,
+        "y": 140,
+        "wires": [
+            [
+                "b6b485e5.1a3ed8"
+            ]
+        ]
+    },
+    {
+        "id": "7bed2216.606b1c",
+        "type": "semaphore-take",
+        "z": "c1e7ebde.3e0b68",
+        "config": "ce56e26a.71d74",
+        "name": "nofit take",
+        "x": 1000,
+        "y": 300,
+        "wires": [
+            [
+                "cba6a942.ef2ee8"
+            ]
+        ]
+    },
+    {
+        "id": "ab66e9e6.ee9c48",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "isArray",
+        "func": "if (Array.isArray(msg.payload)) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 840,
+        "y": 300,
+        "wires": [
+            [
+                "840c7f68.e29b2",
+                "de8cfdcc.f432c",
+                "7bed2216.606b1c"
+            ]
+        ]
+    },
+    {
+        "id": "cba6a942.ef2ee8",
+        "type": "subflow:11cb3f4d.6e0081",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1200,
+        "y": 300,
+        "wires": [
+            [
+                "fa0acd4d.e342e"
+            ],
+            [
+                "94d3538b.7c29e",
+                "c19f9fb2.881cd"
+            ]
+        ]
+    },
+    {
+        "id": "840c7f68.e29b2",
+        "type": "subflow:3f0768a7.1fac78",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1110,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "de8cfdcc.f432c",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "count active fires",
+        "active": true,
+        "console": "false",
+        "complete": "payload.length",
+        "x": 1110,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "c19f9fb2.881cd",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "count NEW active fires",
+        "active": true,
+        "console": "false",
+        "complete": "payload.length",
+        "x": 1470,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "94d3538b.7c29e",
+        "type": "subflow:c8522537.c6f908",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1460,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "fa0acd4d.e342e",
+        "type": "semaphore-leave",
+        "z": "c1e7ebde.3e0b68",
+        "config": "ce56e26a.71d74",
+        "name": "notif leave",
+        "x": 1420,
+        "y": 300,
+        "wires": [
+            [
+                "51e12e27.c4964"
+            ]
+        ]
+    },
+    {
+        "id": "51e12e27.c4964",
+        "type": "split",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1590,
+        "y": 300,
+        "wires": [
+            [
+                "5c054d9b.8452f4"
+            ]
+        ]
+    },
+    {
+        "id": "5c054d9b.8452f4",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "set lat/lon",
+        "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1740,
+        "y": 300,
+        "wires": [
+            [
+                "8795dd0e.a135a"
+            ]
+        ]
+    },
+    {
+        "id": "8795dd0e.a135a",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "1000msg/5seg",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "minutes",
+        "rate": "1000",
+        "nbRateUnits": "5",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 1920,
+        "y": 300,
+        "wires": [
+            [
+                "7a5495a3.d75efc"
+            ]
+        ]
+    },
+    {
+        "id": "7a5495a3.d75efc",
+        "type": "subflow:2b8628df.fdcca8",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 2130,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "882e4fb1.24e3a",
+        "type": "inject",
+        "z": "128790f6.dee0df",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 120,
+        "y": 120,
+        "wires": [
+            [
+                "b6f75a8a.36fb18"
+            ]
+        ]
+    },
+    {
+        "id": "b6f75a8a.36fb18",
+        "type": "function",
+        "z": "128790f6.dee0df",
+        "name": "empty news - go /start",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"empty\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 460,
+        "y": 120,
+        "wires": [
+            [
+                "4675b760.d24348"
             ]
         ]
     }
