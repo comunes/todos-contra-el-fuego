@@ -7521,7 +7521,7 @@
         "z": "c1e7ebde.3e0b68",
         "name": "catch fire active processing",
         "scope": [
-            "b2a582b8.95928"
+            "cba6a942.ef2ee8"
         ],
         "x": 180,
         "y": 520,
@@ -8032,5 +8032,31 @@
                 "4675b760.d24348"
             ]
         ]
+    },
+    {
+        "id": "10ab7dc2.5c82a2",
+        "type": "catch",
+        "z": "c1e7ebde.3e0b68",
+        "name": "catch all",
+        "scope": null,
+        "x": 120,
+        "y": 680,
+        "wires": [
+            [
+                "1a8f241d.48463c"
+            ]
+        ]
+    },
+    {
+        "id": "1a8f241d.48463c",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "catch error ----------------------",
+        "active": true,
+        "console": "true",
+        "complete": "true",
+        "x": 350,
+        "y": 680,
+        "wires": []
     }
 ]
