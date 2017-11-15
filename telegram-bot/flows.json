@@ -767,6 +767,15 @@
         "parallelism": "-1"
     },
     {
+        "id": "d5559ee5.960e2",
+        "type": "mongodb2",
+        "z": "",
+        "uri": "mongodb://127.0.0.1:27017/fuegos",
+        "name": "fires",
+        "options": "{\"poolSize\": 10}",
+        "parallelism": "-1"
+    },
+    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -2783,7 +2792,7 @@
         "active": true,
         "console": false,
         "complete": "true",
-        "x": 750,
+        "x": 510,
         "y": 160,
         "wires": []
     },
@@ -2793,8 +2802,8 @@
         "z": "4a3c7cc0.965dd4",
         "name": "payload: name, lat, lon, layer, ..., icon, iconColor, photoUrl, deleted",
         "info": "layer, speed, bearing, accuracy, icon, iconColor, photoUrl, deleted",
-        "x": 1240,
-        "y": 180,
+        "x": 720,
+        "y": 260,
         "wires": []
     },
     {
@@ -2883,7 +2892,7 @@
         "maxage": "20000",
         "usermenu": "hide",
         "layers": "show",
-        "x": 1070,
+        "x": 550,
         "y": 220,
         "wires": []
     },
@@ -5763,7 +5772,7 @@
         "type": "subflow:91777bb3.922328",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 310,
+        "x": 330,
         "y": 1900,
         "wires": [
             [
@@ -7707,9 +7716,7 @@
         "x": 650,
         "y": 260,
         "wires": [
-            [
-                "54268157.0f689"
-            ]
+            []
         ]
     },
     {
@@ -7726,25 +7733,7 @@
         "x": 640,
         "y": 220,
         "wires": [
-            [
-                "54268157.0f689"
-            ]
-        ]
-    },
-    {
-        "id": "54268157.0f689",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "nasa-map",
-        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar lat = msg.payload.latitude;\nvar lon = msg.payload.longitude;\nvar pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\npname += \", satelite: \" + msg.payload.satellite;\nvar maxkevin = 373;\nvar intensity =\n    (msg.payload.bright_ti4? msg.payload.bright_ti4: \n    (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\nvar radius = msg.payload.scan * 1000;\n\nvar newMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: \"NASA\",\n        // icon: \"earthquake\",\n        color: \"red\",\n        fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        radius: radius,\n        fillOpacity: 1,\n        iconColor:'red', // obligatorio\n        stroke: false,\n        addtoheatmap: false,\n        // fillOpacity: 0.8,\n        clickable: true,\n        weblink: {url: \"http://example.com\", name: \"Más info\"}\n        \n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 920,
-        "y": 220,
-        "wires": [
-            [
-                "b6b485e5.1a3ed8"
-            ]
+            []
         ]
     },
     {
@@ -7752,8 +7741,8 @@
         "type": "subflow:4a3c7cc0.965dd4",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1260,
-        "y": 160,
+        "x": 860,
+        "y": 120,
         "wires": []
     },
     {
@@ -7767,8 +7756,8 @@
         "repeat": "",
         "crontab": "",
         "once": true,
-        "x": 760,
-        "y": 100,
+        "x": 390,
+        "y": 80,
         "wires": [
             [
                 "deb9b82d.5d8028"
@@ -7779,8 +7768,8 @@
         "id": "70007906.14a698",
         "type": "subflow:91777bb3.922328",
         "z": "c1e7ebde.3e0b68",
-        "x": 780,
-        "y": 140,
+        "x": 380,
+        "y": 120,
         "wires": [
             [
                 "5c43e91c.3921a8"
@@ -7802,8 +7791,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 940,
-        "y": 140,
+        "x": 540,
+        "y": 120,
         "wires": [
             [
                 "deb9b82d.5d8028"
@@ -7818,8 +7807,8 @@
         "func": "/* Only for tests */\nvar cfg = {};\ncfg.payload = {};\ncfg.payload.command = {\n    cluster:0,\n    layer:\"OSM grey\",\n    lat:40.4,\n    lon:-3.6833333,\n    zoom:6,\n};   \nreturn [cfg];",
         "outputs": 1,
         "noerr": 0,
-        "x": 1090,
-        "y": 140,
+        "x": 690,
+        "y": 120,
         "wires": [
             [
                 "b6b485e5.1a3ed8"
@@ -7927,7 +7916,8 @@
         "y": 300,
         "wires": [
             [
-                "51e12e27.c4964"
+                "51e12e27.c4964",
+                "5dc2de12.0ddf3"
             ]
         ]
     },
@@ -8058,5 +8048,129 @@
         "x": 350,
         "y": 680,
         "wires": []
+    },
+    {
+        "id": "20b15f93.74ebe",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "find active fires",
+        "func": "var types = ['modis', 'viirs'];\nfor (var i = 0; i < types.length; i++) {\n    var type = types[i];\n    var collection = \"activefires\" + type; \n    var actfires = {};\n    actfires.type = type;\n    actfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    actfires.payload = [{ }];\n    node.send(actfires);\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 1240,
+        "y": 240,
+        "wires": [
+            [
+                "9b75b54f.f01b58"
+            ]
+        ]
+    },
+    {
+        "id": "9b75b54f.f01b58",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find",
+        "collection": "",
+        "operation": "find.toArray",
+        "x": 1410,
+        "y": 240,
+        "wires": [
+            [
+                "5dc2de12.0ddf3"
+            ]
+        ]
+    },
+    {
+        "id": "5dc2de12.0ddf3",
+        "type": "split",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1590,
+        "y": 240,
+        "wires": [
+            [
+                "fad78f11.31968"
+            ]
+        ]
+    },
+    {
+        "id": "fad78f11.31968",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "set lat/lon",
+        "func": "msg.payload.longitude = msg.payload._id.coordinates[0];\nmsg.payload.latitude = msg.payload._id.coordinates[1];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1740,
+        "y": 240,
+        "wires": [
+            [
+                "24b2391f.e79716"
+            ]
+        ]
+    },
+    {
+        "id": "24b2391f.e79716",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "nasa-map",
+        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nif (msg.payload && msg.payload.longitude && msg.payload.latitude) {\n    var lat = msg.payload.latitude;\n    var lon = msg.payload.longitude;\n    var pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\n    pname += \", satelite: \" + msg.payload.satellite;\n    var maxkevin = 373;\n    var intensity =\n        (msg.payload.bright_ti4? msg.payload.bright_ti4: \n        (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\n    var radius = msg.payload.scan * 1000;\n    \n    var newMsg = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"NASA\",\n            // icon: \"earthquake\",\n            color: \"red\",\n            fillColor: \"red\",\n            // intensity: intensity,\n            // weight: intensity,\n            radius: radius,\n            fillOpacity: 1,\n            iconColor:'red', // obligatorio\n            stroke: false,\n            addtoheatmap: false,\n            // fillOpacity: 0.8,\n            clickable: true,\n            weblink: {url: \"http://example.com\", name: \"Más info\"}\n            \n            // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n        }\n    };\n    \n    return newMsg;\n    \n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1920,
+        "y": 240,
+        "wires": [
+            [
+                "f5971d3b.95126"
+            ]
+        ]
+    },
+    {
+        "id": "f5971d3b.95126",
+        "type": "subflow:4a3c7cc0.965dd4",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 2160,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "89ff7ceb.6b95a",
+        "type": "subflow:91777bb3.922328",
+        "z": "c1e7ebde.3e0b68",
+        "x": 1030,
+        "y": 240,
+        "wires": [
+            [
+                "20b15f93.74ebe"
+            ]
+        ]
+    },
+    {
+        "id": "146e7741.7a26a9",
+        "type": "inject",
+        "z": "c1e7ebde.3e0b68",
+        "name": "update map",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 830,
+        "y": 240,
+        "wires": [
+            [
+                "89ff7ceb.6b95a"
+            ]
+        ]
     }
 ]
