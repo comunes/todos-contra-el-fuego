@@ -113,11 +113,11 @@
         "info": "",
         "in": [
             {
-                "x": 60,
-                "y": 100,
+                "x": 40,
+                "y": 160,
                 "wires": [
                     {
-                        "id": "596d56e2.54f5e8"
+                        "id": "da7e1a7c.19d3c8"
                     }
                 ]
             }
@@ -290,7 +290,7 @@
         ],
         "out": [
             {
-                "x": 620,
+                "x": 680,
                 "y": 40,
                 "wires": [
                     {
@@ -308,22 +308,22 @@
         "info": "",
         "in": [
             {
-                "x": 80,
-                "y": 80,
+                "x": 20,
+                "y": 100,
                 "wires": [
                     {
-                        "id": "afdf0d2.1f75ef"
+                        "id": "83d02c40.cf2b6"
                     }
                 ]
             }
         ],
         "out": [
             {
-                "x": 1520,
-                "y": 120,
+                "x": 2140,
+                "y": 240,
                 "wires": [
                     {
-                        "id": "e39f3d19.34c0f",
+                        "id": "1586a4b5.782b9b",
                         "port": 0
                     }
                 ]
@@ -366,7 +366,7 @@
         ],
         "out": [
             {
-                "x": 440,
+                "x": 580,
                 "y": 60,
                 "wires": [
                     {
@@ -804,7 +804,7 @@
         "command": "/start",
         "bot": "f93d1a38.c43218",
         "x": 90,
-        "y": 400,
+        "y": 360,
         "wires": [
             [
                 "55ebd8f8.436e38"
@@ -822,11 +822,11 @@
         "func": "var t = msg.i18n;\n\n//if(context.global.keyboard && context.global.keyboard.pending)\n//{\n//    context.global.keyboard.pending = false;\n    if(msg.payload.content === t('Desuscribirme'))\n    {\n        msg.payload.content = t('👍 Desuscrito');\n        return [msg, null];   \n    }\n    else if(msg.payload.content === t('♥ Apoya esta iniciativa'))\n    {\n        msg.payload.content =  t('¿Sabías que los fuegos producen tanto CO² como los coches y aproximadamente ⅕ de todas nuestras emisiones?') + '\\r\\n\\r\\n'\n        msg.payload.content += t('Puedes ayudarnos (y al medioambiente) dando difusión a @TodosContraElFuego_bot entre tus contactos y grupos para que más gente lo use.') + '\\r\\n\\r\\n';\n        msg.payload.content += t('También puedes apoyarnos con alguna donación. Así podremos pagar nuestros servidores, servicios de terceros, usar otras plataformas diferentes de Telegram y pagar algún café a los desarrolladores:');\n        msg.payload.content += '\\r\\n➡️ https://comunes.org/donate\\r\\n\\r\\n';\n\n        return [msg, null];\n\n    }\n    else if(msg.payload.content === t('📖 Más info'))\n    {   msg.payload.content =  t('© Copyleft Asociación Comunes bajo licencia AGPLv3') + '\\r\\n';\n        msg.payload.content += \"https://comunes.org\\r\\n\";\n        msg.payload.content += t('Código:') + 'https://github.com/comunes/todos-contra-el-fuego\\r\\n\\r\\n';\n        \n        msg.payload.content += t('LIMITACIÓN DE LA RESPONSABILIDAD:') + '\\r\\n\\r\\n'; \n        \n        msg.payload.content += t('EN NINGÚN CASO A MENOS QUE SEA REQUERIDO POR UNA LEY APLICABLE O ACUERDO ESCRITO NINGÚN TITULAR DE LOS DERECHOS DE AUTOR (“COPYRIGHT”), O NINGÚN TERCERO QUE MODIFIQUE Y/O TRANSMITA EL PROGRAMA COMO SE PERMITE ANTERIORMENTE, SERÁ RESPONSABLE ANTE USTED POR DAÑOS, INCLUYENDO CUALESQUIERA DAÑOS GENERALES, PARTICULARES, IMPREVISTOS O DERIVADOS DEL USO O IMPOSIBILIDAD DE USO DEL PROGRAMA (INCLUYENDO, PERO NO LIMITADO A, LA PÉRDIDA DE DATOS, DATOS GENERADOS INCORRECTOS, PÉRDIDAS SUFRIDAS POR USTED O POR TERCERAS PERSONAS, O LOS FALLOS DEL PROGRAMA PARA OPERAR CON OTROS PROGRAMAS), INCLUSO SI DICHO TITULAR O UN TERCERO HA SIDO ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += t('POLÍTICA DE PRIVACIDAD:') + '\\r\\n\\r\\n';\n        msg.payload.content += t('No compartimos ninguna información con terceros. La información recogida por esta aplicación tiene el único fin ayudar en la prevención y extinción de fuegos principalmente forestales.') + '\\r\\n\\r\\n';\n\n        msg.payload.content += t('FUENTES DE DATOS:') + '\\r\\n\\r\\n';\n        msg.payload.content += t('Además de las alertas proporcionadas por nuestros usuari@s, usamos datos de fuegos activos proporcionados por la NASA (programa MODIS y VIIRS). Ver mapa: http://effis.jrc.ec.europa.eu/static/effis_current_situation/public/index.html') + '\\r\\n';\n        msg.payload.content += \"«We acknowledge the use of data and imagery from LANCE FIRMS operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS) with funding provided by NASA/HQ».\" + '\\r\\n';\n        msg.payload.content += t('Si quieres que añadamos otras fuentes de datos sobre fuegos, no dudes en contactar con nosotros: info@comunes.org') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += t('PREGUNTAS FRECUENTES:') + '\\r\\n\\r\\n';\n        msg.payload.content += t('➖ ¿Me puedo suscribir a varias zonas?: Por ahora no directamente. Solo con un truco, añadiendo a @TodosContraElFuego_bot como miembro a un grupo y que ese grupo esté subscrito a otra zona.') + '\\r\\n';\n        msg.payload.content += t('➖ ¿Hay \"falsos positivos\"?: Sí los hay. Puedes recibir alguna notificación de fuego por ej. de refinerías o incineradoras. Puedes pulsar a la localización del falso positivo y responder con un mensaje que diga \"falso positivo\" o \"es una industria\" para que estos fuegos no sean notificados.') + '\\r\\n';\n        msg.payload.content += t('Nos puedes ayudar mucho proporcionándonos otros feedbacks sobre la veracidad de las notificaciones de fuego, sobre el estado del fuego, etc. Siplemente responde a la localización de una notificación de fuego (pulsando sobre ella y seleccionando \"Responder\") con algún comentario sobre ese fuego.') + '\\r\\n';\n        msg.payload.content += t('➖ ¿Puedo recibir notificaciones en una distancia diferente o mayor? Sí, basta con estar subscrito y teclear, por ejemplo, \"a 17 km\" si quisieramos recibir notificaciones en un radio de 17 kilómetros (o mayor si queremos hacer pruebas).') + '\\r\\n';\n        msg.payload.content += t('➖ ¿No voy a recibir demasiadas notificaciones?: En principio no deberías, ya que agrupamos las notificaciones de las diferentes fuentes y solo avisamos una vez al día por fuego. Por ejemplo no repetimos notificaciones si algún vecino ya ha notificado un mismo fuego en la zona previamente.') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += t('OTROS:') + '\\r\\n\\r\\n';\n        msg.payload.content += t('➖ Por ahora solo procesamos datos de fuegos de la NASA en Europa, pero si nos lo pedís podemos ampliar nuestro radio de acción.') + '\\r\\n';\n        msg.payload.content += t('➖ Puedes añadir a @TodosContraElFuego_bot a un grupo como miembro y recibir notificaciones de cierta área en ese grupo.') + '\\r\\n';\n        msg.payload.content += t('➖ Puedes votar con alegría ⭐️⭐️⭐️⭐️⭐️ nuestro bot en https://telegram.me/storebot?start=TodosContraElFuego_bot.') +  '\\r\\n\\r\\n';\n        \n        msg.payload.content += t('Feedback, sugerencias, bugs, etc: @vj_rj') + '\\r\\n\\r\\n';\n        \n        msg.payload.content += t(\"¡Gracias!\");\n        return [msg, null];\n    }\n    else {\n        msg.payload.content = t('Opción de teclado desconocida');\n        return [null, msg];   \n    }\n//}\n",
         "outputs": "5",
         "noerr": 0,
-        "x": 770,
+        "x": 750,
         "y": 580,
         "wires": [
             [
-                "9ac27b91.95fd38"
+                "90cc5a97.f73e08"
             ],
             [],
             [],
@@ -898,7 +898,7 @@
         "z": "93cb4937.6fc068",
         "name": "get reply",
         "bot": "f93d1a38.c43218",
-        "x": 1160,
+        "x": 1180,
         "y": 480,
         "wires": [
             [
@@ -963,8 +963,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 590,
-        "y": 980,
+        "x": 580,
+        "y": 960,
         "wires": []
     },
     {
@@ -980,7 +980,7 @@
         "wires": [
             [
                 "abe7d7fb.2c4708",
-                "c60a2456.adac68"
+                "baa17b12.6767a8"
             ]
         ]
     },
@@ -1195,7 +1195,7 @@
         "y": 840,
         "wires": [
             [
-                "33cd0275.71172e"
+                "fbac8488.5194a8"
             ],
             [
                 "74146dac.0d0704"
@@ -1230,7 +1230,7 @@
         "func": "var km = Number(msg.payload.content.replace(/(a |em |en |)([0-9]+)[ ]*km( around| arredor|)/, \"$2\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 580,
+        "x": 590,
         "y": 640,
         "wires": [
             [
@@ -1521,22 +1521,6 @@
         ]
     },
     {
-        "id": "a9221162.52512",
-        "type": "telegram command",
-        "z": "93cb4937.6fc068",
-        "name": "/inicio",
-        "command": "/inicio",
-        "bot": "f93d1a38.c43218",
-        "x": 90,
-        "y": 300,
-        "wires": [
-            [
-                "55ebd8f8.436e38"
-            ],
-            []
-        ]
-    },
-    {
         "id": "92cf1a70.8b3e38",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -1622,29 +1606,6 @@
         ]
     },
     {
-        "id": "49306cf6.a72494",
-        "type": "delay",
-        "z": "93cb4937.6fc068",
-        "name": "rate",
-        "pauseType": "rate",
-        "timeout": "1",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": true,
-        "x": 570,
-        "y": 560,
-        "wires": [
-            [
-                "33879e8b.3151b2"
-            ]
-        ]
-    },
-    {
         "id": "c89c411b.79f73",
         "type": "delay",
         "z": "93cb4937.6fc068",
@@ -1687,7 +1648,7 @@
         "wires": [
             [
                 "a890056b.ebcff8",
-                "ca9ae1e8.6507f"
+                "a8447ee4.5f9bc"
             ]
         ]
     },
@@ -1997,11 +1958,11 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "112",
-        "func": "var t = msg.i18n;\nvar newMsg = {\n    payload: {\n        type: \"message\",\n        content: t('No olvides llamar al 📞112 si no lo has hecho ya para avisar a los servicios de emergencia 🚒'),\n        chatId : msg.payload.chatId\n    }\n};\nreturn newMsg;\n\n",
+        "func": "var t = msg.i18n;\nvar newMsg = {\n    payload: {\n        type: \"message\",\n        content: t('No olvides llamar al 📞112 si no lo has hecho ya para avisar a los servicios de emergencia 🚒'),\n        chatId : msg.payload.chatId\n    },\n    i18n: msg.i18n\n};\nreturn newMsg;\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 570,
-        "y": 740,
+        "y": 760,
         "wires": [
             [
                 "373aa2ef.0aac9e"
@@ -2130,15 +2091,6 @@
                 "1e1d9c8f.87ccc3"
             ]
         ]
-    },
-    {
-        "id": "9ac27b91.95fd38",
-        "type": "subflow:c6a40c11.dfc6b",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 930,
-        "y": 560,
-        "wires": []
     },
     {
         "id": "8e21846c.61c698",
@@ -2320,7 +2272,6 @@
         "y": 860,
         "wires": [
             [
-                "fbac8488.5194a8",
                 "33cd0275.71172e"
             ]
         ]
@@ -2394,7 +2345,7 @@
         "type": "subflow:9968fcc5.ed33c",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 620,
+        "x": 600,
         "y": 1060,
         "wires": []
     },
@@ -2461,10 +2412,10 @@
         "type": "function",
         "z": "76bd701f.29d0f",
         "name": "query sub",
-        "func": "msg.chatId = msg.payload.chatId;\nmsg.payload = {\"chatId\": msg.payload.chatId };\nreturn msg;",
+        "func": "msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {chatId: msg.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 560,
+        "x": 580,
         "y": 100,
         "wires": [
             [
@@ -2480,11 +2431,11 @@
         "name": "find sub",
         "collection": "subscriptions",
         "operation": "find",
-        "x": 750,
+        "x": 720,
         "y": 100,
         "wires": [
             [
-                "875a7c37.8bb0a"
+                "56722a87.7bd4b4"
             ]
         ]
     },
@@ -2493,10 +2444,10 @@
         "type": "function",
         "z": "76bd701f.29d0f",
         "name": "start menu",
-        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\nvar subs = msg.payload.length === 0;\n\nmsg.payload = {};\n\nif (subs) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\nmsg.payload.content = t('Elige una de las opciones:');\nmsg.payload.chatId = msg.chatId;\nmsg.payload.type = \"message\";\nopts.disable_notification = true;\nmsg.payload.options = opts;\n\nreturn [ msg ];",
+        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\n// is subs or not\nvar subs = msg.payload.length === 0;\nmsg.payload = msg.originalPayload;\n\nif (subs) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\n// node.log(typeof msg.payload.content);\n\nif (typeof msg.payload.content === 'undefined' || msg.payload.content === null ||\n    (typeof msg.payload.content === 'string' &&\n    msg.payload.content.match(/⬅️ .*/)) ||\n    msg.payload.content === '') {\n    msg.payload.content = t('Elige una de las opciones:');\n} else {\n    // Only for debugging\n    // msg.payload.content = msg.payload.content + \".\";\n}\n\nmsg.payload.chatId = msg.chatId;\n\nif (typeof msg.payload.type === 'undefined' || msg.payload.type === null) {\n    msg.payload.type = \"message\";\n}\n\nopts.disable_notification = true;\nmsg.payload.options = opts;\n\nreturn [ msg ];",
         "outputs": "1",
         "noerr": 0,
-        "x": 940,
+        "x": 1090,
         "y": 100,
         "wires": [
             [
@@ -2510,7 +2461,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 570,
-        "y": 300,
+        "y": 340,
         "wires": []
     },
     {
@@ -2526,18 +2477,18 @@
         "id": "596d56e2.54f5e8",
         "type": "delay",
         "z": "76bd701f.29d0f",
-        "name": "start r",
+        "name": "start drop",
         "pauseType": "rate",
         "timeout": "1",
         "timeoutUnits": "seconds",
         "rate": "1",
-        "nbRateUnits": "3",
+        "nbRateUnits": "1",
         "rateUnits": "second",
         "randomFirst": "1",
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": true,
-        "x": 190,
+        "x": 280,
         "y": 100,
         "wires": [
             [
@@ -2584,7 +2535,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "is loc",
-        "func": "if (msg.payload.type === 'location' && \n    typeof msg.geo === 'undefined') {\n    // node.log(\"Location received\");  \n    return msg;\n} else {\n    return null;\n}",
+        "func": "if (msg.payload.type === 'location' && \n    typeof msg.geo === 'undefined') {\n    // node.log(\"Location received\");  \n    return msg;\n} else {\n    // return null;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 1110,
@@ -2645,7 +2596,7 @@
         "type": "subflow:465e67f.6ebf598",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1420,
+        "x": 1440,
         "y": 800,
         "wires": []
     },
@@ -3403,7 +3354,7 @@
         "type": "subflow:2f0217a5.051978",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 600,
+        "x": 590,
         "y": 920,
         "wires": [
             [
@@ -3575,7 +3526,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 710,
-        "y": 740,
+        "y": 760,
         "wires": [
             []
         ]
@@ -3593,25 +3544,12 @@
         ]
     },
     {
-        "id": "c60a2456.adac68",
-        "type": "subflow:e81a68fa.695e38",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1040,
-        "y": 700,
-        "wires": [
-            [
-                "baa17b12.6767a8"
-            ]
-        ]
-    },
-    {
         "id": "33cd0275.71172e",
         "type": "subflow:e81a68fa.695e38",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 1390,
-        "y": 840,
+        "x": 1410,
+        "y": 860,
         "wires": [
             []
         ]
@@ -3621,10 +3559,10 @@
         "type": "function",
         "z": "6995c6a.1a0bf38",
         "name": "set i18n if not set",
-        "func": "if (msg.lang === null || typeof msg.i18n === 'undefined') {\n    var current = msg.lang;\n    if (current.match(/^es/)) {\n        //node.log(\"Current language Spanish\");\n        msg.i18n = global.get('lang-es');\n    } else if (current.match(/^gl/)) {\n        // node.log(\"Current language Galego\");\n        msg.i18n = global.get('lang-gl');\n    } else if (current.match(/^en/)) {\n        // node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        // node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        // node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Fallback language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    // node.log(\"i18n already configured\");\n} \n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; ",
+        "func": "if (typeof msg.i18n === 'undefined') {\n    var current = msg.lang;\n    if (current.match(/^es/)) {\n        //node.log(\"Current language Spanish\");\n        msg.i18n = global.get('lang-es');\n    } else if (current.match(/^gl/)) {\n        // node.log(\"Current language Galego\");\n        msg.i18n = global.get('lang-gl');\n    } else if (current.match(/^en/)) {\n        // node.log(\"Current language English\");\n        msg.i18n = global.get('lang-en');\n    } else if (current.match(/^ast/)) {\n        // node.log(\"Current language Asturian\");\n        msg.i18n = global.get('lang-ast');\n    } else if (current.match(/^pt/)) {\n        // node.log(\"Current language Portuguese\");\n        msg.i18n = global.get('lang-pt');\n    }\n}\n\nif (typeof msg.i18n !== 'function') {\n    // fallback to Spanish\n    node.log(\"Fallback language Spanish\");\n    msg.i18n = global.get('lang-es');\n} else {\n    // node.log(\"i18n already configured\");\n} \n\nconsole.assert(typeof msg.i18n === 'function', 'wooops problem setting i18n');\n\n// node.log(\"Type of i18n \" + typeof msg.i18n);\n\nreturn [msg, null]; ",
         "outputs": "1",
         "noerr": 0,
-        "x": 270,
+        "x": 310,
         "y": 60,
         "wires": [
             []
@@ -3658,10 +3596,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "start opts",
-        "func": "var output = [];\nvar opt = msg.payload.content;\nvar t = msg.i18n;\n// node.log(\"Type of i18n \" + typeof t);\n\nif (opt === \"/start@rednodetest_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/start@TodosContraElFuego_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/inicio@rednodetest_bot\") {\n  output[0] = msg; return output;\n} else if (opt === \"/inicio@TodosContraElFuego_bot\") {\n  output[0] = msg; return output;\n} else if (opt === t(\"⬅️ Volver\")) {\n  output[0] = msg; return output;\n} else if (opt === t(\"⬅️ Cancelar\")) {\n  output[0] = msg; return output;\n} else if (opt === t(\"📣 Suscribirme a fuegos en mi zona\")) {\n  output[1] = msg; return output;\n} else if (opt === \"/suscribirme@rednodetest_bot\") {\n  output[1] = msg; return output;\n} else if (opt === \"/suscribirme@TodosContraElFuego_bot\") {\n  output[1] = msg; return output;\n} else if (opt === t(\"📖 Más info\")) {\n  output[2] = msg; return output;\n} else if (opt === t(\"♥ Apoya esta iniciativa\")) {\n  output[2] = msg; return output;\n} else if (opt === t(\"🔥 Notificar un fuego nuevo\")) {\n  output[3] = msg; return output;\n} else if (opt === t(\"📝 Escribir mi posición\")) {\n  output[4] = msg; return output;\n} else if (opt === t(\"📝 Escribir localización fuego\")) {\n  output[5] = msg; return output;\n} else if ((opt + \"\").match(new RegExp(\"^(a |em |en |)[0-9]*[ ]*km( around| arredor|)\",'i'))) {\n  output[6] = msg; return output;\n} else if (opt === t(\"📣 Suscrito a nuevos fuegos\")) {\n  output[7] = msg; return output;\n} else if (opt === \"/info@rednodetest_bot\") {\n  output[7] = msg; return output;\n} else if (opt === \"/info@TodosContraElFuego_bot\") {\n  output[7] = msg; return output;\n} else if (opt === \"/distancia@rednodetest_bot\") {\n  output[8] = msg; return output;\n} else if (opt === \"/distancia@TodosContraElFuego_bot\") {\n  output[8] = msg; return output;\n} else if (opt === t(\"📍 El fuego está en mi ubicación\")) {\n  output[9] = msg; return output;\n} else if ((opt + \"\").match(new RegExp(\"(falsa alarma|falso positivo|es una industria|industria)\",'i'))) {\n  output[10] = msg; return output;\n} else if (opt === t(\"Desuscribirme\")) {\n  output[11] = msg; return output;\n} else {\n  output[12] = msg; return output;\n}\n",
-        "outputs": "13",
+        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    // Lang response do nothing here\n} else {\n    var output = [];\n    var opt = msg.payload.content;\n    var t = msg.i18n;\n    // node.log(\"Type of i18n \" + typeof t);\n    \n    if (opt === \"/start@rednodetest_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/start@TodosContraElFuego_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio@rednodetest_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio@TodosContraElFuego_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === t(\"⬅️ Volver\")) {\n      output[0] = msg; return output;\n    } else if (opt === t(\"⬅️ Cancelar\")) {\n      output[0] = msg; return output;\n    } else if (opt === t(\"📣 Suscribirme a fuegos en mi zona\")) {\n      output[1] = msg; return output;\n    } else if (opt === \"/suscribirme@rednodetest_bot\") {\n      output[1] = msg; return output;\n    } else if (opt === \"/suscribirme@TodosContraElFuego_bot\") {\n      output[1] = msg; return output;\n    } else if (opt === t(\"📖 Más info\")) {\n      output[2] = msg; return output;\n    } else if (opt === t(\"♥ Apoya esta iniciativa\")) {\n      output[2] = msg; return output;\n    } else if (opt === t(\"🔥 Notificar un fuego nuevo\")) {\n      output[3] = msg; return output;\n    } else if (opt === t(\"📝 Escribir mi posición\")) {\n      output[4] = msg; return output;\n    } else if (opt === t(\"📝 Escribir localización fuego\")) {\n      output[5] = msg; return output;\n    } else if ((opt + \"\").match(new RegExp(\"^(a |em |en |)[0-9]*[ ]*km( around| arredor|)\",'i'))) {\n      output[6] = msg; return output;\n    } else if (opt === t(\"📣 Suscrito a nuevos fuegos\")) {\n      output[7] = msg; return output;\n    } else if (opt === \"/info@rednodetest_bot\") {\n      output[7] = msg; return output;\n    } else if (opt === \"/info@TodosContraElFuego_bot\") {\n      output[7] = msg; return output;\n    } else if (opt === \"/distancia@rednodetest_bot\") {\n      output[8] = msg; return output;\n    } else if (opt === \"/distancia@TodosContraElFuego_bot\") {\n      output[8] = msg; return output;\n    } else if (opt === t(\"📍 El fuego está en mi ubicación\")) {\n      output[9] = msg; return output;\n    } else if ((opt + \"\").match(new RegExp(\"(falsa alarma|falso positivo|es una industria|industria)\",'i'))) {\n      output[10] = msg; return output;\n    } else if (opt === t(\"Desuscribirme\")) {\n      output[11] = msg; return output;\n    } else if (opt === \"/lang@rednodetest_bot\") {\n      output[12] = msg; return output;\n    } else if (opt === \"/lang@TodosContraElFuego_bot\") {\n      output[12] = msg; return output;\n    } else if (opt === \"/mylang\") {\n    } else if (opt === \"/lang\") {\n      // do nothing\n    } else {\n      output[13] = msg; return output;\n    }\n}",
+        "outputs": "14",
         "noerr": 0,
-        "x": 280,
+        "x": 300,
         "y": 480,
         "wires": [
             [
@@ -3671,10 +3609,11 @@
                 "be0cbd6.2efaf4"
             ],
             [
-                "49306cf6.a72494"
+                "33879e8b.3151b2"
             ],
             [
                 "1292920f.64d29e",
+                "fa14bb16.1c3248",
                 "cbe0e85b.a53018"
             ],
             [
@@ -3699,12 +3638,15 @@
                 "9f730cf9.c7a3b"
             ],
             [
-                "49306cf6.a72494",
-                "529f65ba.a3f03c"
+                "529f65ba.a3f03c",
+                "33879e8b.3151b2"
             ],
             [
-                "e0bc7e33.2a795",
-                "c37e7408.e43de8"
+                "e0417a.e678ee88"
+            ],
+            [
+                "c37e7408.e43de8",
+                "e0bc7e33.2a795"
             ]
         ],
         "outputLabels": [
@@ -3720,6 +3662,7 @@
             "fire in my location",
             "false alarm",
             "desubscription",
+            "lang",
             "others"
         ]
     },
@@ -3774,7 +3717,7 @@
         "type": "subflow:4384af8e.a7409",
         "z": "76bd701f.29d0f",
         "name": "",
-        "x": 370,
+        "x": 430,
         "y": 100,
         "wires": [
             [
@@ -4145,10 +4088,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "lang response",
-        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    var langs = {\n        'Asturianu': 'ast',\n        'Català': 'ca',\n        'Español': 'es',\n        'English': 'en',\n        'Galego': 'gl',\n        'Português': 'pt',\n        'Português do Brasil': 'pt_BR'\n        // Euskara\n    };\n    \n    context.global.keyboardlang.pending = false;\n    \n    if (msg.payload.content.match(/(Asturianu)|(Español)|(English)|(Galego)|(Português)|(Português do Brasil)/i)) {\n        msg.lang = langs[msg.payload.content];\n        return [msg, null];   \n    } else\n    {\n        return [null, msg];   \n    }\n}\n",
+        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    var langs = {\n        'Asturianu': 'ast',\n        'Català': 'ca',\n        'Español': 'es',\n        'English': 'en',\n        'Galego': 'gl',\n        'Português': 'pt',\n        'Português do Brasil': 'pt_BR'\n        // Euskara\n    };\n    \n    if (msg.payload.content.match(/(Asturianu)|(Español)|(English)|(Galego)|(Português)|(Português do Brasil)/i)) {\n        msg.lang = langs[msg.payload.content];\n        \n        // For start menu:\n        msg.payload.content = '';\n        return [msg, null];   \n    } else\n    {\n        return [null, msg];   \n    }\n}\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 340,
+        "x": 480,
         "y": 1260,
         "wires": [
             [
@@ -4168,11 +4111,11 @@
         "id": "1475a6c1.176199",
         "type": "debug",
         "z": "93cb4937.6fc068",
-        "name": "wrong answer",
-        "active": true,
+        "name": "wrong answer ignore",
+        "active": false,
         "console": "false",
         "complete": "true",
-        "x": 580,
+        "x": 740,
         "y": 1320,
         "wires": []
     },
@@ -4181,10 +4124,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "update user",
-        "func": "var orig = msg.originalMessage;\n\nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
+        "func": "var orig = msg.originalMessage;\n\ncontext.global.keyboardlang.pending = false;\n \nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 570,
+        "x": 790,
         "y": 1260,
         "wires": [
             [
@@ -4204,7 +4147,7 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 790,
+        "x": 1010,
         "y": 1260,
         "wires": []
     },
@@ -4220,8 +4163,8 @@
         "valueProperty": "payload.$set.lang",
         "ttlType": "msg",
         "ttlProperty": "",
-        "useString": true,
-        "x": 790,
+        "useString": false,
+        "x": 1010,
         "y": 1320,
         "wires": []
     },
@@ -4230,8 +4173,8 @@
         "type": "subflow:465e67f.6ebf598",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 800,
-        "y": 1200,
+        "x": 980,
+        "y": 1180,
         "wires": []
     },
     {
@@ -4242,14 +4185,15 @@
         "func": "if (msg.payload.length === 0) {\n    msg.payload = msg.originalPayload;\n    return [msg, null];\n} else {\n    // user register\n    var lang = msg.payload[0].lang;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    return [null, msg];\n}\n\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 1150,
-        "y": 40,
+        "x": 1370,
+        "y": 60,
         "wires": [
             [
                 "4e79d201.8c93bc"
             ],
             [
-                "e39f3d19.34c0f"
+                "c46a6a2.a934698",
+                "e11dde1f.ea412"
             ]
         ],
         "outputLabels": [
@@ -4267,9 +4211,9 @@
         "keyProperty": "chatId",
         "valueType": "msg",
         "valueProperty": "lang",
-        "useString": true,
-        "x": 380,
-        "y": 80,
+        "useString": false,
+        "x": 640,
+        "y": 100,
         "wires": [
             [
                 "6b27a3a5.4208dc"
@@ -4281,11 +4225,11 @@
         "type": "function",
         "z": "4384af8e.a7409",
         "name": "query user",
-        "func": "msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {\"telegramChatId\": msg.chatId };\nreturn msg;",
+        "func": "msg.chatId = msg.payload.chatId;\nmsg.payload = {\"telegramChatId\": msg.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 770,
-        "y": 40,
+        "x": 1010,
+        "y": 60,
         "wires": [
             [
                 "8f334917.ef75c8"
@@ -4300,8 +4244,8 @@
         "name": "find users",
         "collection": "users",
         "operation": "find",
-        "x": 940,
-        "y": 40,
+        "x": 1180,
+        "y": 60,
         "wires": [
             [
                 "81be2f6c.56aa8"
@@ -4313,17 +4257,17 @@
         "type": "function",
         "z": "4384af8e.a7409",
         "name": "no cached?",
-        "func": "if (typeof msg.lang === 'undefined'  || msg.lang === null) {\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
+        "func": "if (typeof msg.lang === 'undefined'  || msg.lang === null) {\n    // node.log(\"Lang no cached\");\n    return [msg, null];\n} else {\n    // node.log(\"Lang cached\");\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 570,
-        "y": 80,
+        "x": 810,
+        "y": 100,
         "wires": [
             [
                 "5ade250d.5e12fc"
             ],
             [
-                "e39f3d19.34c0f"
+                "c46a6a2.a934698"
             ]
         ],
         "outputLabels": [
@@ -4353,11 +4297,11 @@
         "id": "57e40a1.1461bf4",
         "type": "debug",
         "z": "4384af8e.a7409",
-        "name": "msg cached?",
+        "name": "keyboard active!",
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 370,
+        "x": 480,
         "y": 140,
         "wires": []
     },
@@ -4377,24 +4321,12 @@
         "id": "e2e4dfd1.88c4b",
         "type": "debug",
         "z": "4384af8e.a7409",
-        "name": "lang in",
+        "name": "chatId",
         "active": true,
         "console": "false",
-        "complete": "true",
-        "x": 190,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "609be7c0.d095a8",
-        "type": "debug",
-        "z": "4384af8e.a7409",
-        "name": "msg cached",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 750,
-        "y": 140,
+        "complete": "payload.chatId",
+        "x": 450,
+        "y": 180,
         "wires": []
     },
     {
@@ -4402,28 +4334,23 @@
         "type": "function",
         "z": "4384af8e.a7409",
         "name": "set chatId",
-        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n  // do nothing   \n} else {\n    msg.chatId = msg.payload.chatId;\n    return msg;\n}",
-        "outputs": 1,
+        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n  // do nothing   \n  return [null, msg]\n} else {\n    msg.chatId = msg.payload.chatId;\n    msg.originalPayload = msg.payload;\n    flow.set('payload-assert', msg.payload);\n    flow.set('payload-chatId', msg.chatId);\n    return [msg, null];\n}",
+        "outputs": "2",
         "noerr": 0,
-        "x": 200,
-        "y": 80,
+        "x": 300,
+        "y": 100,
         "wires": [
             [
-                "6173b8ee.c73038"
+                "edb02cb3.e23b7"
+            ],
+            [
+                "57e40a1.1461bf4"
             ]
+        ],
+        "outputLabels": [
+            "continue",
+            "do nothing"
         ]
-    },
-    {
-        "id": "7368515c.c6292",
-        "type": "debug",
-        "z": "4384af8e.a7409",
-        "name": "msg not cached",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 960,
-        "y": 140,
-        "wires": []
     },
     {
         "id": "a2c7e3af.c055f",
@@ -4488,8 +4415,8 @@
         "type": "subflow:e6f3db8c.48eac8",
         "z": "4384af8e.a7409",
         "name": "",
-        "x": 1380,
-        "y": 40,
+        "x": 1580,
+        "y": 60,
         "wires": []
     },
     {
@@ -4642,10 +4569,12 @@
         "type": "subflow:6995c6a.1a0bf38",
         "z": "4384af8e.a7409",
         "name": "",
-        "x": 1380,
-        "y": 120,
+        "x": 1780,
+        "y": 240,
         "wires": [
-            []
+            [
+                "1586a4b5.782b9b"
+            ]
         ]
     },
     {
@@ -4785,8 +4714,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 480,
-        "y": 1540,
+        "x": 390,
+        "y": 1560,
         "wires": []
     },
     {
@@ -4849,7 +4778,7 @@
         "id": "b81751c6.f7b84",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 270,
+        "x": 310,
         "y": 1480,
         "wires": [
             [
@@ -5069,25 +4998,6 @@
         ]
     },
     {
-        "id": "e7804873.bdc4c8",
-        "type": "inject",
-        "z": "5501c3cc.11327c",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 140,
-        "y": 60,
-        "wires": [
-            [
-                "d4cdc02e.99c3f"
-            ]
-        ]
-    },
-    {
         "id": "d5cbb344.cf8db",
         "type": "function",
         "z": "128790f6.dee0df",
@@ -5127,26 +5037,12 @@
         "id": "36d5ed85.92faa2",
         "type": "function",
         "z": "5501c3cc.11327c",
-        "name": "counter",
+        "name": "counter no reset",
         "func": "c = context.get('counter') || 0;\nc += 1;\ncontext.set('counter', c);\n\nnode.status({fill:\"green\",shape:\"dot\",text:c});\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 340,
+        "x": 370,
         "y": 120,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "d4cdc02e.99c3f",
-        "type": "function",
-        "z": "5501c3cc.11327c",
-        "name": "counter",
-        "func": "c = context.get('counter') || 0;\nc += 1;\ncontext.set('counter', c);\n\nnode.status({fill:\"green\",shape:\"dot\",text:c});\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 340,
-        "y": 60,
         "wires": [
             []
         ]
@@ -5177,7 +5073,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 970,
+        "x": 990,
         "y": 200,
         "wires": []
     },
@@ -5198,7 +5094,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 360,
-        "y": 280,
+        "y": 480,
         "wires": [
             []
         ]
@@ -5215,7 +5111,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 280,
+        "y": 480,
         "wires": [
             [
                 "59bde767.a4c4a8"
@@ -5231,7 +5127,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 580,
-        "y": 280,
+        "y": 480,
         "wires": [
             []
         ]
@@ -5256,75 +5152,6 @@
         "wires": [
             [
                 "e1100c9f.a5d3a"
-            ]
-        ]
-    },
-    {
-        "id": "84ca29a9.d24e08",
-        "type": "debug",
-        "z": "5501c3cc.11327c",
-        "name": "",
-        "active": false,
-        "console": "false",
-        "complete": "payload",
-        "x": 590,
-        "y": 420,
-        "wires": []
-    },
-    {
-        "id": "f9d61dff.db714",
-        "type": "counter",
-        "z": "5501c3cc.11327c",
-        "name": "",
-        "init": "0",
-        "step": "1",
-        "lower": null,
-        "upper": null,
-        "mode": "increment",
-        "outputs": "2",
-        "x": 360,
-        "y": 420,
-        "wires": [
-            [
-                "84ca29a9.d24e08"
-            ],
-            [
-                "84ca29a9.d24e08"
-            ]
-        ]
-    },
-    {
-        "id": "2837ec93.efc964",
-        "type": "inject",
-        "z": "5501c3cc.11327c",
-        "name": "reset",
-        "topic": "",
-        "payload": "",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 90,
-        "y": 420,
-        "wires": [
-            [
-                "49d41b40.bf2534"
-            ]
-        ]
-    },
-    {
-        "id": "49d41b40.bf2534",
-        "type": "function",
-        "z": "5501c3cc.11327c",
-        "name": "reset",
-        "func": "msg.reset = true;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 230,
-        "y": 420,
-        "wires": [
-            [
-                "f9d61dff.db714"
             ]
         ]
     },
@@ -5428,7 +5255,7 @@
         "id": "16c436c8.0c8dc9",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 450,
+        "x": 430,
         "y": 1060,
         "wires": [
             [
@@ -5440,11 +5267,11 @@
         "id": "35d1de38.e04672",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 320,
+        "x": 270,
         "y": 800,
         "wires": [
             [
-                "f3249bab.90eae8"
+                "829ed9c9.8cd588"
             ]
         ]
     },
@@ -5534,12 +5361,12 @@
         "id": "4e437841.9b8a58",
         "type": "debug",
         "z": "76bd701f.29d0f",
-        "name": "",
+        "name": "start output",
         "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 1130,
-        "y": 180,
+        "x": 1290,
+        "y": 160,
         "wires": []
     },
     {
@@ -5584,6 +5411,7 @@
         "id": "f3418b4a.16c128",
         "type": "subflow:fe0c8b72.8a51a8",
         "z": "e81a68fa.695e38",
+        "name": "",
         "x": 240,
         "y": 40,
         "wires": [
@@ -5640,7 +5468,8 @@
         "y": 480,
         "wires": [
             [
-                "57988778.321178"
+                "57988778.321178",
+                "b052941e.4306e8"
             ]
         ]
     },
@@ -5702,10 +5531,11 @@
         "name": "lang",
         "links": [
             "4ec55575.36665c",
-            "7f1d2825.26cab8"
+            "7f1d2825.26cab8",
+            "e0417a.e678ee88"
         ],
-        "x": 275,
-        "y": 1220,
+        "x": 255,
+        "y": 1200,
         "wires": [
             [
                 "5e792abd.c19084"
@@ -5721,7 +5551,7 @@
             "849e7348.7e94c",
             "3f59d0ce.bdd8d"
         ],
-        "x": 195,
+        "x": 355,
         "y": 1220,
         "wires": [
             [
@@ -6350,7 +6180,8 @@
         "id": "b2e2ccf3.f0498",
         "type": "subflow:e81a68fa.695e38",
         "z": "76bd701f.29d0f",
-        "x": 1150,
+        "name": "",
+        "x": 1270,
         "y": 100,
         "wires": [
             []
@@ -6464,11 +6295,9 @@
         "type": "subflow:e81a68fa.695e38",
         "z": "95e78a8b.50a428",
         "x": 1350,
-        "y": 100,
+        "y": 200,
         "wires": [
-            [
-                "a8447ee4.5f9bc"
-            ]
+            []
         ]
     },
     {
@@ -7262,13 +7091,12 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "detect lang change",
-        "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return [null, msg];\n}\nelse \n    return [msg, null];",
-        "outputs": "2",
+        "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return msg;\n}\n",
+        "outputs": "1",
         "noerr": 0,
-        "x": 630,
+        "x": 610,
         "y": 1020,
         "wires": [
-            [],
             [
                 "63abfabd.c35504",
                 "87d143dc.3e3b3"
@@ -7282,7 +7110,7 @@
         "name": "lang changed?",
         "active": true,
         "console": "false",
-        "complete": "true",
+        "complete": "payload",
         "x": 880,
         "y": 1060,
         "wires": []
@@ -7308,34 +7136,15 @@
         ]
     },
     {
-        "id": "aebb34d4.b9dcd8",
-        "type": "inject",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "900",
-        "crontab": "",
-        "once": true,
-        "x": 1030,
-        "y": 300,
-        "wires": [
-            [
-                "43caf819.b497c8"
-            ]
-        ]
-    },
-    {
         "id": "43caf819.b497c8",
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "timeout getting fires",
-        "func": "var last = global.get('active-now');\nif (last) {\n    // http://momentjs.com/docs/#/manipulating/add/\n    var now = context.global.moment();\n    if (context.global.moment(last).add(15, 'minutes').isBefore(now)) {\n        // release semaphore\n        var email = {};\n        email.topic = \"Bloqueo en el procesamiento de fuegos\";\n        email.payload = \"Pues eso...\";\n        return email;\n    }\n}",
+        "func": "    var email = {};\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\";\n    return email;",
         "outputs": 1,
         "noerr": 0,
         "x": 1220,
-        "y": 300,
+        "y": 320,
         "wires": [
             [
                 "e06b5512.7b3b48",
@@ -7414,6 +7223,851 @@
         "wires": [
             [
                 "e4fc71c5.ae308"
+            ]
+        ]
+    },
+    {
+        "id": "f78bdf2e.e07e8",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "5501c3cc.11327c",
+        "x": 470,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "4e9c6a21.dbe994",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 120,
+        "y": 240,
+        "wires": [
+            [
+                "c9213523.ff07b8"
+            ]
+        ]
+    },
+    {
+        "id": "c9213523.ff07b8",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test msg",
+        "func": "var m = {}\nm.payload = {};\nm.chatId = 4885772;\nm.payload.chatId = 4885772;\nm.payload.content = \"Testingggg...\";\nreturn m;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 240,
+        "wires": [
+            [
+                "f78bdf2e.e07e8"
+            ]
+        ]
+    },
+    {
+        "id": "cbe6ee70.2be05",
+        "type": "debug",
+        "z": "76bd701f.29d0f",
+        "name": "all after lang",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 570,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "67bf84ab.ff905c",
+        "type": "debug",
+        "z": "4384af8e.a7409",
+        "name": "no cached",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1130,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "f2de1625.f47288",
+        "type": "debug",
+        "z": "76bd701f.29d0f",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 670,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "e5f28b05.bf6ea8",
+        "type": "debug",
+        "z": "76bd701f.29d0f",
+        "name": "subs",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 910,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "79f1e71d.6acff8",
+        "type": "debug",
+        "z": "76bd701f.29d0f",
+        "name": "all before lang",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 460,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "32402b32.78e694",
+        "type": "debug",
+        "z": "4384af8e.a7409",
+        "name": "cached",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1200,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "496139f7.6cf4b8",
+        "type": "debug",
+        "z": "4384af8e.a7409",
+        "name": "cached?",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 800,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "81ab9c35.b5e65",
+        "type": "debug",
+        "z": "4384af8e.a7409",
+        "name": "before cache",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 590,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "7bba7c0.77e4f84",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1210,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "fa14bb16.1c3248",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "new fire",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 580,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "c46a6a2.a934698",
+        "type": "assert",
+        "z": "4384af8e.a7409",
+        "name": "assert setLang",
+        "rules": [
+            {
+                "property": "payload.chatId",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.chatId",
+                "valueType": "flow",
+                "failMsg": "Wrong chatId returned after lang setting"
+            },
+            {
+                "property": "lang",
+                "propertyType": "msg",
+                "type": "type",
+                "value": "string",
+                "failMsg": "Wrong lang returned after lang setting"
+            },
+            {
+                "property": "payload.content",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.content",
+                "valueType": "flow",
+                "failMsg": "Wrong content returned after lang setting"
+            },
+            {
+                "property": "chatId",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.chatId",
+                "valueType": "flow",
+                "failMsg": ""
+            }
+        ],
+        "x": 1600,
+        "y": 240,
+        "wires": [
+            [
+                "e39f3d19.34c0f"
+            ]
+        ]
+    },
+    {
+        "id": "edb02cb3.e23b7",
+        "type": "function",
+        "z": "4384af8e.a7409",
+        "name": "lang?",
+        "func": "if (typeof msg.lang === 'string') {\n  // do nothing   \n  return [null, msg]\n} else {\n  return [msg, null];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 450,
+        "y": 100,
+        "wires": [
+            [
+                "6173b8ee.c73038"
+            ],
+            [
+                "c46a6a2.a934698"
+            ]
+        ],
+        "outputLabels": [
+            "no lang",
+            "lang"
+        ]
+    },
+    {
+        "id": "e11dde1f.ea412",
+        "type": "Cache out",
+        "z": "4384af8e.a7409",
+        "name": "cache",
+        "cache": "488013b6.1183ec",
+        "keyType": "msg",
+        "keyProperty": "chatId",
+        "valueType": "msg",
+        "valueProperty": "lang",
+        "ttlType": "msg",
+        "ttlProperty": "",
+        "useString": false,
+        "x": 1590,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "593e8a9f.d2fd54",
+        "type": "assert",
+        "z": "5501c3cc.11327c",
+        "name": "Payload < 100",
+        "rules": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "type": "lt",
+                "value": "100",
+                "valueType": "num",
+                "failMsg": ""
+            }
+        ],
+        "x": 342,
+        "y": 837,
+        "wires": [
+            [
+                "7f762f9d.71602"
+            ]
+        ]
+    },
+    {
+        "id": "7f762f9d.71602",
+        "type": "debug",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 590,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "4d49b9c8.a65f18",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "50",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 92,
+        "y": 835,
+        "wires": [
+            [
+                "593e8a9f.d2fd54"
+            ]
+        ]
+    },
+    {
+        "id": "8a57658e.867158",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "150",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 92,
+        "y": 897,
+        "wires": [
+            [
+                "593e8a9f.d2fd54"
+            ]
+        ]
+    },
+    {
+        "id": "1586a4b5.782b9b",
+        "type": "assert",
+        "z": "4384af8e.a7409",
+        "name": "assert setI18n",
+        "rules": [
+            {
+                "property": "payload.chatId",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.chatId",
+                "valueType": "flow",
+                "failMsg": "Wrong chatId returned after lang setting"
+            },
+            {
+                "property": "lang",
+                "propertyType": "msg",
+                "type": "type",
+                "value": "string",
+                "failMsg": "Wrong lang returned after lang setting"
+            },
+            {
+                "property": "payload.content",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.content",
+                "valueType": "flow",
+                "failMsg": "Wrong content returned after lang setting"
+            },
+            {
+                "property": "i18n",
+                "propertyType": "msg",
+                "type": "nnull",
+                "failMsg": ""
+            },
+            {
+                "property": "chatId",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.chatId",
+                "valueType": "flow",
+                "failMsg": "wrong msg.chatId"
+            }
+        ],
+        "x": 1980,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "21c6b163.12e99e",
+        "type": "function",
+        "z": "76bd701f.29d0f",
+        "name": "asserts",
+        "func": "flow.set('payload-assert', msg.payload);\n// flow.set('chatId-assert', msg.chatId);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "596d56e2.54f5e8"
+            ]
+        ]
+    },
+    {
+        "id": "56722a87.7bd4b4",
+        "type": "assert",
+        "z": "76bd701f.29d0f",
+        "name": "assert pre-start",
+        "rules": [
+            {
+                "property": "originalPayload.content",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.content",
+                "valueType": "flow",
+                "failMsg": "Wrong payload"
+            },
+            {
+                "property": "chatId",
+                "propertyType": "msg",
+                "type": "type",
+                "value": "number",
+                "failMsg": "No chatId"
+            },
+            {
+                "property": "i18n",
+                "propertyType": "msg",
+                "type": "nnull",
+                "failMsg": ""
+            },
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "type": "type",
+                "value": "array",
+                "failMsg": "Wrong subs result"
+            },
+            {
+                "property": "originalPayload.chatId",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "payload-assert.chatId",
+                "valueType": "flow",
+                "failMsg": ""
+            }
+        ],
+        "x": 900,
+        "y": 100,
+        "wires": [
+            [
+                "875a7c37.8bb0a"
+            ]
+        ]
+    },
+    {
+        "id": "86e0a3ef.9995e",
+        "type": "catch",
+        "z": "93cb4937.6fc068",
+        "name": "catch fire active processing",
+        "scope": [
+            "b2a582b8.95928"
+        ],
+        "x": 920,
+        "y": 320,
+        "wires": [
+            [
+                "43caf819.b497c8"
+            ]
+        ]
+    },
+    {
+        "id": "da7e1a7c.19d3c8",
+        "type": "assert",
+        "z": "76bd701f.29d0f",
+        "name": "assert initial-start",
+        "rules": [],
+        "x": 210,
+        "y": 160,
+        "wires": [
+            [
+                "21c6b163.12e99e"
+            ]
+        ]
+    },
+    {
+        "id": "e0417a.e678ee88",
+        "type": "link out",
+        "z": "93cb4937.6fc068",
+        "name": "lang",
+        "links": [
+            "77f4e314.54a59c"
+        ],
+        "x": 535,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "a06c9e0.494806",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "counter",
+        "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 960,
+        "y": 540,
+        "wires": [
+            [
+                "15cc01b0.ff80be"
+            ]
+        ]
+    },
+    {
+        "id": "53a9608e.e527a",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "reset",
+        "topic": "",
+        "payload": "{\"counter\":true}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 770,
+        "y": 480,
+        "wires": [
+            [
+                "a06c9e0.494806"
+            ]
+        ]
+    },
+    {
+        "id": "c1b4bd12.f0d9d",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "Hello!",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 770,
+        "y": 540,
+        "wires": [
+            [
+                "a06c9e0.494806"
+            ]
+        ]
+    },
+    {
+        "id": "15cc01b0.ff80be",
+        "type": "debug",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1090,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "83c851d.12e2ab",
+        "type": "inject",
+        "z": "93cb4937.6fc068",
+        "name": "reset",
+        "topic": "",
+        "payload": "{\"counter\":true}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 90,
+        "y": 300,
+        "wires": [
+            [
+                "17af36df.d20ff9"
+            ]
+        ]
+    },
+    {
+        "id": "17af36df.d20ff9",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "counter",
+        "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "829ed9c9.8cd588",
+        "type": "assert",
+        "z": "93cb4937.6fc068",
+        "name": "i18n",
+        "rules": [
+            {
+                "property": "i18n",
+                "propertyType": "msg",
+                "type": "nnull",
+                "failMsg": ""
+            }
+        ],
+        "x": 390,
+        "y": 800,
+        "wires": [
+            [
+                "f3249bab.90eae8"
+            ]
+        ]
+    },
+    {
+        "id": "83d02c40.cf2b6",
+        "type": "assert",
+        "z": "4384af8e.a7409",
+        "name": "assert init-lang",
+        "rules": [
+            {
+                "property": "payload.chatId",
+                "propertyType": "msg",
+                "type": "type",
+                "value": "number",
+                "failMsg": "Wrong chatId in lang enter"
+            }
+        ],
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "afdf0d2.1f75ef"
+            ]
+        ]
+    },
+    {
+        "id": "71ddbc3a.d5e9a4",
+        "type": "subflow:4384af8e.a7409",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 730,
+        "y": 2220,
+        "wires": [
+            [
+                "5983db7f.7b6614"
+            ]
+        ]
+    },
+    {
+        "id": "2d3ed690.563dfa",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "show lang",
+        "func": "var t = msg.i18n;\nvar m = {}\nm.payload = {};\nm.payload.chatId = msg.chatId;\nm.payload.content = \"Lenguaje \" + msg.lang + \", sample: \" + t('Desuscribirme') + ', ' + t('kmdistancia', {km: 99});\nm.payload.type = \"message\";\nreturn m;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1080,
+        "y": 2240,
+        "wires": [
+            [
+                "eee020eb.36a75"
+            ]
+        ]
+    },
+    {
+        "id": "20f4d6ba.631d1a",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "x": 1370,
+        "y": 2240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "60a6109e.2065a",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1290,
+        "y": 2340,
+        "wires": []
+    },
+    {
+        "id": "2f1fab9a.fbb754",
+        "type": "telegram command",
+        "z": "93cb4937.6fc068",
+        "name": "/mylang",
+        "command": "/mylang",
+        "bot": "f93d1a38.c43218",
+        "x": 100,
+        "y": 2220,
+        "wires": [
+            [
+                "c9679475.577988"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "d7dd880.07c5d78",
+        "type": "inject",
+        "z": "93cb4937.6fc068",
+        "name": "reset",
+        "topic": "",
+        "payload": "{\"counter\":true}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 430,
+        "y": 2280,
+        "wires": [
+            [
+                "c9679475.577988",
+                "5983db7f.7b6614",
+                "eee020eb.36a75"
+            ]
+        ]
+    },
+    {
+        "id": "c9679475.577988",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "counter",
+        "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 2220,
+        "wires": [
+            [
+                "71ddbc3a.d5e9a4"
+            ]
+        ]
+    },
+    {
+        "id": "eee020eb.36a75",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "counter",
+        "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1240,
+        "y": 2240,
+        "wires": [
+            [
+                "20f4d6ba.631d1a"
+            ]
+        ]
+    },
+    {
+        "id": "5983db7f.7b6614",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "counter",
+        "func": "var c = context.get('counter2') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter2', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter2', c);\n    update(c);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 920,
+        "y": 2240,
+        "wires": [
+            [
+                "2d3ed690.563dfa"
+            ]
+        ]
+    },
+    {
+        "id": "2c203b85.157434",
+        "type": "subflow:c6a40c11.dfc6b",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1090,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "b052941e.4306e8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "counter",
+        "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1180,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ee894a30.ecb7c8",
+        "type": "inject",
+        "z": "93cb4937.6fc068",
+        "name": "reset",
+        "topic": "",
+        "payload": "{\"counter\":true}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 1090,
+        "y": 380,
+        "wires": [
+            [
+                "b052941e.4306e8"
+            ]
+        ]
+    },
+    {
+        "id": "f099bf63.3e489",
+        "type": "debug",
+        "z": "e81a68fa.695e38",
+        "name": "send!",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 650,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "bd4fe03a.9cbf5",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 270,
+        "y": 2320,
+        "wires": []
+    },
+    {
+        "id": "90cc5a97.f73e08",
+        "type": "delay",
+        "z": "93cb4937.6fc068",
+        "name": "d 300ms",
+        "pauseType": "delay",
+        "timeout": "300",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 920,
+        "y": 560,
+        "wires": [
+            [
+                "2c203b85.157434"
             ]
         ]
     }
