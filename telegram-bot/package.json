@@ -6,6 +6,7 @@
     "geolib": "^2.0.24",
     "i18next": "^10.0.7",
     "i18next-node-fs-backend": "^1.0.0",
+    "jsonfile": "^4.0.0",
     "moment": "^2.19.1",
     "node-red-contrib-assert": "~1.2.1",
     "node-red-contrib-cache": "^1.0.3",

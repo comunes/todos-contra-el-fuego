@@ -57,6 +57,8 @@ db.activefiresviirs.createIndex( { _id: "2dsphere" } );
 db.activefiresviirs.createIndex( { when: 1 } );
 db.activefiresviirs.createIndex( { updatedAt: 1 } );
 db.activefiresviirs.createIndex( { createdAt: 1 } );
+#
+db.trackedfires.createIndex( { _id : "2dsphere" } );
 ```
 
 ## Telegram Comands
@@ -73,6 +75,24 @@ lang - seleccionar idioma
 ## Dependencies
 
 `netcat` and `ncftp` to get NASA data.
+
+## Track some fires
+
+You can track some special fires (like industries) inserting a document like this:
+```
+db.trackedfires.insert({
+    "_id" : {
+        "type" : "Point",
+        "coordinates" : [
+            124.565,
+            -17.363
+        ]
+    },
+    "name": "ACME Industries",
+    "file": "acme.json"
+})
+```
+and will store fire activity in acme.json.
 
 ## Testing
 

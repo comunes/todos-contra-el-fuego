@@ -2781,7 +2781,7 @@
         "console": "false",
         "complete": "true",
         "x": 1770,
-        "y": 740,
+        "y": 720,
         "wires": []
     },
     {
@@ -3893,8 +3893,8 @@
         "type": "subflow:465e67f.6ebf598",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 980,
-        "y": 1180,
+        "x": 800,
+        "y": 1200,
         "wires": []
     },
     {
@@ -4621,6 +4621,7 @@
         "id": "daebf6ef.f07908",
         "type": "subflow:1bbd6687.58eae9",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 1610,
         "y": 540,
         "wires": [
@@ -7694,7 +7695,7 @@
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 650,
+        "x": 640,
         "y": 300,
         "wires": [
             [
@@ -7713,7 +7714,7 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 650,
+        "x": 640,
         "y": 260,
         "wires": [
             []
@@ -7730,7 +7731,7 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 640,
+        "x": 630,
         "y": 220,
         "wires": [
             []
@@ -7756,8 +7757,8 @@
         "repeat": "",
         "crontab": "",
         "once": true,
-        "x": 390,
-        "y": 80,
+        "x": 350,
+        "y": 160,
         "wires": [
             [
                 "deb9b82d.5d8028"
@@ -7825,7 +7826,8 @@
         "y": 300,
         "wires": [
             [
-                "cba6a942.ef2ee8"
+                "cba6a942.ef2ee8",
+                "b4c882e8.05a0c"
             ]
         ]
     },
@@ -7869,7 +7871,7 @@
         "type": "subflow:3f0768a7.1fac78",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1110,
+        "x": 1030,
         "y": 340,
         "wires": []
     },
@@ -7881,7 +7883,7 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1110,
+        "x": 1030,
         "y": 380,
         "wires": []
     },
@@ -8172,5 +8174,66 @@
                 "89ff7ceb.6b95a"
             ]
         ]
+    },
+    {
+        "id": "b4c882e8.05a0c",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "match tracked fires",
+        "func": "var type = msg.type;\nvar collection = \"trackedfires\";\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lon = pay.longitude;\n    var lat = pay.latitude;\n    \n    if (typeof lat === 'number' && typeof lon === 'number') {\n        pay.type = type;\n        var fires = {};\n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n        fires.collection = collection;\n        fires.payload = [{\n            _id:\n            { $near : {\n                $geometry: { \n                type: \"Point\",  \n                coordinates: [ lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 300\n          }\n        }\n        }];\n        fires.originalPayload = pay;\n        node.send(fires);\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1270,
+        "y": 440,
+        "wires": [
+            [
+                "d0cf3de7.910f8"
+            ]
+        ]
+    },
+    {
+        "id": "d0cf3de7.910f8",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find",
+        "collection": "",
+        "operation": "find.toArray",
+        "x": 1460,
+        "y": 440,
+        "wires": [
+            [
+                "53e80775.53b498"
+            ]
+        ]
+    },
+    {
+        "id": "53e80775.53b498",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "store",
+        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    // node.log(typeof fire);\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n    fire.when = when;\n    // node.log(\"Results \" + msg.payload.length);\n    var path = global.get('ftp-path');\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = fire;\n        n.filename =  path + pay.file;\n        node.send(n);  */\n        var file = path + pay.file;\n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError);\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1620,
+        "y": 440,
+        "wires": [
+            [
+                "7862f974.52aad8"
+            ]
+        ]
+    },
+    {
+        "id": "7862f974.52aad8",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 1770,
+        "y": 460,
+        "wires": []
     }
 ]
