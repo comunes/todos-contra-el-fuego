@@ -8213,14 +8213,15 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "store",
-        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    // node.log(typeof fire);\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n    fire.when = when;\n    // node.log(\"Results \" + msg.payload.length);\n    var path = global.get('ftp-path');\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = fire;\n        n.filename =  path + pay.file;\n        node.send(n);  */\n        var file = path + pay.file;\n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError);\n    }\n}\n\n",
-        "outputs": 1,
+        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = {\n            tstamp: when\n        };\n        n.filename =  path + pay.file;\n        if (fire.type === 'modis') {\n            n.payload.data = fire.brightness;\n            node.send([n, null]);  \n        }\n        if (fire.type === 'viirs') {\n            n.payload.data = fire.bright_ti4;\n            node.send([null, n]);  \n        } */\n        /*var file = path + pay.file; \n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError); */\n        // Sometimes the data is not well formed/downloaded\n        \n        var id = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            _id: id,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {_id: id}, update: set, upsert:true } });\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "outputs": "1",
         "noerr": 0,
         "x": 1620,
         "y": 440,
         "wires": [
             [
-                "7862f974.52aad8"
+                "7862f974.52aad8",
+                "798e1ad0.168a24"
             ]
         ]
     },
@@ -8232,8 +8233,23 @@
         "active": false,
         "console": "false",
         "complete": "false",
-        "x": 1770,
-        "y": 460,
+        "x": 1810,
+        "y": 480,
         "wires": []
+    },
+    {
+        "id": "798e1ad0.168a24",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "bulkWrite",
+        "collection": "",
+        "operation": "bulkWrite",
+        "x": 1800,
+        "y": 440,
+        "wires": [
+            []
+        ]
     }
 ]
