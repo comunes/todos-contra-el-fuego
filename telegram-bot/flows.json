@@ -3143,7 +3143,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "false positive?",
-        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n       }\n   }\nquery.originalMessage = msg;\nreturn query;",
+        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 350\n          }\n       }\n   }\nquery.originalMessage = msg;\nreturn query;",
         "outputs": 1,
         "noerr": 0,
         "x": 220,
@@ -4063,9 +4063,7 @@
             [
                 "edb02cb3.e23b7"
             ],
-            [
-                "57e40a1.1461bf4"
-            ]
+            []
         ],
         "outputLabels": [
             "continue",
@@ -8180,7 +8178,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "match tracked fires",
-        "func": "var type = msg.type;\nvar collection = \"trackedfires\";\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lon = pay.longitude;\n    var lat = pay.latitude;\n    \n    if (typeof lat === 'number' && typeof lon === 'number') {\n        pay.type = type;\n        var fires = {};\n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n        fires.collection = collection;\n        fires.payload = [{\n            _id:\n            { $near : {\n                $geometry: { \n                type: \"Point\",  \n                coordinates: [ lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 300\n          }\n        }\n        }];\n        fires.originalPayload = pay;\n        node.send(fires);\n    }\n}",
+        "func": "var type = msg.type;\nvar collection = \"trackedfires\";\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lon = pay.longitude;\n    var lat = pay.latitude;\n    \n    if (typeof lat === 'number' && typeof lon === 'number') {\n        pay.type = type;\n        var fires = {};\n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n        fires.collection = collection;\n        fires.payload = [{\n            _id:\n            { $near : {\n                $geometry: { \n                type: \"Point\",  \n                coordinates: [ lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 400\n          }\n        }\n        }];\n        fires.originalPayload = pay;\n        node.send(fires);\n    }\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 1270,

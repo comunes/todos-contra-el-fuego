@@ -6,8 +6,8 @@ DEST=$3
 DEBUG=0
 
 # ZONES="Alaska Australia_NewZealand Canada Central_America Europe Northern_and_Central_Africa Russia_Asia SouthEast_Asia South_America South_Asia Southern_Africa USA_contiguous_and_Hawaii"
-ZONES="Global"
-# ZONES="Central_America Europe South_America"
+#ZONES="Global"
+ZONES="Central_America Europe South_America"
 
 if [[ $# != 3 ]]
 then
