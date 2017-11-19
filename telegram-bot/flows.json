@@ -174,8 +174,8 @@
         "info": "",
         "in": [
             {
-                "x": 180,
-                "y": 220,
+                "x": 81.00004005432129,
+                "y": 109.00001335144043,
                 "wires": [
                     {
                         "id": "cf23a5a.9eacd58"
@@ -2792,8 +2792,8 @@
         "active": true,
         "console": false,
         "complete": "true",
-        "x": 510,
-        "y": 160,
+        "x": 411.0000400543213,
+        "y": 49.00001335144043,
         "wires": []
     },
     {
@@ -2802,8 +2802,8 @@
         "z": "4a3c7cc0.965dd4",
         "name": "payload: name, lat, lon, layer, ..., icon, iconColor, photoUrl, deleted",
         "info": "layer, speed, bearing, accuracy, icon, iconColor, photoUrl, deleted",
-        "x": 720,
-        "y": 260,
+        "x": 621.0000400543213,
+        "y": 149.00001335144043,
         "wires": []
     },
     {
@@ -2892,8 +2892,8 @@
         "maxage": "20000",
         "usermenu": "hide",
         "layers": "show",
-        "x": 550,
-        "y": 220,
+        "x": 451.0000400543213,
+        "y": 109.00001335144043,
         "wires": []
     },
     {
@@ -2911,7 +2911,8 @@
         "y": 80,
         "wires": [
             [
-                "f2c9762e.6c90a8"
+                "f2c9762e.6c90a8",
+                "a93a616c.565a3"
             ]
         ]
     },
@@ -4657,7 +4658,7 @@
         "crontab": "",
         "once": false,
         "x": 140,
-        "y": 120,
+        "y": 54.00000190734863,
         "wires": [
             [
                 "36d5ed85.92faa2"
@@ -4673,7 +4674,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 370,
-        "y": 120,
+        "y": 54.00000190734863,
         "wires": [
             []
         ]
@@ -4687,7 +4688,7 @@
         "outputs": "2",
         "noerr": 0,
         "x": 750,
-        "y": 160,
+        "y": 94.00000190734863,
         "wires": [
             [],
             [
@@ -4705,7 +4706,7 @@
         "console": "false",
         "complete": "true",
         "x": 990,
-        "y": 200,
+        "y": 134.00000190734863,
         "wires": []
     },
     {
@@ -4713,7 +4714,7 @@
         "type": "subflow:76bd701f.29d0f",
         "z": "5501c3cc.11327c",
         "x": 990,
-        "y": 160,
+        "y": 94.00000190734863,
         "wires": []
     },
     {
@@ -4725,7 +4726,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 360,
-        "y": 480,
+        "y": 414.00000190734863,
         "wires": [
             []
         ]
@@ -4742,7 +4743,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 480,
+        "y": 414.00000190734863,
         "wires": [
             [
                 "59bde767.a4c4a8"
@@ -4758,7 +4759,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 580,
-        "y": 480,
+        "y": 414.00000190734863,
         "wires": [
             []
         ]
@@ -4802,7 +4803,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 510,
-        "y": 600,
+        "y": 534.0000019073486,
         "wires": [
             [
                 "785425b4.1d028c"
@@ -4821,7 +4822,7 @@
         "crontab": "",
         "once": false,
         "x": 330,
-        "y": 540,
+        "y": 474.00000190734863,
         "wires": [
             [
                 "9b050a0a.961c38"
@@ -4840,7 +4841,7 @@
         "crontab": "",
         "once": false,
         "x": 330,
-        "y": 600,
+        "y": 534.0000019073486,
         "wires": [
             [
                 "9b050a0a.961c38"
@@ -4856,7 +4857,7 @@
         "console": "false",
         "complete": "true",
         "x": 650,
-        "y": 600,
+        "y": 534.0000019073486,
         "wires": []
     },
     {
@@ -5872,7 +5873,7 @@
         "checkall": "false",
         "outputs": 2,
         "x": 140,
-        "y": 680,
+        "y": 614.0000019073486,
         "wires": [
             [],
             []
@@ -6319,7 +6320,7 @@
         "outputs": "1",
         "noerr": 0,
         "x": 540,
-        "y": 760,
+        "y": 694.0000019073486,
         "wires": [
             [
                 "9484585b.8339a8",
@@ -6342,7 +6343,7 @@
         "crontab": "",
         "once": false,
         "x": 340,
-        "y": 760,
+        "y": 694.0000019073486,
         "wires": [
             [
                 "59bd465d.f6ae48"
@@ -6358,7 +6359,7 @@
         "console": "false",
         "complete": "true",
         "x": 810,
-        "y": 860,
+        "y": 794.0000019073486,
         "wires": []
     },
     {
@@ -6370,7 +6371,7 @@
         "collection": "",
         "operation": "find",
         "x": 760,
-        "y": 740,
+        "y": 674.0000019073486,
         "wires": [
             [
                 "10e6ffe2.fab67"
@@ -6601,7 +6602,7 @@
         "name": "vjrj@ourproject.org",
         "dname": "no-reply to vjrj",
         "x": 460,
-        "y": 180,
+        "y": 114.00000190734863,
         "wires": []
     },
     {
@@ -6613,7 +6614,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 280,
-        "y": 180,
+        "y": 114.00000190734863,
         "wires": [
             [
                 "765fb9d8.730558"
@@ -6632,7 +6633,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 180,
+        "y": 114.00000190734863,
         "wires": [
             [
                 "e4fc71c5.ae308"
@@ -6644,7 +6645,7 @@
         "type": "subflow:76bd701f.29d0f",
         "z": "5501c3cc.11327c",
         "x": 470,
-        "y": 240,
+        "y": 174.00000190734863,
         "wires": []
     },
     {
@@ -6659,7 +6660,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 240,
+        "y": 174.00000190734863,
         "wires": [
             [
                 "c9213523.ff07b8"
@@ -6675,7 +6676,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 280,
-        "y": 240,
+        "y": 174.00000190734863,
         "wires": [
             [
                 "f78bdf2e.e07e8"
@@ -6901,7 +6902,7 @@
             }
         ],
         "x": 342,
-        "y": 837,
+        "y": 771.0000019073486,
         "wires": [
             [
                 "7f762f9d.71602"
@@ -6917,7 +6918,7 @@
         "console": "false",
         "complete": "false",
         "x": 590,
-        "y": 840,
+        "y": 774.0000019073486,
         "wires": []
     },
     {
@@ -6932,7 +6933,7 @@
         "crontab": "",
         "once": false,
         "x": 92,
-        "y": 835,
+        "y": 769.0000019073486,
         "wires": [
             [
                 "593e8a9f.d2fd54"
@@ -6951,7 +6952,7 @@
         "crontab": "",
         "once": false,
         "x": 92,
-        "y": 897,
+        "y": 831.0000019073486,
         "wires": [
             [
                 "593e8a9f.d2fd54"
@@ -7110,7 +7111,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 960,
-        "y": 540,
+        "y": 474.00000190734863,
         "wires": [
             [
                 "15cc01b0.ff80be"
@@ -7129,7 +7130,7 @@
         "crontab": "",
         "once": false,
         "x": 770,
-        "y": 480,
+        "y": 414.00000190734863,
         "wires": [
             [
                 "a06c9e0.494806"
@@ -7148,7 +7149,7 @@
         "crontab": "",
         "once": false,
         "x": 770,
-        "y": 540,
+        "y": 474.00000190734863,
         "wires": [
             [
                 "a06c9e0.494806"
@@ -7164,7 +7165,7 @@
         "console": "false",
         "complete": "true",
         "x": 1090,
-        "y": 540,
+        "y": 474.00000190734863,
         "wires": []
     },
     {
@@ -7476,8 +7477,8 @@
         "func": "    var email = {};\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\";\n    return email;",
         "outputs": 1,
         "noerr": 0,
-        "x": 480,
-        "y": 520,
+        "x": 462.00004386901855,
+        "y": 364.00000762939453,
         "wires": [
             [
                 "fe0b3515.374378",
@@ -7492,8 +7493,8 @@
         "z": "c1e7ebde.3e0b68",
         "config": "ce56e26a.71d74",
         "name": "notif leave on error",
-        "x": 770,
-        "y": 500,
+        "x": 752.0000438690186,
+        "y": 344.00000762939453,
         "wires": [
             []
         ]
@@ -7506,8 +7507,8 @@
         "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 780,
-        "y": 540,
+        "x": 762.0000438690186,
+        "y": 384.00000762939453,
         "wires": []
     },
     {
@@ -7519,8 +7520,8 @@
         "secure": false,
         "name": "vjrj@ourproject.org",
         "dname": "no-reply to vjrj",
-        "x": 760,
-        "y": 580,
+        "x": 742.0000438690186,
+        "y": 424.00000762939453,
         "wires": []
     },
     {
@@ -7531,8 +7532,8 @@
         "scope": [
             "cba6a942.ef2ee8"
         ],
-        "x": 180,
-        "y": 520,
+        "x": 162.00004386901855,
+        "y": 364.00000762939453,
         "wires": [
             [
                 "48219ca2.511564"
@@ -7552,8 +7553,8 @@
         "newline": "",
         "topic": "",
         "base64": false,
-        "x": 130,
-        "y": 260,
+        "x": 112.00004386901855,
+        "y": 104.00000762939453,
         "wires": [
             [
                 "2c0b967b.4cae8a"
@@ -7573,8 +7574,8 @@
         "newline": "",
         "topic": "modis-viirs",
         "base64": false,
-        "x": 120,
-        "y": 300,
+        "x": 102.00004386901855,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "b8eec86.79ece38"
@@ -7589,8 +7590,8 @@
         "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nfile.type = \"viirs\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 280,
-        "y": 300,
+        "x": 262.00004386901855,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "46a349eb.45da68",
@@ -7606,8 +7607,8 @@
         "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 280,
-        "y": 260,
+        "x": 262.00004386901855,
+        "y": 104.00000762939453,
         "wires": [
             [
                 "2005640b.f800bc",
@@ -7624,8 +7625,8 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 450,
-        "y": 260,
+        "x": 432.00004386901855,
+        "y": 104.00000762939453,
         "wires": [
             [
                 "cb6427c6.0c2058",
@@ -7642,8 +7643,8 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 450,
-        "y": 300,
+        "x": 432.00004386901855,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "33d38060.1d916",
@@ -7659,8 +7660,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 460,
-        "y": 340,
+        "x": 442.00004386901855,
+        "y": 184.00000762939453,
         "wires": []
     },
     {
@@ -7674,8 +7675,8 @@
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 650,
-        "y": 340,
+        "x": 632.0000438690186,
+        "y": 184.00000762939453,
         "wires": [
             [
                 "ab66e9e6.ee9c48"
@@ -7693,8 +7694,8 @@
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 640,
-        "y": 300,
+        "x": 622.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "ab66e9e6.ee9c48"
@@ -7712,8 +7713,8 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 640,
-        "y": 260,
+        "x": 622.0000438690186,
+        "y": 104.00000762939453,
         "wires": [
             []
         ]
@@ -7729,89 +7730,10 @@
         "multi": "one",
         "ret": "\\n",
         "temp": "",
-        "x": 630,
-        "y": 220,
+        "x": 612.0000438690186,
+        "y": 64.00000762939453,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "b6b485e5.1a3ed8",
-        "type": "subflow:4a3c7cc0.965dd4",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "x": 860,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "a5303299.fefc",
-        "type": "inject",
-        "z": "c1e7ebde.3e0b68",
-        "name": "onInit",
-        "topic": "",
-        "payload": "",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "x": 350,
-        "y": 160,
-        "wires": [
-            [
-                "deb9b82d.5d8028"
-            ]
-        ]
-    },
-    {
-        "id": "70007906.14a698",
-        "type": "subflow:91777bb3.922328",
-        "z": "c1e7ebde.3e0b68",
-        "x": 380,
-        "y": 120,
-        "wires": [
-            [
-                "5c43e91c.3921a8"
-            ]
-        ]
-    },
-    {
-        "id": "5c43e91c.3921a8",
-        "type": "delay",
-        "z": "c1e7ebde.3e0b68",
-        "name": "d 3s",
-        "pauseType": "delay",
-        "timeout": "3",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 540,
-        "y": 120,
-        "wires": [
-            [
-                "deb9b82d.5d8028"
-            ]
-        ]
-    },
-    {
-        "id": "deb9b82d.5d8028",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "conf map",
-        "func": "/* Only for tests */\nvar cfg = {};\ncfg.payload = {};\ncfg.payload.command = {\n    cluster:0,\n    layer:\"OSM grey\",\n    lat:40.4,\n    lon:-3.6833333,\n    zoom:6,\n};   \nreturn [cfg];",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 690,
-        "y": 120,
-        "wires": [
-            [
-                "b6b485e5.1a3ed8"
-            ]
         ]
     },
     {
@@ -7820,8 +7742,8 @@
         "z": "c1e7ebde.3e0b68",
         "config": "ce56e26a.71d74",
         "name": "nofit take",
-        "x": 1000,
-        "y": 300,
+        "x": 982.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "cba6a942.ef2ee8",
@@ -7837,8 +7759,8 @@
         "func": "if (Array.isArray(msg.payload)) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 840,
-        "y": 300,
+        "x": 822.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "840c7f68.e29b2",
@@ -7852,8 +7774,8 @@
         "type": "subflow:11cb3f4d.6e0081",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1200,
-        "y": 300,
+        "x": 1182.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "fa0acd4d.e342e"
@@ -7869,8 +7791,8 @@
         "type": "subflow:3f0768a7.1fac78",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1030,
-        "y": 340,
+        "x": 1012.0000438690186,
+        "y": 184.00000762939453,
         "wires": []
     },
     {
@@ -7881,8 +7803,8 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1030,
-        "y": 380,
+        "x": 1012.0000438690186,
+        "y": 224.00000762939453,
         "wires": []
     },
     {
@@ -7893,8 +7815,8 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1470,
-        "y": 380,
+        "x": 1452.0000438690186,
+        "y": 224.00000762939453,
         "wires": []
     },
     {
@@ -7902,8 +7824,8 @@
         "type": "subflow:c8522537.c6f908",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1460,
-        "y": 340,
+        "x": 1442.0000438690186,
+        "y": 184.00000762939453,
         "wires": []
     },
     {
@@ -7912,8 +7834,8 @@
         "z": "c1e7ebde.3e0b68",
         "config": "ce56e26a.71d74",
         "name": "notif leave",
-        "x": 1420,
-        "y": 300,
+        "x": 1402.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "51e12e27.c4964",
@@ -7932,8 +7854,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1590,
-        "y": 300,
+        "x": 1572.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "5c054d9b.8452f4"
@@ -7948,8 +7870,8 @@
         "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1740,
-        "y": 300,
+        "x": 1722.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "8795dd0e.a135a"
@@ -7971,8 +7893,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1920,
-        "y": 300,
+        "x": 1902.0000438690186,
+        "y": 144.00000762939453,
         "wires": [
             [
                 "7a5495a3.d75efc"
@@ -7984,8 +7906,8 @@
         "type": "subflow:2b8628df.fdcca8",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 2130,
-        "y": 300,
+        "x": 2112.0000438690186,
+        "y": 144.00000762939453,
         "wires": []
     },
     {
@@ -8029,8 +7951,8 @@
         "z": "c1e7ebde.3e0b68",
         "name": "catch all",
         "scope": null,
-        "x": 120,
-        "y": 680,
+        "x": 102.00004386901855,
+        "y": 524.0000076293945,
         "wires": [
             [
                 "1a8f241d.48463c"
@@ -8045,8 +7967,8 @@
         "active": true,
         "console": "true",
         "complete": "true",
-        "x": 350,
-        "y": 680,
+        "x": 332.00004386901855,
+        "y": 524.0000076293945,
         "wires": []
     },
     {
@@ -8057,8 +7979,8 @@
         "func": "var types = ['modis', 'viirs'];\nfor (var i = 0; i < types.length; i++) {\n    var type = types[i];\n    var collection = \"activefires\" + type; \n    var actfires = {};\n    actfires.type = type;\n    actfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    actfires.payload = [{ }];\n    node.send(actfires);\n}",
         "outputs": "1",
         "noerr": 0,
-        "x": 1240,
-        "y": 240,
+        "x": 1222.0000438690186,
+        "y": 84.00000762939453,
         "wires": [
             [
                 "9b75b54f.f01b58"
@@ -8074,8 +7996,8 @@
         "name": "find",
         "collection": "",
         "operation": "find.toArray",
-        "x": 1410,
-        "y": 240,
+        "x": 1392.0000438690186,
+        "y": 84.00000762939453,
         "wires": [
             [
                 "5dc2de12.0ddf3"
@@ -8093,8 +8015,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1590,
-        "y": 240,
+        "x": 1572.0000438690186,
+        "y": 84.00000762939453,
         "wires": [
             [
                 "fad78f11.31968"
@@ -8109,8 +8031,8 @@
         "func": "msg.payload.longitude = msg.payload._id.coordinates[0];\nmsg.payload.latitude = msg.payload._id.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1740,
-        "y": 240,
+        "x": 1722.0000438690186,
+        "y": 84.00000762939453,
         "wires": [
             [
                 "24b2391f.e79716"
@@ -8125,8 +8047,8 @@
         "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nif (msg.payload && msg.payload.longitude && msg.payload.latitude) {\n    var lat = msg.payload.latitude;\n    var lon = msg.payload.longitude;\n    var pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\n    pname += \", satelite: \" + msg.payload.satellite;\n    var maxkevin = 373;\n    var intensity =\n        (msg.payload.bright_ti4? msg.payload.bright_ti4: \n        (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\n    var radius = msg.payload.scan * 1000;\n    \n    var newMsg = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"NASA\",\n            // icon: \"earthquake\",\n            color: \"red\",\n            fillColor: \"red\",\n            // intensity: intensity,\n            // weight: intensity,\n            radius: radius,\n            fillOpacity: 1,\n            iconColor:'red', // obligatorio\n            stroke: false,\n            addtoheatmap: false,\n            // fillOpacity: 0.8,\n            clickable: true,\n            weblink: {url: \"http://example.com\", name: \"Más info\"}\n            \n            // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n        }\n    };\n    \n    return newMsg;\n    \n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1920,
-        "y": 240,
+        "x": 1902.0000438690186,
+        "y": 84.00000762939453,
         "wires": [
             [
                 "f5971d3b.95126"
@@ -8138,16 +8060,16 @@
         "type": "subflow:4a3c7cc0.965dd4",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 2160,
-        "y": 240,
+        "x": 2142.0000438690186,
+        "y": 84.00000762939453,
         "wires": []
     },
     {
         "id": "89ff7ceb.6b95a",
         "type": "subflow:91777bb3.922328",
         "z": "c1e7ebde.3e0b68",
-        "x": 1030,
-        "y": 240,
+        "x": 1012.0000438690186,
+        "y": 84.00000762939453,
         "wires": [
             [
                 "20b15f93.74ebe"
@@ -8165,8 +8087,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 830,
-        "y": 240,
+        "x": 812.0000438690186,
+        "y": 84.00000762939453,
         "wires": [
             [
                 "89ff7ceb.6b95a"
@@ -8181,8 +8103,8 @@
         "func": "var type = msg.type;\nvar collection = \"trackedfires\";\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lon = pay.longitude;\n    var lat = pay.latitude;\n    \n    if (typeof lat === 'number' && typeof lon === 'number') {\n        pay.type = type;\n        var fires = {};\n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n        fires.collection = collection;\n        fires.payload = [{\n            _id:\n            { $near : {\n                $geometry: { \n                type: \"Point\",  \n                coordinates: [ lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 400\n          }\n        }\n        }];\n        fires.originalPayload = pay;\n        node.send(fires);\n    }\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1270,
-        "y": 440,
+        "x": 1252.0000438690186,
+        "y": 284.00000762939453,
         "wires": [
             [
                 "d0cf3de7.910f8"
@@ -8198,8 +8120,8 @@
         "name": "find",
         "collection": "",
         "operation": "find.toArray",
-        "x": 1460,
-        "y": 440,
+        "x": 1442.0000438690186,
+        "y": 284.00000762939453,
         "wires": [
             [
                 "53e80775.53b498"
@@ -8214,8 +8136,8 @@
         "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = {\n            tstamp: when\n        };\n        n.filename =  path + pay.file;\n        if (fire.type === 'modis') {\n            n.payload.data = fire.brightness;\n            node.send([n, null]);  \n        }\n        if (fire.type === 'viirs') {\n            n.payload.data = fire.bright_ti4;\n            node.send([null, n]);  \n        } */\n        /*var file = path + pay.file; \n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError); */\n        // Sometimes the data is not well formed/downloaded\n        \n        var id = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            _id: id,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {_id: id}, update: set, upsert:true } });\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
         "outputs": "1",
         "noerr": 0,
-        "x": 1614,
-        "y": 440,
+        "x": 1596.0000438690186,
+        "y": 284.00000762939453,
         "wires": [
             [
                 "798e1ad0.168a24",
@@ -8231,8 +8153,8 @@
         "active": true,
         "console": "false",
         "complete": "false",
-        "x": 1810,
-        "y": 480,
+        "x": 1792.0000438690186,
+        "y": 324.00000762939453,
         "wires": []
     },
     {
@@ -8244,8 +8166,8 @@
         "name": "bulkWrite",
         "collection": "",
         "operation": "bulkWrite",
-        "x": 1800,
-        "y": 440,
+        "x": 1782.0000438690186,
+        "y": 284.00000762939453,
         "wires": [
             []
         ]
@@ -8262,7 +8184,7 @@
         "crontab": "",
         "once": false,
         "x": 123,
-        "y": 332,
+        "y": 266.00000190734863,
         "wires": [
             [
                 "66acbca7.d69824"
@@ -8277,7 +8199,7 @@
         "filename": "sample-file-function.js",
         "outputs": "1",
         "x": 328,
-        "y": 332,
+        "y": 266.00000190734863,
         "wires": [
             [
                 "d7c46b39.5ebb08"
@@ -8293,7 +8215,67 @@
         "console": "false",
         "complete": "true",
         "x": 537,
-        "y": 332,
+        "y": 266.00000190734863,
         "wires": []
+    },
+    {
+        "id": "8b1ae3f4.e5e7c",
+        "type": "subflow:4a3c7cc0.965dd4",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1293,
+        "y": 169,
+        "wires": []
+    },
+    {
+        "id": "cccf93e7.8ef82",
+        "type": "subflow:91777bb3.922328",
+        "z": "93cb4937.6fc068",
+        "x": 813,
+        "y": 169,
+        "wires": [
+            [
+                "5fa73616.280ce8"
+            ]
+        ]
+    },
+    {
+        "id": "5fa73616.280ce8",
+        "type": "delay",
+        "z": "93cb4937.6fc068",
+        "name": "d 3s",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 973,
+        "y": 169,
+        "wires": [
+            [
+                "a93a616c.565a3"
+            ]
+        ]
+    },
+    {
+        "id": "a93a616c.565a3",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "conf map",
+        "func": "/* Only for tests */\nvar cfg = {};\ncfg.payload = {};\ncfg.payload.command = {\n    cluster:0,\n    layer:\"OSM grey\",\n    lat:40.4,\n    lon:-3.6833333,\n    zoom:6,\n};   \nreturn [cfg];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1123,
+        "y": 169,
+        "wires": [
+            [
+                "8b1ae3f4.e5e7c"
+            ]
+        ]
     }
 ]
