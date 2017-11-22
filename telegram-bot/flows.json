@@ -1153,11 +1153,11 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA):''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia:''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
+        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 220,
-        "y": 100,
+        "x": 191,
+        "y": 97,
         "wires": [
             [
                 "c0e6a5d.fb1e058"
@@ -1243,7 +1243,7 @@
         "name": "find notis",
         "collection": "notifications",
         "operation": "find",
-        "x": 600,
+        "x": 513,
         "y": 100,
         "wires": [
             [
@@ -1272,18 +1272,22 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "save and send",
-        "func": "if (msg.payload.length === 0) {\n    // No yet notified save and \n    // send notifications\n    return [ msg.notification, [msg.caption, msg.notification], null];\n} else {\n    // Already notified, do nothing\n}\n",
+        "func": "if (msg.payload.length === 0) {\n    // No yet notified save and \n    // send notifications\n    return [ msg.notification, msg, null];\n} else {\n    // Already notified, do nothing\n}\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 800,
+        "x": 683,
         "y": 100,
         "wires": [
             [
                 "6329567.da6b7a8"
             ],
             [
-                "cf97891b.2928a8"
+                "f672b9a9.7f30f8"
             ]
+        ],
+        "outputLabels": [
+            "persist",
+            "caption+location"
         ]
     },
     {
@@ -1301,8 +1305,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 420,
-        "y": 100,
+        "x": 356,
+        "y": 96,
         "wires": [
             [
                 "53f7be24.9be16"
@@ -4790,8 +4794,8 @@
         "z": "95e78a8b.50a428",
         "name": "users notifications are removed everyday",
         "info": "",
-        "x": 300,
-        "y": 160,
+        "x": 266,
+        "y": 155,
         "wires": []
     },
     {
@@ -5900,16 +5904,6 @@
         ]
     },
     {
-        "id": "ca9ae1e8.6507f",
-        "type": "subflow:e81a68fa.695e38",
-        "z": "95e78a8b.50a428",
-        "x": 1350,
-        "y": 200,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "eab4c7fe.fd7828",
         "type": "subflow:e81a68fa.695e38",
         "z": "2f0217a5.051978",
@@ -6299,8 +6293,8 @@
         "z": "95e78a8b.50a428",
         "name": "msg.payload.location and chatId for user info",
         "info": "",
-        "x": 310,
-        "y": 40,
+        "x": 284,
+        "y": 48,
         "wires": []
     },
     {
@@ -6672,14 +6666,14 @@
         "type": "function",
         "z": "5501c3cc.11327c",
         "name": "test msg",
-        "func": "var m = {}\nm.payload = {};\nm.chatId = 4885772;\nm.payload.chatId = 4885772;\nm.payload.content = \"Testingggg...\";\nreturn m;",
+        "func": "var m = {}\nm.payload = {};\nm.chatId = 4885772;\nm.payload.chatId = 4885772;\nm.payload.content = \"<code>Lalal ↖↗↘↙⬆⬇⬅➡</code>\";\nm.payload.type = \"message\";\nm.payload.options = {};\nm.payload.options.parse_mode = \"HTML\";\nreturn m;",
         "outputs": 1,
         "noerr": 0,
         "x": 280,
-        "y": 174.00000190734863,
+        "y": 171,
         "wires": [
             [
-                "f78bdf2e.e07e8"
+                "37453c0b.19dd74"
             ]
         ]
     },
@@ -7474,7 +7468,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "timeout getting fires",
-        "func": "    var email = {};\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\";\n    return email;",
+        "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error.message;\n    return email;",
         "outputs": 1,
         "noerr": 0,
         "x": 462.00004386901855,
@@ -8275,6 +8269,255 @@
         "wires": [
             [
                 "8b1ae3f4.e5e7c"
+            ]
+        ]
+    },
+    {
+        "id": "37453c0b.19dd74",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "5501c3cc.11327c",
+        "x": 475.5,
+        "y": 218,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "321eea2f.5c3886",
+        "type": "openweathermap",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "wtype": "current",
+        "lon": "",
+        "lat": "",
+        "city": "",
+        "country": "",
+        "language": "en",
+        "x": 480.5,
+        "y": 334,
+        "wires": [
+            [
+                "d828a00b.a765a"
+            ]
+        ]
+    },
+    {
+        "id": "209e2a.026d71d6",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 111,
+        "y": 335,
+        "wires": [
+            [
+                "d358d9f5.3b6d58"
+            ]
+        ]
+    },
+    {
+        "id": "d358d9f5.3b6d58",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test msg",
+        "func": "var m = {}\nm.payload = {};\nm.chatId = 4885772;\nm.payload.chatId = 4885772;\nm.payload.content = \"Nuevo fuego\";\nm.payload.type = \"message\";\nm.payload.options = {};\nm.payload.options.parse_mode = \"HTML\";\nm.location = {};\nm.location.lat = 40.242723;\nm.location.lon = -3.476341;\nm.originalPayload = m.payload;\nm.language = 'es';\nreturn m;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 283,
+        "y": 333,
+        "wires": [
+            [
+                "321eea2f.5c3886"
+            ]
+        ]
+    },
+    {
+        "id": "c0713e61.08a91",
+        "type": "debug",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 895,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "d828a00b.a765a",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "set dir and speed",
+        "func": "var beaufortScale = context.global.beaufortScale;\n\nfunction getDirection(angle) {\n  //easy to customize by changing the number of directions you have\n  var directions = 8;\n\n  var degree = 360 / directions;\n  angle = angle + degree/2;\n\n  if (angle >= 0 * degree && angle < 1 * degree)\n    return \"⬆\"; // return \"N\";\n  if (angle >= 1 * degree && angle < 2 * degree)\n    return \"↗\"; // return \"NE\";\n  if (angle >= 2 * degree && angle < 3 * degree)\n    return \"➡\"; // return \"E\";\n  if (angle >= 3 * degree && angle < 4 * degree)\n    return \"↘\"; // return \"SE\";\n  if (angle >= 4 * degree && angle < 5 * degree)\n    return \"⬇\"; // return \"S\";\n  if (angle >= 5 * degree && angle < 6 * degree)\n    return \"↙\"; // return \"SW\";\n  if (angle >= 6 * degree && angle < 7 * degree)\n    return \"⬅\"; // return \"W\";\n  if (angle >= 7 * degree && angle < 8 * degree)\n    return \"↖\"; // return \"NW\";\n  //Should never happen:\n  return \"⬆\";\n}\n\nvar w = msg.payload;\nmsg.payload = msg.originalPayload;\nvar dir = getDirection(w.winddirection);\nvar type = beaufortScale(w.windspeed, {lang: 'es', int: true});\nmsg.payload.content += \". \" + \"Dirección del viento y fuerza: \" + dir + \" (\" +  type.desc + \")\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 732.5,
+        "y": 336,
+        "wires": [
+            [
+                "c0713e61.08a91",
+                "22bffe7e.389d92"
+            ]
+        ]
+    },
+    {
+        "id": "12d062a0.5d751d",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "5501c3cc.11327c",
+        "x": 944,
+        "y": 332,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "22bffe7e.389d92",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "5501c3cc.11327c",
+        "x": 941,
+        "y": 383,
+        "wires": []
+    },
+    {
+        "id": "c72dac24.b6014",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "add weather to noti",
+        "func": "var t = msg.i18n;\nconsole.log(msg.lang);\n\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction getDirection(angle) {\n  //easy to customize by changing the number of directions you have\n  var directions = 8;\n\n  var degree = 360 / directions;\n  angle = angle + degree/2;\n\n  if (angle >= 0 * degree && angle < 1 * degree)\n    return \"⬆ \" + t(\"norte\"); // return \"N\";\n  if (angle >= 1 * degree && angle < 2 * degree)\n    return \"↗ \" + t(\"noreste\"); // return \"NE\";\n  if (angle >= 2 * degree && angle < 3 * degree)\n    return \"➡ \" + t(\"este\"); // return \"E\";\n  if (angle >= 3 * degree && angle < 4 * degree)\n    return \"↘ \" + t(\"sureste\"); // return \"SE\";\n  if (angle >= 4 * degree && angle < 5 * degree)\n    return \"⬇ \" + t(\"sur\"); // return \"S\";\n  if (angle >= 5 * degree && angle < 6 * degree)\n    return \"↙ \" + t(\"suroeste\"); // return \"SW\";\n  if (angle >= 6 * degree && angle < 7 * degree)\n    return \"⬅ \" + t(\"oeste\"); // return \"W\";\n  if (angle >= 7 * degree && angle < 8 * degree)\n    return \"↖ \" + t(\"noroeste\"); // return \"NW\";\n  //Should never happen:\n  return \"⬆\";\n}\n\n\nweather.setCoordinate(43.5293, -5.6774);\n// weather.setLang('es');\nweather.setAPPID(msg.weatherapi);\n\nweather.getAllWeather(function(err, w){\n  /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    if (err || !w.wind || !w.wind.deg || !w.wind.speed) {\n      // send without weather info\n      node.send(msg);\n  }\n\n  // console.log(w.wind);\n  // https://en.wikipedia.org/wiki/Beaufort_scale\n/*   console.log(beaufort(w.wind.speed, {lang: 'es', int: true}));\n  console.log(getDirection(w.wind.deg, {lang: 'es', int: true}));\n  console.log(beaufort(40, {lang: 'es', int: true}));\n  console.log(beaufort(80, {lang: 'es', int: true}));\n  console.log(beaufort(200, {lang: 'es', int: true})); */\n  \n  var dir = getDirection(w.wind.deg);\n  var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n  if ((type && dir) && type.grade > 0) {\n    var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n    msg.payload.content += \" \" + windinfo + \":\";\n  } else {\n    msg.payload.content += \":\";\n  }\n  node.send(msg);\n});\n\n\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 832,
+        "y": 931,
+        "wires": [
+            [
+                "9971619a.55e28"
+            ]
+        ]
+    },
+    {
+        "id": "8497b0dc.44e88",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 103,
+        "y": 921,
+        "wires": [
+            [
+                "623c34af.3a072c"
+            ]
+        ]
+    },
+    {
+        "id": "d2b4e34d.4cc55",
+        "type": "debug",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 755,
+        "y": 1012,
+        "wires": []
+    },
+    {
+        "id": "9971619a.55e28",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "5501c3cc.11327c",
+        "x": 1066,
+        "y": 931,
+        "wires": []
+    },
+    {
+        "id": "3e2730ca.cc703",
+        "type": "subflow:4384af8e.a7409",
+        "z": "5501c3cc.11327c",
+        "x": 405,
+        "y": 921,
+        "wires": [
+            [
+                "aa2ffca6.5a2ef"
+            ]
+        ]
+    },
+    {
+        "id": "623c34af.3a072c",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test msg",
+        "func": "var m = {};\nm.payload = {};\nm.chatId = 4885772;\nm.payload.chatId = 4885772;\nm.payload.content = \"Nuevo fuego a 4 km de distancia\";\nm.payload.type = \"message\";\nm.payload.options = {};\nm.payload.options.parse_mode = \"HTML\";\nreturn m;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 257.5,
+        "y": 922,
+        "wires": [
+            [
+                "3e2730ca.cc703"
+            ]
+        ]
+    },
+    {
+        "id": "870dd05.0bd283",
+        "type": "function",
+        "z": "95e78a8b.50a428",
+        "name": "+weather",
+        "func": "var t = msg.i18n;\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction getDirection(angle) {\n  //easy to customize by changing the number of directions you have\n  var directions = 8;\n\n  var degree = 360 / directions;\n  angle = angle + degree/2;\n\n  if (angle >= 0 * degree && angle < 1 * degree)\n    return \"⬆ \" + t(\"norte\"); // return \"N\";\n  if (angle >= 1 * degree && angle < 2 * degree)\n    return \"↗ \" + t(\"noreste\"); // return \"NE\";\n  if (angle >= 2 * degree && angle < 3 * degree)\n    return \"➡ \" + t(\"este\"); // return \"E\";\n  if (angle >= 3 * degree && angle < 4 * degree)\n    return \"↘ \" + t(\"sureste\"); // return \"SE\";\n  if (angle >= 4 * degree && angle < 5 * degree)\n    return \"⬇ \" + t(\"sur\"); // return \"S\";\n  if (angle >= 5 * degree && angle < 6 * degree)\n    return \"↙ \" + t(\"suroeste\"); // return \"SW\";\n  if (angle >= 6 * degree && angle < 7 * degree)\n    return \"⬅ \" + t(\"oeste\"); // return \"W\";\n  if (angle >= 7 * degree && angle < 8 * degree)\n    return \"↖ \" + t(\"noroeste\"); // return \"NW\";\n  //Should never happen:\n  return \"⬆\";\n}\n\n// msg.caption, msg.notification]\n\nweather.setCoordinate(msg.notification.payload.content.latitude, msg.notification.payload.content.longitude);\n\nweather.setAPPID(msg.weatherapi);\nmsg.weatherapi=\"\";\nweather.getAllWeather(function(err, w){\n    /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    if (err || !w.wind || !w.wind.deg || !w.wind.speed) {\n        // send without weather info\n        node.send(msg.caption);\n        node.send(msg.notification);\n    }\n\n    var dir = getDirection(w.wind.deg);\n    var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n    if ((type && dir) && type.grade > 0) {\n        var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n        msg.caption.payload.content += \" \" + windinfo + \":\";\n    } else {\n        msg.caption.payload.content += \":\";\n    }\n    node.send(msg.caption);\n    node.send(msg.notification);\n});\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 910,
+        "y": 173,
+        "wires": [
+            [
+                "cf97891b.2928a8"
+            ]
+        ]
+    },
+    {
+        "id": "f672b9a9.7f30f8",
+        "type": "credentials",
+        "z": "95e78a8b.50a428",
+        "name": "api",
+        "props": [
+            {
+                "value": "weatherapi",
+                "type": "msg"
+            }
+        ],
+        "x": 782.5,
+        "y": 173,
+        "wires": [
+            [
+                "870dd05.0bd283"
+            ]
+        ]
+    },
+    {
+        "id": "aa2ffca6.5a2ef",
+        "type": "credentials",
+        "z": "5501c3cc.11327c",
+        "name": "weather api",
+        "props": [
+            {
+                "value": "weatherapi",
+                "type": "msg"
+            }
+        ],
+        "x": 600,
+        "y": 928,
+        "wires": [
+            [
+                "c72dac24.b6014",
+                "d2b4e34d.4cc55"
             ]
         ]
     }

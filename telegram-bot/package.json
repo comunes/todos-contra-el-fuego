@@ -3,15 +3,18 @@
   "description": "A Node-RED Project",
   "version": "0.0.1",
   "dependencies": {
+    "beaufort-scale": "^1.0.3",
     "geolib": "^2.0.24",
     "i18next": "^10.0.7",
     "i18next-node-fs-backend": "^1.0.0",
     "jsonfile": "^4.0.0",
     "moment": "^2.19.1",
+    "moment-timezone": "^0.5.14",
     "node-red-contrib-assert": "~1.2.1",
     "node-red-contrib-cache": "^1.0.3",
     "node-red-contrib-config": "^1.1.1",
     "node-red-contrib-counter": "^0.1.4",
+    "node-red-contrib-credentials": "~0.1.0",
     "node-red-contrib-file-function": "~1.1.2",
     "node-red-contrib-jsonpath": "~0.1.1",
     "node-red-contrib-mongodb2": "^0.5.6",
@@ -22,7 +25,9 @@
     "node-red-dashboard": "~2.6.2",
     "node-red-node-google": "^0.1.1",
     "node-red-node-mongodb": "0.0.13",
+    "node-red-node-openweathermap": "~0.1.16",
     "node-red-node-rbe": "^0.1.13",
-    "node-telegram-bot-api": "^0.29.0"
+    "node-telegram-bot-api": "^0.29.0",
+    "openweather-apis": "^3.3.5"
   }
 }

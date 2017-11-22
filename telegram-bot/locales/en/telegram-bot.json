@@ -1,8 +1,8 @@
 {
     "Sí": "Yes",
     "No": "No",
-    "kmnasa": "🔥 Alert of possible fire in {{km}} км of distance (source NASA):",
-    "kmvecinal": "🔥 Neighborhood alert of fire in {{km}} км of distance:",
+    "kmnasa": "🔥 Alert of possible fire in {{km}} км of distance (source NASA)",
+    "kmvecinal": "🔥 Neighborhood alert of fire in {{km}} км of distance",
     "kmdistancia": "You are subscribed to fire alerts to {{km}} км around this zone",
     "📣 Suscrito a nuevos fuegos": "📣 Subscribed to new fires",
     "Desuscribirme": "Unsubscribe",
@@ -54,5 +54,26 @@
     "PREGUNTAS FRECUENTES:": "FAQ:",
     "OTROS:": "OTHER:",
     "Feedback, sugerencias, bugs, etc: @vj_rj": "Feedback, suggestions, bugs, etc: @vj_rj",
-    "¡Gracias!": "Thank You!"
+  "¡Gracias!": "Thank You!",
+  "Calma": "Calm",
+  "Ventolina": "Light air",
+  "Brisa muy débil": "Light breeze",
+  "Brisa ligera": "Gentle breeze",
+  "Brisa moderada": "Moderate breeze",
+  "Brisa fresca": "Fresh breeze",
+  "Brisa fuerte": "Strong breeze",
+  "Viento fuerte": "High wind",
+  "Temporal": "Gale",
+  "Temporal fuerte": "Strong gale",
+  "Temporal duro": "Storm",
+  "Borrasca": "Violent Storm",
+  "Huracán": "Hurricane"
+  "norte": "north",
+  "noreste": "north-east",
+  "este": "east",
+  "sureste": "south-east",
+  "sur": "south",
+  "suroeste": "south-west",
+  "oeste": "west",
+  "noroeste": "nord-west"
 }

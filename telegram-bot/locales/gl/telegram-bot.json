@@ -1,8 +1,8 @@
 {
     "Sí": "Si",
     "No": "Non",
-    "kmnasa": "🔥 Alerta posíbel lume en {{km}} км de distancia (orixe NASA):",
-    "kmvecinal": "🔥 Alerta veciñal de lume en {{km}} км de distancia:",
+    "kmnasa": "🔥 Alerta posíbel lume en {{km}} км de distancia (orixe NASA)",
+    "kmvecinal": "🔥 Alerta veciñal de lume en {{km}} км de distancia",
     "kmdistancia": "Estás subscrito a alertas de lumes en {{km}} км arredor desta zona",
     "📣 Suscrito a nuevos fuegos": "📣 Subscribícheste a novos lumes",
     "Desuscribirme": "Deixar de estar subscrito",
