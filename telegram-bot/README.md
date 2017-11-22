@@ -27,20 +27,39 @@ to get the NASA fire data when modified in that directory. Also check the `confi
 
 ## Mongo Indexes
 
-Create this mongo indexes
+Create this mongo indexes:
+
 ```mongodb
-db.subscriptions.createIndex( { geo : "2dsphere" } )
-db.subscriptions.createIndex( { chatId: 1 }
-db.notifications.createIndex( { geo : "2dsphere" } )
-db.notifications.createIndex( { chatId: 1 })
-db.fstats.createIndex( { name: 1 } )
-db.avisosfuego.createIndex( { chatId: 1 })
-db.avisosfuego.createIndex( { geo : "2dsphere" } )
-db.falsepositives.createIndex( { chatId: 1 })
-db.falsepositives.createIndex( { geo : "2dsphere" } )
-db.users.createIndex( { telegramChatId: 1 } )
-db.users.createIndex( { lang: 1 } )
-db.users.createIndex( { updated: 1 } )
+db.subscriptions.createIndex( { geo : "2dsphere" } );
+db.subscriptions.createIndex( { chatId: 1 });
+#
+db.notifications.createIndex( { geo : "2dsphere" } );
+db.notifications.createIndex( { chatId: 1 });
+#
+db.fstats.createIndex( { name: 1 } );
+#
+db.avisosfuego.createIndex( { chatId: 1 });
+db.avisosfuego.createIndex( { geo : "2dsphere" } );
+#
+db.falsepositives.createIndex( { chatId: 1 });
+db.falsepositives.createIndex( { geo : "2dsphere" } );
+#
+db.users.createIndex( { telegramChatId: 1 } );
+db.users.createIndex( { lang: 1 } );
+db.users.createIndex( { updated: 1 } );
+#
+db.activefiresmodis.createIndex( { _id: "2dsphere" } );
+db.activefiresmodis.createIndex( { when: 1 } );
+db.activefiresmodis.createIndex( { updatedAt: 1 } );
+db.activefiresmodis.createIndex( { createdAt: 1 } );
+#
+db.activefiresviirs.createIndex( { _id: "2dsphere" } );
+db.activefiresviirs.createIndex( { when: 1 } );
+db.activefiresviirs.createIndex( { updatedAt: 1 } );
+db.activefiresviirs.createIndex( { createdAt: 1 } );
+#
+db.trackedfires.createIndex( { _id : "2dsphere" } );
+db.trackedfires.createIndex( { "name": 1 }, { unique: true } );
 ```
 
 ## Telegram Comands
@@ -56,7 +75,50 @@ lang - seleccionar idioma
 
 ## Dependencies
 
-`nc` and `ncftp` to get NASA data.
+`netcat` and `ncftp` to get NASA data.
+
+## Track some fires
+
+You can track some special fires (like industries) inserting a document like this:
+```
+db.trackedfires.insert({
+    "_id" : {
+        "type" : "Point",
+        "coordinates" : [
+            124.565,
+            -17.363
+        ]
+    },
+    "name": "ACME Industries",
+    "file": "acme.json"
+})
+```
+and will store fire activity in acme.json.
+
+## Testing
+
+You need to install also:
+
+```bash
+npm i cucumber
+npm i chai
+npm i i18next-sync-fs-backend
+npm i net
+```
+
+And run test with commands like:
+```bash
+node_modules/cucumber/bin/cucumber.js --tags "not @ignore"
+```
+## Runing via docker
+
+Follow: https://nodered.org/docs/platforms/docker
+
+If you have your flows, etc in `/opt/node-red`:
+
+```
+docker run -it --restart=always -p 1880:1880 -p 40001:40001 -p 40002:40002  -v /opt/node-red-data:/data --name todos_contra_el_fuego nodered/node-red-docker
+```
 
 ## Data source acknowledgements
 

@@ -69,3 +69,10 @@ nasa-fire-active.json
 near-neighbours.json
 suscriptions-in-time.json
 README.html
+nasa-new-fire-actives.json
+viir-*.txt
+viirs-timestamp-*.txt
+modis-*.txt
+modis-timestamp-*.txt
+*.seg
+sample-file-function.js

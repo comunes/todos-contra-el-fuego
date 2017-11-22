@@ -1,8 +1,8 @@
 {
     "Sí": "Sim",
     "No": "Não",
-    "kmnasa": "🔥 Alerta, possível fogo posto em {{km}} км de distância (origem NASA):",
-    "kmvecinal": "🔥 Alerta vicinal de fogo em {{km}} км de distância:",
+    "kmnasa": "🔥 Alerta, possível fogo posto em {{km}} км de distância (origem NASA)",
+    "kmvecinal": "🔥 Alerta vicinal de fogo em {{km}} км de distância",
     "kmdistancia": "Está subscrito a alertas de fogos em {{km}} км arredor desta zona",
     "📣 Suscrito a nuevos fuegos": "📣 Subscreveu-se a novos fogos",
     "Desuscribirme": "Deixar de subscrever",
