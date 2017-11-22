@@ -580,6 +580,24 @@
         "out": []
     },
     {
+        "id": "66901439.f20abc",
+        "type": "subflow",
+        "name": "find fires of user",
+        "info": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "16d45a2d.d8bd56"
+                    }
+                ]
+            }
+        ],
+        "out": []
+    },
+    {
         "id": "f93d1a38.c43218",
         "type": "telegram bot",
         "z": "",
@@ -776,6 +794,14 @@
         "parallelism": "-1"
     },
     {
+        "id": "a144aa33.31d428",
+        "type": "Cache",
+        "z": "95e78a8b.50a428",
+        "name": "weather",
+        "defaultTtl": "180",
+        "checkPeriod": "0"
+    },
+    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -956,7 +982,7 @@
         "func": "var t = msg.i18n;\nvar newMsg = {\n    payload : {\n        content : t('👍 ¡Suscrito/a!'),\n        type: \"message\",\n        chatId: msg.query.chatId\n    }\n}\n\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 810,
+        "x": 870,
         "y": 700,
         "wires": [
             [
@@ -1137,7 +1163,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "near?",
-        "func": "msg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   }\nreturn msg;",
+        "func": "msg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   }\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 710,
@@ -1153,7 +1179,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
+        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        cacheKey: msg.lat + \",\" + msg.lon,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 191,
@@ -1208,7 +1234,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "update km",
-        "func": "var km = Number(msg.payload.content.replace(/(a |em |en |)([0-9]+)[ ]*km( around| arredor|)/, \"$2\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn newMsg;\n",
+        "func": "var km = Number(msg.payload.content.replace(/(a |em |en |)([0-9]+)[ ]*km( around| arredor|)/, \"$2\"));\nvar newMsg = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        chatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           distance : km\n       }\n    },\n    i18n: msg.i18n,\n    chatId : msg.payload.chatId\n};\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 590,
@@ -1216,7 +1242,8 @@
         "wires": [
             [
                 "10d562eb.b0de5d",
-                "f26677b3.07e7f8"
+                "f26677b3.07e7f8",
+                "e9922131.cfda7"
             ]
         ]
     },
@@ -8471,15 +8498,22 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "+weather",
-        "func": "var t = msg.i18n;\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction getDirection(angle) {\n  //easy to customize by changing the number of directions you have\n  var directions = 8;\n\n  var degree = 360 / directions;\n  angle = angle + degree/2;\n\n  if (angle >= 0 * degree && angle < 1 * degree)\n    return \"⬆ \" + t(\"norte\"); // return \"N\";\n  if (angle >= 1 * degree && angle < 2 * degree)\n    return \"↗ \" + t(\"noreste\"); // return \"NE\";\n  if (angle >= 2 * degree && angle < 3 * degree)\n    return \"➡ \" + t(\"este\"); // return \"E\";\n  if (angle >= 3 * degree && angle < 4 * degree)\n    return \"↘ \" + t(\"sureste\"); // return \"SE\";\n  if (angle >= 4 * degree && angle < 5 * degree)\n    return \"⬇ \" + t(\"sur\"); // return \"S\";\n  if (angle >= 5 * degree && angle < 6 * degree)\n    return \"↙ \" + t(\"suroeste\"); // return \"SW\";\n  if (angle >= 6 * degree && angle < 7 * degree)\n    return \"⬅ \" + t(\"oeste\"); // return \"W\";\n  if (angle >= 7 * degree && angle < 8 * degree)\n    return \"↖ \" + t(\"noroeste\"); // return \"NW\";\n  //Should never happen:\n  return \"⬆\";\n}\n\n// msg.caption, msg.notification]\n\nweather.setCoordinate(msg.notification.payload.content.latitude, msg.notification.payload.content.longitude);\n\nweather.setAPPID(msg.weatherapi);\nmsg.weatherapi=\"\";\nweather.getAllWeather(function(err, w){\n    /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    if (err || !w.wind || !w.wind.deg || !w.wind.speed) {\n        // send without weather info\n        node.send(msg.caption);\n        node.send(msg.notification);\n    }\n\n    var dir = getDirection(w.wind.deg);\n    var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n    if ((type && dir) && type.grade > 0) {\n        var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n        msg.caption.payload.content += \" \" + windinfo + \":\";\n    } else {\n        msg.caption.payload.content += \":\";\n    }\n    node.send(msg.caption);\n    node.send(msg.notification);\n});\n",
-        "outputs": 1,
+        "func": "var t = msg.i18n;\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction isNumeric(n) {\n  return !isNaN(parseFloat(n)) && isFinite(n);\n}\n\nfunction getDirection(degree){\n    if (degree>337.5) return t(\"norte\") + \" ⬆\";\n    if (degree>292.5) return t(\"noroeste\") + \" ↖\";\n    if(degree>247.5) return t(\"oeste\") + \" ⬅\";\n    if(degree>202.5) return t(\"suroeste\") + \" ↙\";\n    if(degree>157.5) return t(\"sur\") + \" ⬇\";\n    if(degree>122.5) return t(\"sureste\") + \" ↘\"; \n    if(degree>67.5) return t(\"este\") + \" ➡\"; \n    if(degree>22.5){return t(\"noreste\") + \" ↗\";}\n    return t(\"norte\") + \" ⬆\";\n}\n\n// msg.caption, msg.notification]\nvar onWeather = function (err, w, msg) {\n    /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    \n    if (err || !w.wind || !isNumeric(w.wind.deg) || !isNumeric(w.wind.speed)) {\n        // send without weather info\n        console.log(\"weather : \" + JSON.stringify(w) + \", err : \" + JSON.stringify(err));\n        node.send(msg.caption);\n        node.send(msg.notification);\n    } else {\n        var dir = getDirection(w.wind.deg);\n        // sometimes gust (rafagas)\n        // lang: es, so we use translation from Spanish later\n        var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n        if (type && dir) {\n            if (type.grade > 0) {\n                // \"(dirección del viento {{dir}} de tipo '{{desc}}')\",\n                \n                var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n                msg.caption.payload.content += \", \" + windinfo + \":\";\n            } else {\n                msg.caption.payload.content += \", \" + t(\"sin viento\") + \":\";\n            }\n        } else {\n            msg.caption.payload.content += \":\";\n        }\n        node.send(msg.caption);\n        node.send(msg.notification);\n    }\n};\n\nif (typeof msg.weather === 'undefined' || msg.weather === null) {\n    // not cached\n    weather.setCoordinate(msg.notification.payload.content.latitude, msg.notification.payload.content.longitude);\n    weather.setAPPID(msg.weatherapi);\n    weather.getAllWeather(function(err, w){\n        onWeather(err, w, msg);\n        // put in cache the weather with some ttl (to avoid many petitions to openweathermap)\n        msg.weather = w;\n        node.send([null, msg]);\n    });\n} else {\n    // cached\n    // node.log(\"Weather cached\");\n    onWeather(null, msg.weather, msg);\n}\n// clear API from message\nmsg.weatherapi=\"\";\n\n",
+        "outputs": "2",
         "noerr": 0,
-        "x": 910,
-        "y": 173,
+        "x": 900,
+        "y": 180,
         "wires": [
             [
                 "cf97891b.2928a8"
+            ],
+            [
+                "1679cfff.d1e81"
             ]
+        ],
+        "outputLabels": [
+            "msgs",
+            "weather"
         ]
     },
     {
@@ -8493,11 +8527,11 @@
                 "type": "msg"
             }
         ],
-        "x": 782.5,
-        "y": 173,
+        "x": 590,
+        "y": 180,
         "wires": [
             [
-                "870dd05.0bd283"
+                "406a361e.4ef9e8"
             ]
         ]
     },
@@ -8520,5 +8554,193 @@
                 "d2b4e34d.4cc55"
             ]
         ]
+    },
+    {
+        "id": "720ad232.b3bf4c",
+        "type": "subflow:2b8628df.fdcca8",
+        "z": "66901439.f20abc",
+        "x": 1070,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "16d45a2d.d8bd56",
+        "type": "assert",
+        "z": "66901439.f20abc",
+        "name": "",
+        "rules": [
+            {
+                "property": "chatId",
+                "propertyType": "msg",
+                "type": "nnull",
+                "failMsg": "Invalid chatId"
+            }
+        ],
+        "x": 210,
+        "y": 80,
+        "wires": [
+            [
+                "a269194f.283f18"
+            ]
+        ]
+    },
+    {
+        "id": "a269194f.283f18",
+        "type": "function",
+        "z": "66901439.f20abc",
+        "name": "find active fires",
+        "func": "var types = ['modis', 'viirs'];\nfor (var i = 0; i < types.length; i++) {\n    var type = types[i];\n    var collection = \"activefires\" + type; \n    var actfires = {};\n    actfires.type = type;\n    actfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    actfires.payload = [{ }];\n    actfires.chatId = msg.chatId;\n    node.send(actfires);\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 400,
+        "y": 80,
+        "wires": [
+            [
+                "d4354e88.10073"
+            ]
+        ]
+    },
+    {
+        "id": "d4354e88.10073",
+        "type": "mongodb2 in",
+        "z": "66901439.f20abc",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find",
+        "collection": "",
+        "operation": "find.toArray",
+        "x": 570,
+        "y": 80,
+        "wires": [
+            [
+                "681bc146.698d7"
+            ]
+        ]
+    },
+    {
+        "id": "681bc146.698d7",
+        "type": "split",
+        "z": "66901439.f20abc",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "abd8152f.402f58"
+            ]
+        ]
+    },
+    {
+        "id": "abd8152f.402f58",
+        "type": "function",
+        "z": "66901439.f20abc",
+        "name": "set lat/lon",
+        "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nmsg.limitToChatId = msg.chatId;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 860,
+        "y": 80,
+        "wires": [
+            [
+                "720ad232.b3bf4c"
+            ]
+        ]
+    },
+    {
+        "id": "a0b36fca.c59c5",
+        "type": "subflow:66901439.f20abc",
+        "z": "93cb4937.6fc068",
+        "x": 880,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "406a361e.4ef9e8",
+        "type": "Cache in",
+        "z": "95e78a8b.50a428",
+        "name": "weather",
+        "cache": "a144aa33.31d428",
+        "keyType": "msg",
+        "keyProperty": "cacheKey",
+        "valueType": "msg",
+        "valueProperty": "weather",
+        "useString": false,
+        "x": 740,
+        "y": 180,
+        "wires": [
+            [
+                "870dd05.0bd283"
+            ]
+        ]
+    },
+    {
+        "id": "1679cfff.d1e81",
+        "type": "Cache out",
+        "z": "95e78a8b.50a428",
+        "name": "weather store",
+        "cache": "a144aa33.31d428",
+        "keyType": "msg",
+        "keyProperty": "cacheKey",
+        "valueType": "msg",
+        "valueProperty": "weather",
+        "ttlType": "msg",
+        "ttlProperty": "",
+        "useString": false,
+        "x": 1100,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "e9922131.cfda7",
+        "type": "delay",
+        "z": "93cb4937.6fc068",
+        "name": "d5",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 730,
+        "y": 720,
+        "wires": [
+            [
+                "a0b36fca.c59c5"
+            ]
+        ]
+    },
+    {
+        "id": "819f5df0.b4c7a",
+        "type": "debug",
+        "z": "95e78a8b.50a428",
+        "name": "weather cached",
+        "active": true,
+        "console": "false",
+        "complete": "weather",
+        "x": 920,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "42fde35b.9e3b0c",
+        "type": "debug",
+        "z": "95e78a8b.50a428",
+        "name": "cache!",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1090,
+        "y": 240,
+        "wires": []
     }
 ]
