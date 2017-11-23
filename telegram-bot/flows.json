@@ -4688,8 +4688,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 140,
-        "y": 54.00000190734863,
+        "x": 120,
+        "y": 60,
         "wires": [
             [
                 "36d5ed85.92faa2"
@@ -4704,8 +4704,8 @@
         "func": "c = context.get('counter') || 0;\nc += 1;\ncontext.set('counter', c);\n\nnode.status({fill:\"green\",shape:\"dot\",text:c});\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 370,
-        "y": 54.00000190734863,
+        "x": 310,
+        "y": 60,
         "wires": [
             []
         ]
@@ -4718,8 +4718,8 @@
         "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return [null, msg];\n}\nelse \n    return [msg, null];",
         "outputs": "2",
         "noerr": 0,
-        "x": 750,
-        "y": 94.00000190734863,
+        "x": 770,
+        "y": 60,
         "wires": [
             [],
             [
@@ -4737,7 +4737,7 @@
         "console": "false",
         "complete": "true",
         "x": 990,
-        "y": 134.00000190734863,
+        "y": 100,
         "wires": []
     },
     {
@@ -4745,7 +4745,7 @@
         "type": "subflow:76bd701f.29d0f",
         "z": "5501c3cc.11327c",
         "x": 990,
-        "y": 94.00000190734863,
+        "y": 60,
         "wires": []
     },
     {
@@ -6620,10 +6620,10 @@
         "server": "selver.comunes.org",
         "port": "587",
         "secure": false,
-        "name": "vjrj@ourproject.org",
-        "dname": "no-reply to vjrj",
-        "x": 460,
-        "y": 114.00000190734863,
+        "name": "",
+        "dname": "send email",
+        "x": 650,
+        "y": 120,
         "wires": []
     },
     {
@@ -6635,10 +6635,10 @@
         "outputs": 1,
         "noerr": 0,
         "x": 280,
-        "y": 114.00000190734863,
+        "y": 120,
         "wires": [
             [
-                "765fb9d8.730558"
+                "eefbb122.72c71"
             ]
         ]
     },
@@ -6654,7 +6654,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 114.00000190734863,
+        "y": 120,
         "wires": [
             [
                 "e4fc71c5.ae308"
@@ -7504,7 +7504,7 @@
             [
                 "fe0b3515.374378",
                 "f3054b89.b5eac8",
-                "1b05feb.f6de801"
+                "f4e5590a.995258"
             ]
         ]
     },
@@ -7539,10 +7539,10 @@
         "server": "selver.comunes.org",
         "port": "587",
         "secure": false,
-        "name": "vjrj@ourproject.org",
-        "dname": "no-reply to vjrj",
-        "x": 742.0000438690186,
-        "y": 424.00000762939453,
+        "name": "",
+        "dname": "send email with error",
+        "x": 960,
+        "y": 420,
         "wires": []
     },
     {
@@ -8371,7 +8371,7 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 895,
+        "x": 950,
         "y": 260,
         "wires": []
     },
@@ -8742,5 +8742,43 @@
         "x": 1090,
         "y": 240,
         "wires": []
+    },
+    {
+        "id": "f4e5590a.995258",
+        "type": "credentials",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors-email-to",
+        "props": [
+            {
+                "value": "to",
+                "type": "msg"
+            }
+        ],
+        "x": 740,
+        "y": 420,
+        "wires": [
+            [
+                "1b05feb.f6de801"
+            ]
+        ]
+    },
+    {
+        "id": "eefbb122.72c71",
+        "type": "credentials",
+        "z": "5501c3cc.11327c",
+        "name": "errors-email-to",
+        "props": [
+            {
+                "value": "to",
+                "type": "msg"
+            }
+        ],
+        "x": 460,
+        "y": 120,
+        "wires": [
+            [
+                "765fb9d8.730558"
+            ]
+        ]
     }
 ]
