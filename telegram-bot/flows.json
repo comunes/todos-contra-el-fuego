@@ -3599,11 +3599,11 @@
         "id": "b4cf9be5.550978",
         "type": "function",
         "z": "128790f6.dee0df",
-        "name": "test news",
-        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ A veces habrás visto que llegan notificaciones de fuegos de industrias como incineradoras, siderúrgicas, refinerías, etc. \"\nnews.payload.content += \"Ahora puedes ayudarnos a marcar estos 'falsos positivos'. Para ello pulsa en el mapa de la notificación de uno de estos fuegos y pulsa 'Responder' con un mensaje que diga 'falso positivo' o 'industria' para que estos fuegos no sean notificados en un futuro. Gracias.\\r\\n\";\nnews.payload.content += \"➖ Estamos traduciendo este bot al asturiano, gallego, inglés, portugués, etc. Puedes participar [en la traducción](https://translate.comunes.org/projects/todos-contra-el-fuego/todoscontraelfuego_bot/).\\r\\n\";\nnews.payload.content += \"➖ A petición de usuarios/amigos de Latinoamérica, ahora procesamos alertas de fuegos también de otras partes del mundo, no solo Europa.\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "name": "news to send",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Ahora incorporamos información del viento (fuerza y dirección) que hace en cada fuego\\r\\n\"\nnews.payload.content += \"➖ Muchas mejoras internas y solución de pequeños errores\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
         "outputs": 1,
         "noerr": 0,
-        "x": 530,
+        "x": 510,
         "y": 60,
         "wires": [
             [
