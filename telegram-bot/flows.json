@@ -2381,7 +2381,7 @@
         "type": "function",
         "z": "76bd701f.29d0f",
         "name": "start menu",
-        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\n// is subs or not\nvar subs = msg.payload.length === 0;\nmsg.payload = msg.originalPayload;\n\nif (subs) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\n// node.log(typeof msg.payload.content);\n\nif (typeof msg.payload.content === 'undefined' || msg.payload.content === null ||\n    (typeof msg.payload.content === 'string' &&\n    msg.payload.content.match(/⬅️ .*/)) ||\n    msg.payload.content === '') {\n    msg.payload.content = t('Elige una de las opciones:');\n} else {\n    // Only for debugging\n    // msg.payload.content = msg.payload.content + \".\";\n}\n\nmsg.payload.chatId = msg.chatId;\n\nif (typeof msg.payload.type === 'undefined' || msg.payload.type === null) {\n    msg.payload.type = \"message\";\n}\n\nopts.disable_notification = true;\nmsg.payload.options = opts;\n\nreturn [ msg ];",
+        "func": "context.global.keyboard = { pending : true };\n\nvar t = msg.i18n;\n\n// https://apps.timwhitlock.info/emoji/tables/unicode\n\n// is subs or not\nvar subs = msg.payload.length === 0;\nmsg.payload = msg.originalPayload;\n\nif (subs) {\n    // Ya suscrito\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscribirme a fuegos en mi zona')}],\n                    [{text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n} else {\n    var opts = {\n        // reply_to_message_id: msg.payload.messageId,\n        reply_markup:\n        JSON.stringify(\n            {\n                keyboard: [ \n                    [{text: t('📣 Suscrito a nuevos fuegos')}],\n                    [{text: t('Desuscribirme')}, {text: t('🔥 Notificar un fuego nuevo')} ], \n                    [{text: t('♥ Apoya esta iniciativa')}, {text: t('📖 Más info')}, ] ],\n                'resize_keyboard' : true, \n                // 'one_time_keyboard' : true\n            })\n    };\n}\n\n// node.log(typeof msg.payload.content);\n\nif (typeof msg.payload.content === 'undefined' || msg.payload.content === null ||\n    (typeof msg.payload.content === 'string' &&\n    msg.payload.content.match(/⬅️ .*/)) ||\n    msg.payload.content === '') {\n    // Only disable notifications on start (but notify when fires, etc)\n    opts.disable_notification = true;\n    msg.payload.content = t('Elige una de las opciones:');\n} else {\n    // Only for debugging\n    // msg.payload.content = msg.payload.content + \".\";\n}\n\nmsg.payload.chatId = msg.chatId;\n\nif (typeof msg.payload.type === 'undefined' || msg.payload.type === null) {\n    msg.payload.type = \"message\";\n}\n\n\nmsg.payload.options = opts;\n\nreturn [ msg ];",
         "outputs": "1",
         "noerr": 0,
         "x": 1090,
@@ -3599,11 +3599,11 @@
         "id": "b4cf9be5.550978",
         "type": "function",
         "z": "128790f6.dee0df",
-        "name": "test news",
-        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ A veces habrás visto que llegan notificaciones de fuegos de industrias como incineradoras, siderúrgicas, refinerías, etc. \"\nnews.payload.content += \"Ahora puedes ayudarnos a marcar estos 'falsos positivos'. Para ello pulsa en el mapa de la notificación de uno de estos fuegos y pulsa 'Responder' con un mensaje que diga 'falso positivo' o 'industria' para que estos fuegos no sean notificados en un futuro. Gracias.\\r\\n\";\nnews.payload.content += \"➖ Estamos traduciendo este bot al asturiano, gallego, inglés, portugués, etc. Puedes participar [en la traducción](https://translate.comunes.org/projects/todos-contra-el-fuego/todoscontraelfuego_bot/).\\r\\n\";\nnews.payload.content += \"➖ A petición de usuarios/amigos de Latinoamérica, ahora procesamos alertas de fuegos también de otras partes del mundo, no solo Europa.\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "name": "news to send",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Ahora incorporamos información del viento (fuerza y dirección) que hace en cada fuego\\r\\n\"\nnews.payload.content += \"➖ Muchas mejoras internas y solución de pequeños errores\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
         "outputs": 1,
         "noerr": 0,
-        "x": 530,
+        "x": 510,
         "y": 60,
         "wires": [
             [
@@ -3840,7 +3840,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "lang response",
-        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    var langs = {\n        'Asturianu': 'ast',\n        'Català': 'ca',\n        'Español': 'es',\n        'English': 'en',\n        'Galego': 'gl',\n        'Português': 'pt',\n        'Português do Brasil': 'pt_BR'\n        // Euskara\n    };\n    \n    if (msg.payload.content.match(/(Asturianu)|(Español)|(English)|(Galego)|(Português)|(Português do Brasil)/i)) {\n        msg.lang = langs[msg.payload.content];\n        \n        // For start menu:\n        msg.payload.content = '';\n        return [msg, null];   \n    } else\n    {\n        return [null, msg];   \n    }\n}\n",
+        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    context.global.keyboardlang.pending = false;\n    var langs = {\n        'Asturianu': 'ast',\n        'Català': 'ca',\n        'Español': 'es',\n        'English': 'en',\n        'Galego': 'gl',\n        'Português': 'pt',\n        'Português do Brasil': 'pt_BR'\n        // Euskara\n    };\n    \n    if (msg.payload.content.match(/(Asturianu)|(Español)|(English)|(Galego)|(Português)|(Português do Brasil)/i)) {\n        msg.lang = langs[msg.payload.content];\n        \n        // For start menu:\n        msg.payload.content = '';\n        return [msg, null];   \n    } else\n    {\n        return [null, msg];   \n    }\n}\n",
         "outputs": "2",
         "noerr": 0,
         "x": 480,
@@ -3864,7 +3864,7 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "wrong answer ignore",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "true",
         "x": 740,
@@ -3876,7 +3876,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "update user",
-        "func": "var orig = msg.originalMessage;\n\ncontext.global.keyboardlang.pending = false;\n \nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
+        "func": "var orig = msg.originalMessage;\n\n// context.global.keyboardlang.pending = false;\n \nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 790,
@@ -4049,11 +4049,11 @@
         "id": "57e40a1.1461bf4",
         "type": "debug",
         "z": "4384af8e.a7409",
-        "name": "keyboard active!",
+        "name": "lang keyboard active!",
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 480,
+        "x": 490,
         "y": 140,
         "wires": []
     },
@@ -4095,7 +4095,9 @@
             [
                 "edb02cb3.e23b7"
             ],
-            []
+            [
+                "57e40a1.1461bf4"
+            ]
         ],
         "outputLabels": [
             "continue",
@@ -4688,8 +4690,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 140,
-        "y": 54.00000190734863,
+        "x": 120,
+        "y": 60,
         "wires": [
             [
                 "36d5ed85.92faa2"
@@ -4704,8 +4706,8 @@
         "func": "c = context.get('counter') || 0;\nc += 1;\ncontext.set('counter', c);\n\nnode.status({fill:\"green\",shape:\"dot\",text:c});\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 370,
-        "y": 54.00000190734863,
+        "x": 310,
+        "y": 60,
         "wires": [
             []
         ]
@@ -4718,8 +4720,8 @@
         "func": "if (msg.payload.content &&\n    msg.payload.content.match(/^[♥⬅️📖📣🔥📣📝📍📝]+ .*/)) {\n    node.log(\"Detect lang changed\");\n    return [null, msg];\n}\nelse \n    return [msg, null];",
         "outputs": "2",
         "noerr": 0,
-        "x": 750,
-        "y": 94.00000190734863,
+        "x": 770,
+        "y": 60,
         "wires": [
             [],
             [
@@ -4737,7 +4739,7 @@
         "console": "false",
         "complete": "true",
         "x": 990,
-        "y": 134.00000190734863,
+        "y": 100,
         "wires": []
     },
     {
@@ -4745,7 +4747,7 @@
         "type": "subflow:76bd701f.29d0f",
         "z": "5501c3cc.11327c",
         "x": 990,
-        "y": 94.00000190734863,
+        "y": 60,
         "wires": []
     },
     {
@@ -6620,10 +6622,10 @@
         "server": "selver.comunes.org",
         "port": "587",
         "secure": false,
-        "name": "vjrj@ourproject.org",
-        "dname": "no-reply to vjrj",
-        "x": 460,
-        "y": 114.00000190734863,
+        "name": "",
+        "dname": "send email",
+        "x": 650,
+        "y": 120,
         "wires": []
     },
     {
@@ -6635,10 +6637,10 @@
         "outputs": 1,
         "noerr": 0,
         "x": 280,
-        "y": 114.00000190734863,
+        "y": 120,
         "wires": [
             [
-                "765fb9d8.730558"
+                "eefbb122.72c71"
             ]
         ]
     },
@@ -6654,7 +6656,7 @@
         "crontab": "",
         "once": false,
         "x": 120,
-        "y": 114.00000190734863,
+        "y": 120,
         "wires": [
             [
                 "e4fc71c5.ae308"
@@ -7504,7 +7506,7 @@
             [
                 "fe0b3515.374378",
                 "f3054b89.b5eac8",
-                "1b05feb.f6de801"
+                "f4e5590a.995258"
             ]
         ]
     },
@@ -7539,10 +7541,10 @@
         "server": "selver.comunes.org",
         "port": "587",
         "secure": false,
-        "name": "vjrj@ourproject.org",
-        "dname": "no-reply to vjrj",
-        "x": 742.0000438690186,
-        "y": 424.00000762939453,
+        "name": "",
+        "dname": "send email with error",
+        "x": 960,
+        "y": 420,
         "wires": []
     },
     {
@@ -8154,8 +8156,8 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "store",
-        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = {\n            tstamp: when\n        };\n        n.filename =  path + pay.file;\n        if (fire.type === 'modis') {\n            n.payload.data = fire.brightness;\n            node.send([n, null]);  \n        }\n        if (fire.type === 'viirs') {\n            n.payload.data = fire.bright_ti4;\n            node.send([null, n]);  \n        } */\n        /*var file = path + pay.file; \n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError); */\n        // Sometimes the data is not well formed/downloaded\n        \n        var id = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            _id: id,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {_id: id}, update: set, upsert:true } });\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
-        "outputs": "1",
+        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = {\n            tstamp: when\n        };\n        n.filename =  path + pay.file;\n        if (fire.type === 'modis') {\n            n.payload.data = fire.brightness;\n            node.send([n, null]);  \n        }\n        if (fire.type === 'viirs') {\n            n.payload.data = fire.bright_ti4;\n            node.send([null, n]);  \n        } */\n        /*var file = path + pay.file; \n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError); */\n        // Sometimes the data is not well formed/downloaded\n        \n        var id = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            //_id: id,\n            ourid: id,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: id}, update: set, upsert:true } });\n        \n        var email = {\n            fire: pay.name,\n            date: acdate,\n            time: actime\n        }\n        node.send([null, email]);\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "outputs": "2",
         "noerr": 0,
         "x": 1596.0000438690186,
         "y": 284.00000762939453,
@@ -8163,7 +8165,14 @@
             [
                 "798e1ad0.168a24",
                 "7862f974.52aad8"
+            ],
+            [
+                "db0bc6e5.73ee58"
             ]
+        ],
+        "outputLabels": [
+            "db",
+            "email"
         ]
     },
     {
@@ -8192,52 +8201,6 @@
         "wires": [
             []
         ]
-    },
-    {
-        "id": "ededef07.478d7",
-        "type": "inject",
-        "z": "5501c3cc.11327c",
-        "name": "Inject",
-        "topic": "this is topic from the function",
-        "payload": "this data is feeded to the function",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 123,
-        "y": 266.00000190734863,
-        "wires": [
-            [
-                "66acbca7.d69824"
-            ]
-        ]
-    },
-    {
-        "id": "66acbca7.d69824",
-        "type": "file function",
-        "z": "5501c3cc.11327c",
-        "name": "",
-        "filename": "sample-file-function.js",
-        "outputs": "1",
-        "x": 328,
-        "y": 266.00000190734863,
-        "wires": [
-            [
-                "d7c46b39.5ebb08"
-            ]
-        ]
-    },
-    {
-        "id": "d7c46b39.5ebb08",
-        "type": "debug",
-        "z": "5501c3cc.11327c",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 537,
-        "y": 266.00000190734863,
-        "wires": []
     },
     {
         "id": "8b1ae3f4.e5e7c",
@@ -8371,7 +8334,7 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 895,
+        "x": 950,
         "y": 260,
         "wires": []
     },
@@ -8498,7 +8461,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "+weather",
-        "func": "var t = msg.i18n;\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction isNumeric(n) {\n  return !isNaN(parseFloat(n)) && isFinite(n);\n}\n\nfunction getDirection(degree){\n    if (degree>337.5) return t(\"norte\") + \" ⬆\";\n    if (degree>292.5) return t(\"noroeste\") + \" ↖\";\n    if(degree>247.5) return t(\"oeste\") + \" ⬅\";\n    if(degree>202.5) return t(\"suroeste\") + \" ↙\";\n    if(degree>157.5) return t(\"sur\") + \" ⬇\";\n    if(degree>122.5) return t(\"sureste\") + \" ↘\"; \n    if(degree>67.5) return t(\"este\") + \" ➡\"; \n    if(degree>22.5){return t(\"noreste\") + \" ↗\";}\n    return t(\"norte\") + \" ⬆\";\n}\n\n// msg.caption, msg.notification]\nvar onWeather = function (err, w, msg) {\n    /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    \n    if (err || !w.wind || !isNumeric(w.wind.deg) || !isNumeric(w.wind.speed)) {\n        // send without weather info\n        console.log(\"weather : \" + JSON.stringify(w) + \", err : \" + JSON.stringify(err));\n        node.send(msg.caption);\n        node.send(msg.notification);\n    } else {\n        var dir = getDirection(w.wind.deg);\n        // sometimes gust (rafagas)\n        // lang: es, so we use translation from Spanish later\n        var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n        if (type && dir) {\n            if (type.grade > 0) {\n                // \"(dirección del viento {{dir}} de tipo '{{desc}}')\",\n                \n                var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n                msg.caption.payload.content += \", \" + windinfo + \":\";\n            } else {\n                msg.caption.payload.content += \", \" + t(\"sin viento\") + \":\";\n            }\n        } else {\n            msg.caption.payload.content += \":\";\n        }\n        node.send(msg.caption);\n        node.send(msg.notification);\n    }\n};\n\nif (typeof msg.weather === 'undefined' || msg.weather === null) {\n    // not cached\n    weather.setCoordinate(msg.notification.payload.content.latitude, msg.notification.payload.content.longitude);\n    weather.setAPPID(msg.weatherapi);\n    weather.getAllWeather(function(err, w){\n        onWeather(err, w, msg);\n        // put in cache the weather with some ttl (to avoid many petitions to openweathermap)\n        msg.weather = w;\n        node.send([null, msg]);\n    });\n} else {\n    // cached\n    // node.log(\"Weather cached\");\n    onWeather(null, msg.weather, msg);\n}\n// clear API from message\nmsg.weatherapi=\"\";\n\n",
+        "func": "var t = msg.i18n;\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction isNumeric(n) {\n  return !isNaN(parseFloat(n)) && isFinite(n);\n}\n\nfunction getDirection(degree){\n    if (degree>337.5) return t(\"norte\") + \" ⬆\";\n    if (degree>292.5) return t(\"noroeste\") + \" ↖\";\n    if(degree>247.5) return t(\"oeste\") + \" ⬅\";\n    if(degree>202.5) return t(\"suroeste\") + \" ↙\";\n    if(degree>157.5) return t(\"sur\") + \" ⬇\";\n    if(degree>122.5) return t(\"sureste\") + \" ↘\"; \n    if(degree>67.5) return t(\"este\") + \" ➡\"; \n    if(degree>22.5){return t(\"noreste\") + \" ↗\";}\n    return t(\"norte\") + \" ⬆\";\n}\n\n// msg.caption, msg.notification]\nvar onWeather = function (err, w, msg) {\n    /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    \n    if (err || !w.wind || !isNumeric(w.wind.deg) || !isNumeric(w.wind.speed)) {\n        // send without weather info\n        // console.log(\"weather : \" + JSON.stringify(w) + \", err : \" + JSON.stringify(err));\n        msg.caption.payload.content += \":\";\n        node.send(msg.caption);\n        node.send(msg.notification);\n    } else {\n        var dir = getDirection(w.wind.deg);\n        // sometimes gust (rafagas)\n        // lang: es, so we use translation from Spanish later\n        var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n        if (type && dir) {\n            if (type.grade > 0) {\n                // \"(dirección del viento {{dir}} de tipo '{{desc}}')\",\n                \n                var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n                msg.caption.payload.content += \", \" + windinfo + \":\";\n            } else {\n                msg.caption.payload.content += \", \" + t(\"sin viento\") + \":\";\n            }\n        } else {\n            msg.caption.payload.content += \":\";\n        }\n        node.send(msg.caption);\n        node.send(msg.notification);\n    }\n};\n\nif (typeof msg.weather === 'undefined' || msg.weather === null) {\n    // not cached\n    weather.setCoordinate(msg.notification.payload.content.latitude, msg.notification.payload.content.longitude);\n    weather.setAPPID(msg.weatherapi);\n    weather.getAllWeather(function(err, w){\n        onWeather(err, w, msg);\n        // put in cache the weather with some ttl (to avoid many petitions to openweathermap)\n        msg.weather = w;\n        node.send([null, msg]);\n    });\n} else {\n    // cached\n    // node.log(\"Weather cached\");\n    onWeather(null, msg.weather, msg);\n}\n// clear API from message\nmsg.weatherapi=\"\";\n\n",
         "outputs": "2",
         "noerr": 0,
         "x": 900,
@@ -8742,5 +8705,91 @@
         "x": 1090,
         "y": 240,
         "wires": []
+    },
+    {
+        "id": "f4e5590a.995258",
+        "type": "credentials",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors-email-to",
+        "props": [
+            {
+                "value": "to",
+                "type": "msg"
+            }
+        ],
+        "x": 740,
+        "y": 420,
+        "wires": [
+            [
+                "1b05feb.f6de801"
+            ]
+        ]
+    },
+    {
+        "id": "eefbb122.72c71",
+        "type": "credentials",
+        "z": "5501c3cc.11327c",
+        "name": "errors-email-to",
+        "props": [
+            {
+                "value": "to",
+                "type": "msg"
+            }
+        ],
+        "x": 460,
+        "y": 120,
+        "wires": [
+            [
+                "765fb9d8.730558"
+            ]
+        ]
+    },
+    {
+        "id": "abfebd4d.00253",
+        "type": "e-mail",
+        "z": "c1e7ebde.3e0b68",
+        "server": "selver.comunes.org",
+        "port": "587",
+        "secure": false,
+        "name": "",
+        "dname": "send email with error",
+        "x": 2200,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "db0bc6e5.73ee58",
+        "type": "credentials",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors-email-to",
+        "props": [
+            {
+                "value": "to",
+                "type": "msg"
+            }
+        ],
+        "x": 1800,
+        "y": 360,
+        "wires": [
+            [
+                "f2df97e.e87ea68"
+            ]
+        ]
+    },
+    {
+        "id": "f2df97e.e87ea68",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "tracked fire alarm",
+        "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Fuego detectado en \" + msg.fire;\n    email.payload = \"Detectado a las \" + date +  \" \" + time + \"(UTC)\\n\\n\";\n    email.payload += msg.error.message;\n    return email;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1990,
+        "y": 360,
+        "wires": [
+            [
+                "abfebd4d.00253"
+            ]
+        ]
     }
 ]
