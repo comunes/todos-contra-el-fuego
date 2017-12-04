@@ -48,15 +48,11 @@ db.users.createIndex( { telegramChatId: 1 } );
 db.users.createIndex( { lang: 1 } );
 db.users.createIndex( { updated: 1 } );
 #
-db.activefiresmodis.createIndex( { _id: "2dsphere" } );
-db.activefiresmodis.createIndex( { when: 1 } );
-db.activefiresmodis.createIndex( { updatedAt: 1 } );
-db.activefiresmodis.createIndex( { createdAt: 1 } );
-#
-db.activefiresviirs.createIndex( { _id: "2dsphere" } );
-db.activefiresviirs.createIndex( { when: 1 } );
-db.activefiresviirs.createIndex( { updatedAt: 1 } );
-db.activefiresviirs.createIndex( { createdAt: 1 } );
+db.activefires.createIndex( { ourid: "2dsphere" } );
+db.activefires.createIndex( { when: 1 } );
+db.activefires.createIndex( { updatedAt: 1 } );
+db.activefires.createIndex( { createdAt: 1 } );
+db.activefires.createIndex( { ourid: 1, type: 1 } )
 #
 db.trackedfires.createIndex( { _id : "2dsphere" } );
 db.trackedfires.createIndex( { "name": 1 }, { unique: true } );

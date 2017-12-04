@@ -1179,7 +1179,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload[i].chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n// node.log(\"end calc dist chatId: \" + msg.payload[i].chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload[i].chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        }\n    }\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t\n    }\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        cacheKey: msg.lat + \",\" + msg.lon,\n        i18n: t\n    };\n    \n    node.send(newMsg);\n}\n\n",
+        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload.chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        },\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        cacheKey: msg.lat + \",\" + msg.lon,\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    node.send(newMsg);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 191,
@@ -2772,7 +2772,7 @@
         "type": "function",
         "z": "11cb3f4d.6e0081",
         "name": "update active fires",
-        "func": "var type = msg.type;\nvar collection = \"activefires\" + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var id = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").valueOf();\n\n        var setcommon = {\n            _id: id,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {_id: id}, update: set, upsert:true } });\n    }\n}\n\nvar bulkUpdate = {};\nbulkUpdate.collection = collection;\n// http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n// https://docs.mongodb.com/manual/reference/write-concern/\nbulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\nreturn bulkUpdate;",
+        "func": "var type = msg.type;\nvar collection = \"activefires\"; // + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    bulkUpdate.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
         "outputs": "1",
         "noerr": 0,
         "x": 210,
@@ -3348,7 +3348,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "start opts",
-        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    // Lang response do nothing here\n} else {\n    var output = [];\n    var opt = msg.payload.content;\n    var t = msg.i18n;\n    // node.log(\"Type of i18n \" + typeof t);\n    \n    if (opt === \"/start@rednodetest_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/start@TodosContraElFuego_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio@rednodetest_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio@TodosContraElFuego_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === t(\"⬅️ Volver\")) {\n      output[0] = msg; return output;\n    } else if (opt === t(\"⬅️ Cancelar\")) {\n      output[0] = msg; return output;\n    } else if (opt === t(\"📣 Suscribirme a fuegos en mi zona\")) {\n      output[1] = msg; return output;\n    } else if (opt === \"/suscribirme@rednodetest_bot\") {\n      output[1] = msg; return output;\n    } else if (opt === \"/suscribirme@TodosContraElFuego_bot\") {\n      output[1] = msg; return output;\n    } else if (opt === t(\"📖 Más info\")) {\n      output[2] = msg; return output;\n    } else if (opt === t(\"♥ Apoya esta iniciativa\")) {\n      output[2] = msg; return output;\n    } else if (opt === t(\"🔥 Notificar un fuego nuevo\")) {\n      output[3] = msg; return output;\n    } else if (opt === t(\"📝 Escribir mi posición\")) {\n      output[4] = msg; return output;\n    } else if (opt === t(\"📝 Escribir localización fuego\")) {\n      output[5] = msg; return output;\n    } else if ((opt + \"\").match(new RegExp(\"^(a |em |en |)[0-9]*[ ]*km( around| arredor|)\",'i'))) {\n      output[6] = msg; return output;\n    } else if (opt === t(\"📣 Suscrito a nuevos fuegos\")) {\n      output[7] = msg; return output;\n    } else if (opt === \"/info@rednodetest_bot\") {\n      output[7] = msg; return output;\n    } else if (opt === \"/info@TodosContraElFuego_bot\") {\n      output[7] = msg; return output;\n    } else if (opt === \"/distancia@rednodetest_bot\") {\n      output[8] = msg; return output;\n    } else if (opt === \"/distancia@TodosContraElFuego_bot\") {\n      output[8] = msg; return output;\n    } else if (opt === t(\"📍 El fuego está en mi ubicación\")) {\n      output[9] = msg; return output;\n    } else if ((opt + \"\").match(new RegExp(\"(falsa alarma|falso positivo|es una industria|industria)\",'i'))) {\n      output[10] = msg; return output;\n    } else if (opt === t(\"Desuscribirme\")) {\n      output[11] = msg; return output;\n    } else if (opt === \"/lang@rednodetest_bot\") {\n      output[12] = msg; return output;\n    } else if (opt === \"/lang@TodosContraElFuego_bot\") {\n      output[12] = msg; return output;\n    } else if (opt === \"/mylang\") {\n    } else if (opt === \"/lang\") {\n      // do nothing\n    } else {\n      output[13] = msg; return output;\n    }\n}",
+        "func": "var chatId = msg.payload.chatId;\nvar uconf = \"user_\" + chatId;\nif (context.global.uconf && context.global.uconf.keyboardlang && context.global.uconf.keyboardlang.pending) { \n    // Lang response do nothing here\n} else {\n    var output = [];\n    var opt = msg.payload.content;\n    var t = msg.i18n;\n    // node.log(\"Type of i18n \" + typeof t);\n    \n    if (opt === \"/start@rednodetest_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/start@TodosContraElFuego_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio@rednodetest_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio\") {\n      output[0] = msg; return output;\n    } else if (opt === \"/inicio@TodosContraElFuego_bot\") {\n      output[0] = msg; return output;\n    } else if (opt === t(\"⬅️ Volver\")) {\n      output[0] = msg; return output;\n    } else if (opt === t(\"⬅️ Cancelar\")) {\n      output[0] = msg; return output;\n    } else if (opt === t(\"📣 Suscribirme a fuegos en mi zona\")) {\n      output[1] = msg; return output;\n    } else if (opt === \"/suscribirme@rednodetest_bot\") {\n      output[1] = msg; return output;\n    } else if (opt === \"/suscribirme@TodosContraElFuego_bot\") {\n      output[1] = msg; return output;\n    } else if (opt === t(\"📖 Más info\")) {\n      output[2] = msg; return output;\n    } else if (opt === t(\"♥ Apoya esta iniciativa\")) {\n      output[2] = msg; return output;\n    } else if (opt === t(\"🔥 Notificar un fuego nuevo\")) {\n      output[3] = msg; return output;\n    } else if (opt === t(\"📝 Escribir mi posición\")) {\n      output[4] = msg; return output;\n    } else if (opt === t(\"📝 Escribir localización fuego\")) {\n      output[5] = msg; return output;\n    } else if ((opt + \"\").match(new RegExp(\"^(a |em |en |)[0-9]*[ ]*km( around| arredor|)\",'i'))) {\n      output[6] = msg; return output;\n    } else if (opt === t(\"📣 Suscrito a nuevos fuegos\")) {\n      output[7] = msg; return output;\n    } else if (opt === \"/info@rednodetest_bot\") {\n      output[7] = msg; return output;\n    } else if (opt === \"/info@TodosContraElFuego_bot\") {\n      output[7] = msg; return output;\n    } else if (opt === \"/distancia@rednodetest_bot\") {\n      output[8] = msg; return output;\n    } else if (opt === \"/distancia@TodosContraElFuego_bot\") {\n      output[8] = msg; return output;\n    } else if (opt === t(\"📍 El fuego está en mi ubicación\")) {\n      output[9] = msg; return output;\n    } else if ((opt + \"\").match(new RegExp(\"(falsa alarma|falso positivo|es una industria|industria)\",'i'))) {\n      output[10] = msg; return output;\n    } else if (opt === t(\"Desuscribirme\")) {\n      output[11] = msg; return output;\n    } else if (opt === \"/lang@rednodetest_bot\") {\n      output[12] = msg; return output;\n    } else if (opt === \"/lang@TodosContraElFuego_bot\") {\n      output[12] = msg; return output;\n    } else if (opt === \"/mylang\") {\n    } else if (opt === \"/lang\") {\n      // do nothing\n    } else {\n      output[13] = msg; return output;\n    }\n}",
         "outputs": "14",
         "noerr": 0,
         "x": 300,
@@ -3840,7 +3840,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "lang response",
-        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n    context.global.keyboardlang.pending = false;\n    var langs = {\n        'Asturianu': 'ast',\n        'Català': 'ca',\n        'Español': 'es',\n        'English': 'en',\n        'Galego': 'gl',\n        'Português': 'pt',\n        'Português do Brasil': 'pt_BR'\n        // Euskara\n    };\n    \n    if (msg.payload.content.match(/(Asturianu)|(Español)|(English)|(Galego)|(Português)|(Português do Brasil)/i)) {\n        msg.lang = langs[msg.payload.content];\n        \n        // For start menu:\n        msg.payload.content = '';\n        return [msg, null];   \n    } else\n    {\n        return [null, msg];   \n    }\n}\n",
+        "func": "var chatId = msg.payload.chatId;\nvar uconf = \"user_\" + chatId;\n\nif (context.global.uconf && context.global.uconf.keyboardlang && context.global.uconf.keyboardlang.pending) {\n    context.global.uconf.keyboardlang.pending = false;\n    var langs = {\n        'Asturianu': 'ast',\n        'Català': 'ca',\n        'Español': 'es',\n        'English': 'en',\n        'Galego': 'gl',\n        'Português': 'pt',\n        'Português do Brasil': 'pt_BR'\n        // Euskara\n    };\n    \n    if (msg.payload.content.match(/(Asturianu)|(Español)|(English)|(Galego)|(Português)|(Português do Brasil)/i)) {\n        msg.lang = langs[msg.payload.content];\n        \n        // For start menu:\n        msg.payload.content = '';\n        return [msg, null];   \n    } else\n    {\n        return [null, msg];   \n    }\n}\n",
         "outputs": "2",
         "noerr": 0,
         "x": 480,
@@ -3876,7 +3876,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "update user",
-        "func": "var orig = msg.originalMessage;\n\n// context.global.keyboardlang.pending = false;\n \nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
+        "func": "var orig = msg.originalMessage;\n\nvar update = {\n    query : {\n        // No busca bien con _id, \n        // duplicamos chatId\n        telegramChatId : msg.payload.chatId \n    },\n    payload: {\n       $set: {        \n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       }\n    },\n    i18n: msg.i18n\n};\n\nreturn update;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 790,
@@ -4053,8 +4053,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 490,
-        "y": 140,
+        "x": 760,
+        "y": 240,
         "wires": []
     },
     {
@@ -4070,38 +4070,30 @@
         "wires": []
     },
     {
-        "id": "e2e4dfd1.88c4b",
-        "type": "debug",
-        "z": "4384af8e.a7409",
-        "name": "chatId",
-        "active": true,
-        "console": "false",
-        "complete": "payload.chatId",
-        "x": 450,
-        "y": 180,
-        "wires": []
-    },
-    {
         "id": "afdf0d2.1f75ef",
         "type": "function",
         "z": "4384af8e.a7409",
-        "name": "set chatId",
-        "func": "if (context.global.keyboardlang && context.global.keyboardlang.pending) {\n  // do nothing   \n  return [null, msg]\n} else {\n    msg.chatId = msg.payload.chatId;\n    msg.originalPayload = msg.payload;\n    flow.set('payload-assert', msg.payload);\n    flow.set('payload-chatId', msg.chatId);\n    return [msg, null];\n}",
-        "outputs": "2",
+        "name": "lang?",
+        "func": "var chatId = msg.payload.chatId;\nvar uconf = \"user_\" + chatId;\n\nmsg.chatId = chatId;\nmsg.originalPayload = msg.payload;\nflow.set('payload-assert', msg.payload);\nflow.set('payload-chatId', msg.chatId);\n\nif (typeof msg.lang === 'string') {\n    // bypass, we have already the lang   \n    return [null, msg, null];\n} else {\n    if (context.global.uconf && context.global.uconf.keyboardlang && context.global.uconf.keyboardlang.pending) {\n        // do nothing   \n        // node.log(typeof msg.i18n);\n        return [null, null, msg];\n    } else {\n        return [msg, null, null];   \n    }\n}",
+        "outputs": "3",
         "noerr": 0,
-        "x": 300,
+        "x": 350,
         "y": 100,
         "wires": [
             [
-                "edb02cb3.e23b7"
+                "6173b8ee.c73038"
             ],
             [
-                "57e40a1.1461bf4"
+                "c46a6a2.a934698"
+            ],
+            [
+                "b9ef5c78.d942a"
             ]
         ],
         "outputLabels": [
             "continue",
-            "do nothing"
+            "do nothing",
+            ""
         ]
     },
     {
@@ -4121,7 +4113,7 @@
         "type": "function",
         "z": "e6f3db8c.48eac8",
         "name": "ask-lang",
-        "func": "context.global.keyboardlang = { pending : true };\n// no user\nvar opts = {\n    disable_notification : true,\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup: JSON.stringify({\n        keyboard: [ \n            [{text: 'Asturianu'}, {text: 'Español'}, ],\n            [{text: 'English'}, {text: 'Galego'}, ],\n            [{text: 'Português'}, /* {text: 'Português do Brasil'}, */ ]\n            ],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n      \n    })\n};\nmsg.payload.chatId = msg.payload.chatId? msg.payload.chatId : msg.chatId;\nmsg.payload.type = \"message\";\nmsg.payload.content = 'Escoge tu idioma / Choose your language:';\nmsg.payload.options = opts;\nreturn [msg, null];\n",
+        "func": "var chatId = msg.payload.chatId? msg.payload.chatId : msg.chatId;\nvar uconf = \"user_\" + chatId;\nif (!context.global.uconf) {\n    context.global.uconf = {};\n}\n\ncontext.global.uconf.keyboardlang = { pending : true };\n// no user\nvar opts = {\n    disable_notification : true,\n    // reply_to_message_id: msg.payload.messageId,\n    reply_markup: JSON.stringify({\n        keyboard: [ \n            [{text: 'Asturianu'}, {text: 'Español'}, ],\n            [{text: 'English'}, {text: 'Galego'}, ],\n            [{text: 'Português'}, /* {text: 'Português do Brasil'}, */ ]\n            ],\n      'resize_keyboard' : true, \n      'one_time_keyboard' : true\n      \n    })\n};\nmsg.payload.chatId = chatId;\nmsg.payload.type = \"message\";\nmsg.payload.content = 'Escoge tu idioma / Choose your language:';\nmsg.payload.options = opts;\nreturn [msg, null];\n",
         "outputs": "2",
         "noerr": 0,
         "x": 260,
@@ -4333,6 +4325,7 @@
         "id": "2a9cd9af.ae25c6",
         "type": "subflow:6995c6a.1a0bf38",
         "z": "2b8628df.fdcca8",
+        "name": "",
         "x": 2340,
         "y": 240,
         "wires": [
@@ -4595,8 +4588,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 2330,
-        "y": 180,
+        "x": 2370,
+        "y": 160,
         "wires": []
     },
     {
@@ -6551,7 +6544,7 @@
         "type": "function",
         "z": "11cb3f4d.6e0081",
         "name": "del not active fires",
-        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}}, null];\n    return del;\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return msg;\n}",
+        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return del;\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return msg;\n}",
         "outputs": "1",
         "noerr": 0,
         "x": 590,
@@ -6861,35 +6854,12 @@
                 "failMsg": ""
             }
         ],
-        "x": 1600,
-        "y": 240,
+        "x": 1340,
+        "y": 260,
         "wires": [
             [
                 "e39f3d19.34c0f"
             ]
-        ]
-    },
-    {
-        "id": "edb02cb3.e23b7",
-        "type": "function",
-        "z": "4384af8e.a7409",
-        "name": "lang?",
-        "func": "if (typeof msg.lang === 'string') {\n  // do nothing   \n  return [null, msg]\n} else {\n  return [msg, null];\n}",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 450,
-        "y": 100,
-        "wires": [
-            [
-                "6173b8ee.c73038"
-            ],
-            [
-                "c46a6a2.a934698"
-            ]
-        ],
-        "outputLabels": [
-            "no lang",
-            "lang"
         ]
     },
     {
@@ -7890,7 +7860,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "set lat/lon",
-        "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nreturn msg;",
+        "func": "msg.lon = msg.payload.ourid.coordinates[0];\nmsg.lat = msg.payload.ourid.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1722.0000438690186,
@@ -8051,7 +8021,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "set lat/lon",
-        "func": "msg.payload.longitude = msg.payload._id.coordinates[0];\nmsg.payload.latitude = msg.payload._id.coordinates[1];\nreturn msg;",
+        "func": "msg.payload.longitude = msg.payload.ourid.coordinates[0];\nmsg.payload.latitude = msg.payload.ourid.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1722.0000438690186,
@@ -8156,7 +8126,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "store",
-        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = {\n            tstamp: when\n        };\n        n.filename =  path + pay.file;\n        if (fire.type === 'modis') {\n            n.payload.data = fire.brightness;\n            node.send([n, null]);  \n        }\n        if (fire.type === 'viirs') {\n            n.payload.data = fire.bright_ti4;\n            node.send([null, n]);  \n        } */\n        /*var file = path + pay.file; \n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError); */\n        // Sometimes the data is not well formed/downloaded\n        \n        var id = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            //_id: id,\n            ourid: id,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: id}, update: set, upsert:true } });\n        \n        var email = {\n            fire: pay.name,\n            date: acdate,\n            time: actime\n        }\n        node.send([null, email]);\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = {\n            tstamp: when\n        };\n        n.filename =  path + pay.file;\n        if (fire.type === 'modis') {\n            n.payload.data = fire.brightness;\n            node.send([n, null]);  \n        }\n        if (fire.type === 'viirs') {\n            n.payload.data = fire.bright_ti4;\n            node.send([null, n]);  \n        } */\n        /*var file = path + pay.file; \n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError); */\n        // Sometimes the data is not well formed/downloaded\n        \n        var ourid = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            //_id: id,\n            ourid: ourid,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid}, update: set, upsert:true } });\n        \n        var email = {\n            fire: pay.name,\n            date: acdate,\n            time: actime\n        }\n        node.send([null, email]);\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1596.0000438690186,
@@ -8552,7 +8522,7 @@
         "type": "function",
         "z": "66901439.f20abc",
         "name": "find active fires",
-        "func": "var types = ['modis', 'viirs'];\nfor (var i = 0; i < types.length; i++) {\n    var type = types[i];\n    var collection = \"activefires\" + type; \n    var actfires = {};\n    actfires.type = type;\n    actfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    actfires.payload = [{ }];\n    actfires.chatId = msg.chatId;\n    node.send(actfires);\n}",
+        "func": "var types = ['modis', 'viirs'];\nfor (var i = 0; i < types.length; i++) {\n    var type = types[i];\n    var collection = \"activefires\"; \n    var actfires = {};\n    actfires.type = type;\n    actfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    actfires.payload = [{ }];\n    actfires.chatId = msg.chatId;\n    node.send(actfires);\n}",
         "outputs": "1",
         "noerr": 0,
         "x": 400,
@@ -8604,7 +8574,7 @@
         "type": "function",
         "z": "66901439.f20abc",
         "name": "set lat/lon",
-        "func": "msg.lon = msg.payload._id.coordinates[0];\nmsg.lat = msg.payload._id.coordinates[1];\nmsg.limitToChatId = msg.chatId;\nreturn msg;",
+        "func": "msg.lon = msg.payload.ourid.coordinates[0];\nmsg.lat = msg.payload.ourid.coordinates[1];\nmsg.limitToChatId = msg.chatId;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 860,
@@ -8619,6 +8589,7 @@
         "id": "a0b36fca.c59c5",
         "type": "subflow:66901439.f20abc",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 880,
         "y": 760,
         "wires": []
@@ -8752,8 +8723,8 @@
         "port": "587",
         "secure": false,
         "name": "",
-        "dname": "send email with error",
-        "x": 2200,
+        "dname": "send email with notification",
+        "x": 2220,
         "y": 360,
         "wires": []
     },
@@ -8789,6 +8760,81 @@
         "wires": [
             [
                 "abfebd4d.00253"
+            ]
+        ]
+    },
+    {
+        "id": "886927d8.2475b8",
+        "type": "debug",
+        "z": "95e78a8b.50a428",
+        "name": "send notis",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 570,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "9632864e.b56228",
+        "type": "debug",
+        "z": "2b8628df.fdcca8",
+        "name": "user result i18n",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 2580,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "eb449fba.0b0f4",
+        "type": "debug",
+        "z": "95e78a8b.50a428",
+        "name": "send notis entry",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "b9ef5c78.d942a",
+        "type": "delay",
+        "z": "4384af8e.a7409",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 360,
+        "y": 240,
+        "wires": [
+            [
+                "8cb25716.a68a38"
+            ]
+        ]
+    },
+    {
+        "id": "8cb25716.a68a38",
+        "type": "function",
+        "z": "4384af8e.a7409",
+        "name": "disable keyb lang",
+        "func": "var chatId = msg.payload.chatId;\nvar uconf = \"user_\" + chatId;\n\n// disable!\ncontext.global.uconf.keyboardlang.pending = false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 240,
+        "wires": [
+            [
+                "57e40a1.1461bf4"
             ]
         ]
     }
