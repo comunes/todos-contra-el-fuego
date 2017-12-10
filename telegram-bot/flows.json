@@ -185,8 +185,8 @@
         ],
         "out": [
             {
-                "x": 1360,
-                "y": 400,
+                "x": 1380,
+                "y": 220,
                 "wires": [
                     {
                         "id": "7f8ce0c9.99ac4",
@@ -2817,8 +2817,8 @@
         "func": "if (msg.originalMessage && \n    msg.originalMessage.reply_to_message &&\n    msg.originalMessage.reply_to_message.location) {\n    var lon = msg.originalMessage.reply_to_message.location.longitude;\n    var lat = msg.originalMessage.reply_to_message.location.latitude;\n    // TODO: must be a NASA fire\n    var find = {};\n    find.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 200\n          }\n        },\n        chatId: msg.chatId\n    };\n    find.originalMessage = msg.originalMessage;\n    find.chatId = msg.chatId;\n    find.i18n = msg.i18n;\n    return find;\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 390,
-        "y": 400,
+        "x": 410,
+        "y": 220,
         "wires": [
             [
                 "9eef9e79.27f5b"
@@ -2833,8 +2833,8 @@
         "name": "falsepositives count",
         "collection": "falsepositives",
         "operation": "find",
-        "x": 680,
-        "y": 400,
+        "x": 700,
+        "y": 220,
         "wires": [
             [
                 "7f8ce0c9.99ac4"
@@ -2860,8 +2860,8 @@
         ],
         "checkall": "false",
         "outputs": 2,
-        "x": 860,
-        "y": 400,
+        "x": 880,
+        "y": 220,
         "wires": [
             [
                 "d7931057.66ab7"
@@ -2880,8 +2880,8 @@
         "func": "var date = new Date();\nvar formated = context.global.moment(date).format('YYYYMMDD');\n\nvar orig = msg.originalMessage;\nvar lon = orig.reply_to_message.location.longitude;\nvar lat = orig.reply_to_message.location.latitude;\n\nvar chatId = msg.chatId;\n\nvar reg = {\n    query : {\n        // solo un fuego por usuario por ahora\n        chatId : chatId,\n        geo: {\n            type: \"Point\",\n            coordinates: [lon, lat]\n        }\n    },\n    payload: {\n        $set: {        \n            chatId: chatId,\n            when: date,\n            whendateformat: formated,\n            geo: {\n                type: \"Point\",\n                coordinates: [lon, lat]\n            }\n        }\n    },\n}\nreturn reg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1050,
-        "y": 460,
+        "x": 1070,
+        "y": 280,
         "wires": [
             [
                 "88e9dc11.5af31"
@@ -2899,8 +2899,8 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 1210,
-        "y": 460,
+        "x": 1230,
+        "y": 280,
         "wires": []
     },
     {
@@ -2948,8 +2948,8 @@
         "func": "var t = msg.i18n;\n\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = t('👌 Tomamos nota, ¡gracias por colaborar!');\nreturn thx;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1050,
-        "y": 500,
+        "x": 1070,
+        "y": 320,
         "wires": [
             [
                 "eab4c7fe.fd7828"
@@ -2964,8 +2964,8 @@
         "func": "var t = msg.i18n;\n\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = t(\"Ya marcaste este fuego como 'falso positivo'. Gracias en cualquier caso...\");\nreturn thx;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1060,
-        "y": 340,
+        "x": 1080,
+        "y": 160,
         "wires": [
             [
                 "364970ea.3f564"
@@ -3231,39 +3231,6 @@
             [
                 "e9667844.7ff518"
             ]
-        ]
-    },
-    {
-        "id": "9b7f71f8.cb024",
-        "type": "inject",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 100,
-        "y": 980,
-        "wires": [
-            [
-                "47a779c9.a8f538"
-            ]
-        ]
-    },
-    {
-        "id": "47a779c9.a8f538",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "test cmd",
-        "func": "var newmsg = {};\nnewmsg.payload = {};\nnewmsg.payload.content = \"♥ Apoya esta iniciativa\";\nnewmsg.payload.content = \"a 10 km\";\nnewmsg.originalMessage = {};\nnewmsg.originalMessage.from = {};\nnewmsg.originalMessage.from.language_code = \"es-ES\";\nreturn newmsg;\n            ",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 240,
-        "y": 980,
-        "wires": [
-            []
         ]
     },
     {
@@ -5618,8 +5585,8 @@
         "id": "eab4c7fe.fd7828",
         "type": "subflow:e81a68fa.695e38",
         "z": "2f0217a5.051978",
-        "x": 1210,
-        "y": 500,
+        "x": 1230,
+        "y": 320,
         "wires": [
             []
         ]
@@ -5628,8 +5595,8 @@
         "id": "364970ea.3f564",
         "type": "subflow:e81a68fa.695e38",
         "z": "2f0217a5.051978",
-        "x": 1210,
-        "y": 340,
+        "x": 1230,
+        "y": 160,
         "wires": [
             []
         ]
@@ -5795,11 +5762,11 @@
         "id": "17c09c20.9d4a84",
         "type": "function",
         "z": "2f0217a5.051978",
-        "name": "find fire viirs",
-        "func": "if (msg.originalMessage && \n    msg.originalMessage.reply_to_message &&\n    msg.originalMessage.reply_to_message.location) {\n    var lon = msg.originalMessage.reply_to_message.location.longitude;\n    var lat = msg.originalMessage.reply_to_message.location.latitude;\n    var find = {};\n    find.payload = {\n    _id:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 50\n          }\n        },\n    };\n    find.originalMessage = msg.originalMessage;\n    find.chatId = msg.payload.chatId;\n    find.i18n = msg.i18n;\n    return find;\n}\n\n",
+        "name": "find fire",
+        "func": "if (msg.originalMessage && \n    msg.originalMessage.reply_to_message &&\n    msg.originalMessage.reply_to_message.location) {\n    var lon = msg.originalMessage.reply_to_message.location.longitude;\n    var lat = msg.originalMessage.reply_to_message.location.latitude;\n    var find = {};\n    find.payload = {\n    ourid:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 50\n          }\n        },\n    };\n    find.originalMessage = msg.originalMessage;\n    find.chatId = msg.payload.chatId;\n    find.i18n = msg.i18n;\n    return find;\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 190,
+        "x": 180,
         "y": 60,
         "wires": [
             [
@@ -5812,46 +5779,14 @@
         "type": "mongodb in",
         "z": "2f0217a5.051978",
         "mongodb": "51a7af07.93444",
-        "name": "viirs count",
-        "collection": "activefiresviirs",
+        "name": "fires count",
+        "collection": "activefires",
         "operation": "count",
-        "x": 390,
+        "x": 400,
         "y": 60,
         "wires": [
             [
                 "557a9912.ee75e8"
-            ]
-        ]
-    },
-    {
-        "id": "46c68055.7e566",
-        "type": "function",
-        "z": "2f0217a5.051978",
-        "name": "find fire modis",
-        "func": "if (msg.originalMessage) {\n    var lon = msg.originalMessage.reply_to_message.location.longitude;\n    var lat = msg.originalMessage.reply_to_message.location.latitude;\n    var find = {};\n    find.payload = {\n    _id:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 50\n          }\n        },\n    };\n    find.originalMessage = msg.originalMessage;\n    find.chatId = msg.chatId;\n    find.i18n = msg.i18n;\n    return find;\n}\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 760,
-        "y": 60,
-        "wires": [
-            [
-                "60501805.4a76b8"
-            ]
-        ]
-    },
-    {
-        "id": "60501805.4a76b8",
-        "type": "mongodb in",
-        "z": "2f0217a5.051978",
-        "mongodb": "51a7af07.93444",
-        "name": "viirs count",
-        "collection": "activefiresmodis",
-        "operation": "count",
-        "x": 930,
-        "y": 60,
-        "wires": [
-            [
-                "dce22962.386f98"
             ]
         ]
     },
@@ -5878,36 +5813,6 @@
         "y": 60,
         "wires": [
             [
-                "46c68055.7e566"
-            ],
-            [
-                "a30ccf58.3a1e"
-            ]
-        ]
-    },
-    {
-        "id": "dce22962.386f98",
-        "type": "switch",
-        "z": "2f0217a5.051978",
-        "name": "nasa fire?",
-        "property": "payload",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "0",
-                "vt": "str"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "true",
-        "outputs": 2,
-        "x": 1080,
-        "y": 60,
-        "wires": [
-            [
                 "280900e5.654d3"
             ],
             [
@@ -5923,8 +5828,8 @@
         "func": "var t = msg.i18n;\n\nvar thx = {};\nthx.payload = {};\nthx.payload.type = \"message\";\nthx.payload.chatId = msg.chatId;\nthx.payload.content = t(\"No tenemos registrado un fuego activo en ese lugar\");\nreturn thx;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1050,
-        "y": 280,
+        "x": 1070,
+        "y": 100,
         "wires": [
             [
                 "2b5fa53f.8b255a"
@@ -5935,23 +5840,11 @@
         "id": "2b5fa53f.8b255a",
         "type": "subflow:e81a68fa.695e38",
         "z": "2f0217a5.051978",
-        "x": 1210,
-        "y": 280,
+        "x": 1230,
+        "y": 100,
         "wires": [
             []
         ]
-    },
-    {
-        "id": "88caef4a.db39e",
-        "type": "debug",
-        "z": "2f0217a5.051978",
-        "name": "find nasa 2",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 1250,
-        "y": 140,
-        "wires": []
     },
     {
         "id": "55e258a.51dd4a8",
@@ -5961,7 +5854,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 730,
+        "x": 690,
         "y": 140,
         "wires": []
     },
@@ -5973,8 +5866,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 670,
-        "y": 460,
+        "x": 690,
+        "y": 280,
         "wires": []
     },
     {
@@ -5985,8 +5878,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 930,
-        "y": 540,
+        "x": 950,
+        "y": 360,
         "wires": []
     },
     {
@@ -8340,6 +8233,39 @@
             [
                 "57e40a1.1461bf4"
             ]
+        ]
+    },
+    {
+        "id": "c64dc3e3.9154b",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 100,
+        "y": 1020,
+        "wires": [
+            [
+                "8ba45b41.7cbad8"
+            ]
+        ]
+    },
+    {
+        "id": "8ba45b41.7cbad8",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test cmd",
+        "func": "var newmsg = {};\nnewmsg.payload = {};\nnewmsg.payload.content = \"♥ Apoya esta iniciativa\";\nnewmsg.payload.content = \"a 10 km\";\nnewmsg.originalMessage = {};\nnewmsg.originalMessage.from = {};\nnewmsg.originalMessage.from.language_code = \"es-ES\";\nreturn newmsg;\n            ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 240,
+        "y": 1020,
+        "wires": [
+            []
         ]
     }
 ]
