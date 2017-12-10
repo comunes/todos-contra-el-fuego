@@ -21,7 +21,6 @@
     "node-red-contrib-persist": "^1.0.1",
     "node-red-contrib-semaphore": "^1.0.1",
     "node-red-contrib-telegrambot": "^2.6.1",
-    "node-red-contrib-web-worldmap": "~1.1.5",
     "node-red-dashboard": "~2.6.2",
     "node-red-node-google": "^0.1.1",
     "node-red-node-mongodb": "0.0.13",

@@ -168,77 +168,6 @@
         "out": []
     },
     {
-        "id": "4a3c7cc0.965dd4",
-        "type": "subflow",
-        "name": "to map",
-        "info": "",
-        "in": [
-            {
-                "x": 81.00004005432129,
-                "y": 109.00001335144043,
-                "wires": [
-                    {
-                        "id": "cf23a5a.9eacd58"
-                    }
-                ]
-            }
-        ],
-        "out": []
-    },
-    {
-        "id": "d29a1c6a.5a89e",
-        "type": "subflow",
-        "name": "neighbour to map",
-        "info": "",
-        "in": [
-            {
-                "x": 60,
-                "y": 100,
-                "wires": [
-                    {
-                        "id": "6187e791.e5f488"
-                    }
-                ]
-            }
-        ],
-        "out": []
-    },
-    {
-        "id": "91777bb3.922328",
-        "type": "subflow",
-        "name": "OnMapConnected",
-        "info": "",
-        "in": [
-            {
-                "x": 160,
-                "y": 40,
-                "wires": []
-            }
-        ],
-        "out": [
-            {
-                "x": 680,
-                "y": 40,
-                "wires": [
-                    {
-                        "id": "620ec824.128428",
-                        "port": 0
-                    },
-                    {
-                        "id": "91777bb3.922328",
-                        "port": 0
-                    }
-                ]
-            }
-        ],
-        "inputLabels": [
-            "forwards in to out"
-        ],
-        "outputLabels": [
-            "out + on map connected"
-        ]
-    },
-    {
         "id": "2f0217a5.051978",
         "type": "subflow",
         "name": "false positive",
@@ -1389,8 +1318,7 @@
             [
                 "4f819d77.37fcc4",
                 "771c05f7.78a3ac",
-                "bed1aee.d1d745",
-                "25c52409.dd295c"
+                "bed1aee.d1d745"
             ]
         ]
     },
@@ -1407,8 +1335,7 @@
         "wires": [
             [
                 "bed1aee.d1d745",
-                "771c05f7.78a3ac",
-                "25c52409.dd295c"
+                "771c05f7.78a3ac"
             ]
         ]
     },
@@ -2816,37 +2743,6 @@
         "wires": []
     },
     {
-        "id": "8facbcf3.bbd35",
-        "type": "debug",
-        "z": "4a3c7cc0.965dd4",
-        "name": "all",
-        "active": true,
-        "console": false,
-        "complete": "true",
-        "x": 411.0000400543213,
-        "y": 49.00001335144043,
-        "wires": []
-    },
-    {
-        "id": "ef152257.faf05",
-        "type": "comment",
-        "z": "4a3c7cc0.965dd4",
-        "name": "payload: name, lat, lon, layer, ..., icon, iconColor, photoUrl, deleted",
-        "info": "layer, speed, bearing, accuracy, icon, iconColor, photoUrl, deleted",
-        "x": 621.0000400543213,
-        "y": 149.00001335144043,
-        "wires": []
-    },
-    {
-        "id": "7a257dc0.bf8594",
-        "type": "subflow:4a3c7cc0.965dd4",
-        "z": "d29a1c6a.5a89e",
-        "name": "",
-        "x": 350,
-        "y": 100,
-        "wires": []
-    },
-    {
         "id": "c4c96710.0c14f8",
         "type": "persist in",
         "z": "3f0768a7.1fac78",
@@ -2867,22 +2763,6 @@
         "wires": [
             [
                 "44fbc396.81360c"
-            ]
-        ]
-    },
-    {
-        "id": "6187e791.e5f488",
-        "type": "function",
-        "z": "d29a1c6a.5a89e",
-        "name": "neigh - args",
-        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nvar point = msg.location? msg: msg.payload;\n\nvar lat = point.location.lat;\nvar lon = point.location.lon;\nvar pname = \"\" + lat + \"/\" + lon;\npname += \"/\" + point.chatId? \"neighbourhood\" : \"neigh-alert/\" + point.dateformat;\n\n// https://github.com/dceejay/RedMap/issues/29\n// A kind of \"update\" (del & add)\nvar delMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: point.chatId? \"Neighbourhood\": \"Neighbourhood alerts\",\n        deleted: true\n    }\n}\nnode.send(delMsg);\n\nvar addMsg = {\n    payload: {\n        name: pname,\n        lat: lat,\n        lon: lon,\n        layer: point.chatId? \"Neighbourhood\": \"Neighbourhood alerts\",\n        icon: point.chatId? \"fa-user\": \"fa-fire\",\n        iconColor: point.chatId? \"green\": \"red\",\n        addtoheatmap: false, // only rest to the heatmap\n        // radius: point.distance? point.distance * 1000: null,\n        // color: \"red\",\n        // fillColor: \"red\",\n        // intensity: intensity,\n        // weight: intensity,\n        // radius: 10000, // radius,\n        // fillOpacity: 1,\n        // weblink only with markers\n        // weblink: \"http://example.com\"\n        // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n    }\n};\n\nif (point.distance) {\n    var radiusDel = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"Neighbourhood area\",\n            deleted: true\n        }\n    }\n    node.send(radiusDel);\n    \n    var radius = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"Neighbourhood area\",\n            // icon:  \"hostile\",\n            // nColor: \"green\",\n            addtoheatmap: false,\n            radius: point.distance * 1000,\n            color: \"#145A32\",\n            fillColor: \"green\",\n            // intensity: intensity,\n            // weight: intensity,\n            fillOpacity: .1,\n            // weblink: \"http://example.com\"\n            // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n        }\n    }\n    node.send(radius);\n}\n\nreturn addMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 190,
-        "y": 100,
-        "wires": [
-            [
-                "7a257dc0.bf8594"
             ]
         ]
     },
@@ -2911,23 +2791,6 @@
         ]
     },
     {
-        "id": "cf23a5a.9eacd58",
-        "type": "worldmap",
-        "z": "4a3c7cc0.965dd4",
-        "name": "",
-        "lat": " 40.4",
-        "lon": "-3.6833333",
-        "zoom": "6",
-        "layer": "OSM grey",
-        "cluster": "0",
-        "maxage": "20000",
-        "usermenu": "hide",
-        "layers": "show",
-        "x": 451.0000400543213,
-        "y": 109.00001335144043,
-        "wires": []
-    },
-    {
         "id": "3534f560.645aea",
         "type": "inject",
         "z": "93cb4937.6fc068",
@@ -2942,69 +2805,8 @@
         "y": 80,
         "wires": [
             [
-                "f2c9762e.6c90a8",
-                "a93a616c.565a3"
+                "f2c9762e.6c90a8"
             ]
-        ]
-    },
-    {
-        "id": "25c52409.dd295c",
-        "type": "subflow:d29a1c6a.5a89e",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 2010,
-        "y": 540,
-        "wires": []
-    },
-    {
-        "id": "251e2d7f.4e64c2",
-        "type": "debug",
-        "z": "d29a1c6a.5a89e",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 170,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "57d802c7.63cd2c",
-        "type": "worldmap in",
-        "z": "91777bb3.922328",
-        "name": "",
-        "x": 320,
-        "y": 100,
-        "wires": [
-            [
-                "620ec824.128428"
-            ]
-        ]
-    },
-    {
-        "id": "532b1add.453374",
-        "type": "debug",
-        "z": "91777bb3.922328",
-        "name": "all",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 470,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "620ec824.128428",
-        "type": "function",
-        "z": "91777bb3.922328",
-        "name": "on connected",
-        "func": "if (msg.payload && msg.payload.action && msg.payload.action == \"connected\") {\n    return msg;\n}",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 540,
-        "y": 100,
-        "wires": [
-            []
         ]
     },
     {
@@ -4346,8 +4148,7 @@
         "y": 1560,
         "wires": [
             [
-                "3980d36e.8c5dfc",
-                "585ace97.26933"
+                "3980d36e.8c5dfc"
             ]
         ]
     },
@@ -4500,14 +4301,6 @@
                 "6fe5f874.cf4978"
             ]
         ]
-    },
-    {
-        "id": "585ace97.26933",
-        "type": "subflow:d29a1c6a.5a89e",
-        "z": "93cb4937.6fc068",
-        "x": 990,
-        "y": 1600,
-        "wires": []
     },
     {
         "id": "2ccdf622.74c9ba",
@@ -5290,7 +5083,11 @@
         "y": 1900,
         "wires": [
             [
-                "a2c70f7c.ebd19"
+                "8be77355.e4b82",
+                "df3b630.a229ea",
+                "6e94e3ec.29eafc",
+                "2cb7dc7e.180204",
+                "997b33bf.c90ae"
             ]
         ]
     },
@@ -5306,8 +5103,7 @@
         "y": 1840,
         "wires": [
             [
-                "c674c40f.c7e778",
-                "9b0a38a9.07b988"
+                "c674c40f.c7e778"
             ]
         ]
     },
@@ -5592,8 +5388,7 @@
         "y": 2040,
         "wires": [
             [
-                "709eb6b4.327e58",
-                "3d1aa6a7.5a128a"
+                "709eb6b4.327e58"
             ]
         ]
     },
@@ -5636,94 +5431,6 @@
                 "61f539b5.950d08"
             ]
         ]
-    },
-    {
-        "id": "3d1aa6a7.5a128a",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find fuegos",
-        "collection": "avisosfuego",
-        "operation": "find",
-        "x": 790,
-        "y": 2120,
-        "wires": [
-            [
-                "3de8df77.b4acb"
-            ]
-        ]
-    },
-    {
-        "id": "d0f89010.cdf26",
-        "type": "subflow:d29a1c6a.5a89e",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1140,
-        "y": 2120,
-        "wires": []
-    },
-    {
-        "id": "3de8df77.b4acb",
-        "type": "split",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 950,
-        "y": 2120,
-        "wires": [
-            [
-                "d0f89010.cdf26"
-            ]
-        ]
-    },
-    {
-        "id": "9b0a38a9.07b988",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find susc",
-        "collection": "subscriptions",
-        "operation": "find",
-        "x": 780,
-        "y": 1800,
-        "wires": [
-            [
-                "ebb1176c.563dd8"
-            ]
-        ]
-    },
-    {
-        "id": "ebb1176c.563dd8",
-        "type": "split",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 950,
-        "y": 1800,
-        "wires": [
-            [
-                "b952a17b.820bb"
-            ]
-        ]
-    },
-    {
-        "id": "b952a17b.820bb",
-        "type": "subflow:d29a1c6a.5a89e",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1140,
-        "y": 1800,
-        "wires": []
     },
     {
         "id": "fdcc349d.ccb418",
@@ -5792,24 +5499,6 @@
         "x": 1330,
         "y": 1840,
         "wires": []
-    },
-    {
-        "id": "a2c70f7c.ebd19",
-        "type": "subflow:91777bb3.922328",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 330,
-        "y": 1900,
-        "wires": [
-            [
-                "8be77355.e4b82",
-                "df3b630.a229ea",
-                "6e94e3ec.29eafc",
-                "a7eaa9d3.8d2808",
-                "2cb7dc7e.180204",
-                "997b33bf.c90ae"
-            ]
-        ]
     },
     {
         "id": "b2e2ccf3.f0498",
@@ -7831,8 +7520,7 @@
         "y": 144.00000762939453,
         "wires": [
             [
-                "51e12e27.c4964",
-                "5dc2de12.0ddf3"
+                "51e12e27.c4964"
             ]
         ]
     },
@@ -7965,130 +7653,6 @@
         "wires": []
     },
     {
-        "id": "20b15f93.74ebe",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "find active fires",
-        "func": "var types = ['modis', 'viirs'];\nfor (var i = 0; i < types.length; i++) {\n    var type = types[i];\n    var collection = \"activefires\" + type; \n    var actfires = {};\n    actfires.type = type;\n    actfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    actfires.payload = [{ }];\n    node.send(actfires);\n}",
-        "outputs": "1",
-        "noerr": 0,
-        "x": 1222.0000438690186,
-        "y": 84.00000762939453,
-        "wires": [
-            [
-                "9b75b54f.f01b58"
-            ]
-        ]
-    },
-    {
-        "id": "9b75b54f.f01b58",
-        "type": "mongodb2 in",
-        "z": "c1e7ebde.3e0b68",
-        "service": "_ext_",
-        "configNode": "d5559ee5.960e2",
-        "name": "find",
-        "collection": "",
-        "operation": "find.toArray",
-        "x": 1392.0000438690186,
-        "y": 84.00000762939453,
-        "wires": [
-            [
-                "5dc2de12.0ddf3"
-            ]
-        ]
-    },
-    {
-        "id": "5dc2de12.0ddf3",
-        "type": "split",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 1572.0000438690186,
-        "y": 84.00000762939453,
-        "wires": [
-            [
-                "fad78f11.31968"
-            ]
-        ]
-    },
-    {
-        "id": "fad78f11.31968",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "set lat/lon",
-        "func": "msg.payload.longitude = msg.payload.ourid.coordinates[0];\nmsg.payload.latitude = msg.payload.ourid.coordinates[1];\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1722.0000438690186,
-        "y": 84.00000762939453,
-        "wires": [
-            [
-                "24b2391f.e79716"
-            ]
-        ]
-    },
-    {
-        "id": "24b2391f.e79716",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "nasa-map",
-        "func": "// https://earthdata.nasa.gov/what-is-new-collection-6-modis-active-fire-data\nif (msg.payload && msg.payload.longitude && msg.payload.latitude) {\n    var lat = msg.payload.latitude;\n    var lon = msg.payload.longitude;\n    var pname = \"Fuego activo según NASA: \" + lat + \", \" + lon;\n    pname += \", satelite: \" + msg.payload.satellite;\n    var maxkevin = 373;\n    var intensity =\n        (msg.payload.bright_ti4? msg.payload.bright_ti4: \n        (msg.payload.brightness? msg.payload.brightness: maxkevin)) / maxkevin;\n    var radius = msg.payload.scan * 1000;\n    \n    var newMsg = {\n        payload: {\n            name: pname,\n            lat: lat,\n            lon: lon,\n            layer: \"NASA\",\n            // icon: \"earthquake\",\n            color: \"red\",\n            fillColor: \"red\",\n            // intensity: intensity,\n            // weight: intensity,\n            radius: radius,\n            fillOpacity: 1,\n            iconColor:'red', // obligatorio\n            stroke: false,\n            addtoheatmap: false,\n            // fillOpacity: 0.8,\n            clickable: true,\n            weblink: {url: \"http://example.com\", name: \"Más info\"}\n            \n            // photoUrl: \"http://loremflickr.com/320/240/wildfire\"\n        }\n    };\n    \n    return newMsg;\n    \n}",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1902.0000438690186,
-        "y": 84.00000762939453,
-        "wires": [
-            [
-                "f5971d3b.95126"
-            ]
-        ]
-    },
-    {
-        "id": "f5971d3b.95126",
-        "type": "subflow:4a3c7cc0.965dd4",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "x": 2142.0000438690186,
-        "y": 84.00000762939453,
-        "wires": []
-    },
-    {
-        "id": "89ff7ceb.6b95a",
-        "type": "subflow:91777bb3.922328",
-        "z": "c1e7ebde.3e0b68",
-        "x": 1012.0000438690186,
-        "y": 84.00000762939453,
-        "wires": [
-            [
-                "20b15f93.74ebe"
-            ]
-        ]
-    },
-    {
-        "id": "146e7741.7a26a9",
-        "type": "inject",
-        "z": "c1e7ebde.3e0b68",
-        "name": "update map",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 812.0000438690186,
-        "y": 84.00000762939453,
-        "wires": [
-            [
-                "89ff7ceb.6b95a"
-            ]
-        ]
-    },
-    {
         "id": "b4c882e8.05a0c",
         "type": "function",
         "z": "c1e7ebde.3e0b68",
@@ -8170,66 +7734,6 @@
         "y": 284.00000762939453,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "8b1ae3f4.e5e7c",
-        "type": "subflow:4a3c7cc0.965dd4",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 1293,
-        "y": 169,
-        "wires": []
-    },
-    {
-        "id": "cccf93e7.8ef82",
-        "type": "subflow:91777bb3.922328",
-        "z": "93cb4937.6fc068",
-        "x": 813,
-        "y": 169,
-        "wires": [
-            [
-                "5fa73616.280ce8"
-            ]
-        ]
-    },
-    {
-        "id": "5fa73616.280ce8",
-        "type": "delay",
-        "z": "93cb4937.6fc068",
-        "name": "d 3s",
-        "pauseType": "delay",
-        "timeout": "3",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 973,
-        "y": 169,
-        "wires": [
-            [
-                "a93a616c.565a3"
-            ]
-        ]
-    },
-    {
-        "id": "a93a616c.565a3",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "conf map",
-        "func": "/* Only for tests */\nvar cfg = {};\ncfg.payload = {};\ncfg.payload.command = {\n    cluster:0,\n    layer:\"OSM grey\",\n    lat:40.4,\n    lon:-3.6833333,\n    zoom:6,\n};   \nreturn [cfg];",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1123,
-        "y": 169,
-        "wires": [
-            [
-                "8b1ae3f4.e5e7c"
-            ]
         ]
     },
     {
