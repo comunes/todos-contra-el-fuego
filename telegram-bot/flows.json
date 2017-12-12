@@ -8149,7 +8149,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "tracked fire alarm",
-        "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Fuego detectado en \" + msg.fire;\n    email.payload = \"Detectado a las \" + date +  \" \" + time + \"(UTC)\\n\\n\";\n    email.payload += msg.error.message;\n    return email;",
+        "func": "var email = {};\nmsg.from = \"noreply@comunes.org\"\nemail.topic = \"Fuego detectado en \" + msg.fire;\nemail.payload = \"Detectado a las \" + msg.date +  \" \" + msg.time + \"(UTC)\\n\\n\";\nemail.payload += msg.error.message;\nreturn email;",
         "outputs": 1,
         "noerr": 0,
         "x": 1990,
@@ -8266,6 +8266,41 @@
         "y": 1020,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "440da7fb.ce7728",
+        "type": "inject",
+        "z": "c1e7ebde.3e0b68",
+        "name": "inject on start",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 1410,
+        "y": 360,
+        "wires": [
+            [
+                "17c226.e0b85dda"
+            ]
+        ]
+    },
+    {
+        "id": "17c226.e0b85dda",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "test msg",
+        "func": "var msg = {};\nmsg.date = \"12-12-2017\";\nmsg.time = \"1:30\";\nmsg.fire = \"La la la\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1600,
+        "y": 360,
+        "wires": [
+            [
+                "db0bc6e5.73ee58"
+            ]
         ]
     }
 ]
