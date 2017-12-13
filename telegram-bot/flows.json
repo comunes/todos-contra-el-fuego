@@ -691,13 +691,6 @@
         "checkPeriod": "100"
     },
     {
-        "id": "ce56e26a.71d74",
-        "type": "semaphore-config",
-        "z": "",
-        "name": "notif",
-        "capacity": "1"
-    },
-    {
         "id": "9a28d188.bb94e",
         "type": "persist-store",
         "z": "c8522537.c6f908",
@@ -2699,10 +2692,10 @@
         "type": "function",
         "z": "11cb3f4d.6e0081",
         "name": "update active fires",
-        "func": "var type = msg.type;\nvar collection = \"activefires\"; // + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    bulkUpdate.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "func": "var type = msg.type;\nvar collection = \"activefires\"; // + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid, type: type}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    bulkUpdate.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
         "outputs": "1",
         "noerr": 0,
-        "x": 210,
+        "x": 190,
         "y": 140,
         "wires": [
             [
@@ -6142,7 +6135,7 @@
         "type": "function",
         "z": "11cb3f4d.6e0081",
         "name": "find new active fires",
-        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    global.set('active-now', null); // we disable timestamp to semaphore deadlock detection\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now }];\n    return newfires;\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return msg;\n}",
+        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    global.set('active-now', null); // we disable timestamp to semaphore deadlock detection\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return newfires;\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return msg;\n}",
         "outputs": "1",
         "noerr": 0,
         "x": 1000,
@@ -7052,39 +7045,13 @@
         "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error.message;\n    return email;",
         "outputs": 1,
         "noerr": 0,
-        "x": 462.00004386901855,
-        "y": 364.00000762939453,
+        "x": 430,
+        "y": 380,
         "wires": [
             [
-                "fe0b3515.374378",
-                "f3054b89.b5eac8",
                 "f4e5590a.995258"
             ]
         ]
-    },
-    {
-        "id": "fe0b3515.374378",
-        "type": "semaphore-leave",
-        "z": "c1e7ebde.3e0b68",
-        "config": "ce56e26a.71d74",
-        "name": "notif leave on error",
-        "x": 752.0000438690186,
-        "y": 344.00000762939453,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "f3054b89.b5eac8",
-        "type": "debug",
-        "z": "c1e7ebde.3e0b68",
-        "name": "released semaphore",
-        "active": true,
-        "console": "false",
-        "complete": "payload",
-        "x": 762.0000438690186,
-        "y": 384.00000762939453,
-        "wires": []
     },
     {
         "id": "1b05feb.f6de801",
@@ -7095,8 +7062,8 @@
         "secure": false,
         "name": "",
         "dname": "send email with error",
-        "x": 960,
-        "y": 420,
+        "x": 900,
+        "y": 380,
         "wires": []
     },
     {
@@ -7107,8 +7074,8 @@
         "scope": [
             "cba6a942.ef2ee8"
         ],
-        "x": 162.00004386901855,
-        "y": 364.00000762939453,
+        "x": 170,
+        "y": 380,
         "wires": [
             [
                 "48219ca2.511564"
@@ -7128,8 +7095,8 @@
         "newline": "",
         "topic": "",
         "base64": false,
-        "x": 112.00004386901855,
-        "y": 104.00000762939453,
+        "x": 110,
+        "y": 140,
         "wires": [
             [
                 "2c0b967b.4cae8a"
@@ -7149,8 +7116,8 @@
         "newline": "",
         "topic": "modis-viirs",
         "base64": false,
-        "x": 102.00004386901855,
-        "y": 144.00000762939453,
+        "x": 100,
+        "y": 180,
         "wires": [
             [
                 "b8eec86.79ece38"
@@ -7165,8 +7132,8 @@
         "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nfile.type = \"viirs\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 262.00004386901855,
-        "y": 144.00000762939453,
+        "x": 260,
+        "y": 180,
         "wires": [
             [
                 "46a349eb.45da68",
@@ -7182,8 +7149,8 @@
         "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 262.00004386901855,
-        "y": 104.00000762939453,
+        "x": 260,
+        "y": 140,
         "wires": [
             [
                 "2005640b.f800bc",
@@ -7200,12 +7167,11 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 432.00004386901855,
-        "y": 104.00000762939453,
+        "x": 430,
+        "y": 140,
         "wires": [
             [
-                "cb6427c6.0c2058",
-                "4c9d7d67.9de2f4"
+                "cb6427c6.0c2058"
             ]
         ]
     },
@@ -7218,12 +7184,11 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 432.00004386901855,
-        "y": 144.00000762939453,
+        "x": 430,
+        "y": 180,
         "wires": [
             [
-                "33d38060.1d916",
-                "6602919e.f6455"
+                "33d38060.1d916"
             ]
         ]
     },
@@ -7235,8 +7200,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 442.00004386901855,
-        "y": 184.00000762939453,
+        "x": 440,
+        "y": 220,
         "wires": []
     },
     {
@@ -7278,55 +7243,6 @@
         ]
     },
     {
-        "id": "6602919e.f6455",
-        "type": "csv",
-        "z": "c1e7ebde.3e0b68",
-        "name": "modis csv",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "",
-        "multi": "one",
-        "ret": "\\n",
-        "temp": "",
-        "x": 622.0000438690186,
-        "y": 104.00000762939453,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "4c9d7d67.9de2f4",
-        "type": "csv",
-        "z": "c1e7ebde.3e0b68",
-        "name": "viir csv",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "",
-        "multi": "one",
-        "ret": "\\n",
-        "temp": "",
-        "x": 612.0000438690186,
-        "y": 64.00000762939453,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "7bed2216.606b1c",
-        "type": "semaphore-take",
-        "z": "c1e7ebde.3e0b68",
-        "config": "ce56e26a.71d74",
-        "name": "nofit take",
-        "x": 982.0000438690186,
-        "y": 144.00000762939453,
-        "wires": [
-            [
-                "cba6a942.ef2ee8",
-                "b4c882e8.05a0c"
-            ]
-        ]
-    },
-    {
         "id": "ab66e9e6.ee9c48",
         "type": "function",
         "z": "c1e7ebde.3e0b68",
@@ -7340,7 +7256,8 @@
             [
                 "840c7f68.e29b2",
                 "de8cfdcc.f432c",
-                "7bed2216.606b1c"
+                "58c4d929.e51d88",
+                "4fd3cb8f.988ec4"
             ]
         ]
     },
@@ -7353,7 +7270,7 @@
         "y": 144.00000762939453,
         "wires": [
             [
-                "fa0acd4d.e342e"
+                "51e12e27.c4964"
             ],
             [
                 "94d3538b.7c29e",
@@ -7390,8 +7307,8 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1452.0000438690186,
-        "y": 224.00000762939453,
+        "x": 1440,
+        "y": 220,
         "wires": []
     },
     {
@@ -7399,23 +7316,9 @@
         "type": "subflow:c8522537.c6f908",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1442.0000438690186,
-        "y": 184.00000762939453,
+        "x": 1440,
+        "y": 180,
         "wires": []
-    },
-    {
-        "id": "fa0acd4d.e342e",
-        "type": "semaphore-leave",
-        "z": "c1e7ebde.3e0b68",
-        "config": "ce56e26a.71d74",
-        "name": "notif leave",
-        "x": 1402.0000438690186,
-        "y": 144.00000762939453,
-        "wires": [
-            [
-                "51e12e27.c4964"
-            ]
-        ]
     },
     {
         "id": "51e12e27.c4964",
@@ -7428,8 +7331,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1572.0000438690186,
-        "y": 144.00000762939453,
+        "x": 1390,
+        "y": 140,
         "wires": [
             [
                 "5c054d9b.8452f4"
@@ -7444,8 +7347,8 @@
         "func": "msg.lon = msg.payload.ourid.coordinates[0];\nmsg.lat = msg.payload.ourid.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1722.0000438690186,
-        "y": 144.00000762939453,
+        "x": 1540,
+        "y": 140,
         "wires": [
             [
                 "8795dd0e.a135a"
@@ -7467,8 +7370,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1902.0000438690186,
-        "y": 144.00000762939453,
+        "x": 1720,
+        "y": 140,
         "wires": [
             [
                 "7a5495a3.d75efc"
@@ -7480,8 +7383,8 @@
         "type": "subflow:2b8628df.fdcca8",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 2112.0000438690186,
-        "y": 144.00000762939453,
+        "x": 1930,
+        "y": 140,
         "wires": []
     },
     {
@@ -8085,8 +7988,8 @@
                 "type": "msg"
             }
         ],
-        "x": 740,
-        "y": 420,
+        "x": 660,
+        "y": 380,
         "wires": [
             [
                 "1b05feb.f6de801"
@@ -8269,6 +8172,66 @@
         ]
     },
     {
+        "id": "17c226.e0b85dda",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "test msg",
+        "func": "var msg = {};\nmsg.date = \"12-12-2017\";\nmsg.time = \"1:30\";\nmsg.fire = \"La la la\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1600,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "58c4d929.e51d88",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "rate 1x2min",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 990,
+        "y": 280,
+        "wires": [
+            [
+                "b4c882e8.05a0c"
+            ]
+        ]
+    },
+    {
+        "id": "4fd3cb8f.988ec4",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "delay 1x3min",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "3",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 990,
+        "y": 140,
+        "wires": [
+            [
+                "cba6a942.ef2ee8"
+            ]
+        ]
+    },
+    {
         "id": "440da7fb.ce7728",
         "type": "inject",
         "z": "c1e7ebde.3e0b68",
@@ -8285,20 +8248,6 @@
             [
                 "17c226.e0b85dda"
             ]
-        ]
-    },
-    {
-        "id": "17c226.e0b85dda",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "test msg",
-        "func": "var msg = {};\nmsg.date = \"12-12-2017\";\nmsg.time = \"1:30\";\nmsg.fire = \"La la la\";\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1600,
-        "y": 360,
-        "wires": [
-            []
         ]
     }
 ]
