@@ -8278,15 +8278,22 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "del",
-        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return del;\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return msg;\n}",
-        "outputs": "1",
+        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
+        "outputs": "2",
         "noerr": 0,
         "x": 1090,
         "y": 140,
         "wires": [
             [
                 "25fb0a13.01b006"
+            ],
+            [
+                "66c61400.c2dddc"
             ]
+        ],
+        "outputLabels": [
+            "db",
+            "error"
         ]
     },
     {
@@ -8294,15 +8301,22 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "find new",
-        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    global.set('active-now', null); // we disable timestamp to semaphore deadlock detection\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return newfires;\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return msg;\n}",
-        "outputs": "1",
+        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    global.set('active-now', null); // we disable timestamp to semaphore deadlock detection\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return [null, msg];\n}",
+        "outputs": "2",
         "noerr": 0,
         "x": 1380,
         "y": 140,
         "wires": [
             [
                 "d6226d6b.2fad4"
+            ],
+            [
+                "8e803675.302558"
             ]
+        ],
+        "outputLabels": [
+            "db",
+            "error"
         ]
     },
     {
@@ -8363,5 +8377,29 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "66c61400.c2dddc",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1210,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "8e803675.302558",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1510,
+        "y": 180,
+        "wires": []
     }
 ]
