@@ -8252,7 +8252,8 @@
         "y": 80,
         "wires": [
             [
-                "3f9d2c64.b978c4"
+                "3f9d2c64.b978c4",
+                "7ce43ef3.e38ba"
             ]
         ]
     },
@@ -8261,7 +8262,7 @@
         "type": "mongodb2 in",
         "z": "c1e7ebde.3e0b68",
         "service": "_ext_",
-        "configNode": "d5287e69.2b449",
+        "configNode": "d5559ee5.960e2",
         "name": "deleteMany",
         "collection": "",
         "operation": "deleteMany",
@@ -8278,7 +8279,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "del",
-        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now, type: type}}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
+        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1090,
@@ -8324,7 +8325,7 @@
         "type": "mongodb2 in",
         "z": "c1e7ebde.3e0b68",
         "service": "_ext_",
-        "configNode": "d5287e69.2b449",
+        "configNode": "d5559ee5.960e2",
         "name": "find",
         "collection": "",
         "operation": "find.toArray",
@@ -8424,5 +8425,17 @@
                 "58c4d929.e51d88"
             ]
         ]
+    },
+    {
+        "id": "7ce43ef3.e38ba",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1410,
+        "y": 80,
+        "wires": []
     }
 ]
