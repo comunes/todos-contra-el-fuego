@@ -724,6 +724,13 @@
         "checkPeriod": "0"
     },
     {
+        "id": "267e38ad.11f318",
+        "type": "semaphore-config",
+        "z": "",
+        "name": "semaphore",
+        "capacity": "1"
+    },
+    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -7072,13 +7079,16 @@
         "z": "c1e7ebde.3e0b68",
         "name": "catch fire active processing",
         "scope": [
-            "cba6a942.ef2ee8"
+            "b8fa4570.ae07f8",
+            "25fb0a13.01b006",
+            "d6226d6b.2fad4"
         ],
-        "x": 170,
+        "x": 150,
         "y": 380,
         "wires": [
             [
-                "48219ca2.511564"
+                "48219ca2.511564",
+                "1bfe0ffb.5e7a6"
             ]
         ]
     },
@@ -7257,24 +7267,7 @@
                 "840c7f68.e29b2",
                 "de8cfdcc.f432c",
                 "58c4d929.e51d88",
-                "4fd3cb8f.988ec4"
-            ]
-        ]
-    },
-    {
-        "id": "cba6a942.ef2ee8",
-        "type": "subflow:11cb3f4d.6e0081",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "x": 1200,
-        "y": 140,
-        "wires": [
-            [
-                "51e12e27.c4964"
-            ],
-            [
-                "94d3538b.7c29e",
-                "c19f9fb2.881cd"
+                "27477a8e.84a7f6"
             ]
         ]
     },
@@ -7307,7 +7300,7 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1440,
+        "x": 1720,
         "y": 220,
         "wires": []
     },
@@ -7316,7 +7309,7 @@
         "type": "subflow:c8522537.c6f908",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1440,
+        "x": 1720,
         "y": 180,
         "wires": []
     },
@@ -7331,7 +7324,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1390,
+        "x": 1790,
         "y": 140,
         "wires": [
             [
@@ -7347,7 +7340,7 @@
         "func": "msg.lon = msg.payload.ourid.coordinates[0];\nmsg.lat = msg.payload.ourid.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1540,
+        "x": 1940,
         "y": 140,
         "wires": [
             [
@@ -7370,7 +7363,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1720,
+        "x": 2120,
         "y": 140,
         "wires": [
             [
@@ -7383,7 +7376,7 @@
         "type": "subflow:2b8628df.fdcca8",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1930,
+        "x": 2330,
         "y": 140,
         "wires": []
     },
@@ -8209,29 +8202,6 @@
         ]
     },
     {
-        "id": "4fd3cb8f.988ec4",
-        "type": "delay",
-        "z": "c1e7ebde.3e0b68",
-        "name": "delay 1x3min",
-        "pauseType": "rate",
-        "timeout": "5",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "3",
-        "rateUnits": "minute",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 990,
-        "y": 140,
-        "wires": [
-            [
-                "cba6a942.ef2ee8"
-            ]
-        ]
-    },
-    {
         "id": "440da7fb.ce7728",
         "type": "inject",
         "z": "c1e7ebde.3e0b68",
@@ -8248,6 +8218,150 @@
             [
                 "17c226.e0b85dda"
             ]
+        ]
+    },
+    {
+        "id": "9e68b220.6e1bb",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "update",
+        "func": "var type = msg.type;\nvar collection = \"activefires\"; // + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid, type: type}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    bulkUpdate.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 1090,
+        "y": 80,
+        "wires": [
+            [
+                "b8fa4570.ae07f8"
+            ]
+        ],
+        "outputLabels": [
+            "update/save"
+        ]
+    },
+    {
+        "id": "b8fa4570.ae07f8",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "bulkWrite",
+        "collection": "",
+        "operation": "bulkWrite",
+        "x": 1220,
+        "y": 80,
+        "wires": [
+            [
+                "3f9d2c64.b978c4"
+            ]
+        ]
+    },
+    {
+        "id": "25fb0a13.01b006",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5287e69.2b449",
+        "name": "deleteMany",
+        "collection": "",
+        "operation": "deleteMany",
+        "x": 1230,
+        "y": 140,
+        "wires": [
+            [
+                "1925c401.ddd95c"
+            ]
+        ]
+    },
+    {
+        "id": "3f9d2c64.b978c4",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "del",
+        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return del;\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return msg;\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 1090,
+        "y": 140,
+        "wires": [
+            [
+                "25fb0a13.01b006"
+            ]
+        ]
+    },
+    {
+        "id": "1925c401.ddd95c",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "find new",
+        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    global.set('active-now', null); // we disable timestamp to semaphore deadlock detection\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return newfires;\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return msg;\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 1380,
+        "y": 140,
+        "wires": [
+            [
+                "d6226d6b.2fad4"
+            ]
+        ]
+    },
+    {
+        "id": "d6226d6b.2fad4",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5287e69.2b449",
+        "name": "find",
+        "collection": "",
+        "operation": "find.toArray",
+        "x": 1510,
+        "y": 140,
+        "wires": [
+            [
+                "94d3538b.7c29e",
+                "c19f9fb2.881cd",
+                "9d976e2.ac2229"
+            ]
+        ]
+    },
+    {
+        "id": "27477a8e.84a7f6",
+        "type": "semaphore-take",
+        "z": "c1e7ebde.3e0b68",
+        "config": "267e38ad.11f318",
+        "name": "take",
+        "x": 970,
+        "y": 80,
+        "wires": [
+            [
+                "9e68b220.6e1bb"
+            ]
+        ]
+    },
+    {
+        "id": "9d976e2.ac2229",
+        "type": "semaphore-leave",
+        "z": "c1e7ebde.3e0b68",
+        "config": "267e38ad.11f318",
+        "name": "leave",
+        "x": 1670,
+        "y": 140,
+        "wires": [
+            [
+                "51e12e27.c4964"
+            ]
+        ]
+    },
+    {
+        "id": "1bfe0ffb.5e7a6",
+        "type": "semaphore-leave",
+        "z": "c1e7ebde.3e0b68",
+        "config": "267e38ad.11f318",
+        "name": "leave",
+        "x": 390,
+        "y": 420,
+        "wires": [
+            []
         ]
     }
 ]
