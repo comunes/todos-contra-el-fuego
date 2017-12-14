@@ -7463,7 +7463,7 @@
         "z": "c1e7ebde.3e0b68",
         "service": "_ext_",
         "configNode": "d5559ee5.960e2",
-        "name": "find",
+        "name": "find tracked",
         "collection": "",
         "operation": "find.toArray",
         "x": 1442.0000438690186,
