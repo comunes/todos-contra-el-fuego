@@ -108,7 +108,22 @@ And run test with commands like:
 ```bash
 node_modules/cucumber/bin/cucumber.js --tags "not @ignore"
 ```
-## Runing via docker
+## Force active fire files read
+
+```
+ echo -n "ping" | nc 127.0.0.1 40001 -q 0 ; echo -n "ping" | nc 127.0.0.1 40002 -q 0
+```
+
+## Running via pm2
+
+Following https://nodered.org/docs/getting-started/running something like:
+```
+pm2 start --name "tcef-bot" /usr/local/bin/node-red -- --userDir /opt/node-red-data/
+pm2 save
+```
+should work.
+
+## Running via docker
 
 Follow: https://nodered.org/docs/platforms/docker
 
