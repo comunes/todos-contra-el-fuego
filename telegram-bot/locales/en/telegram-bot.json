@@ -89,5 +89,6 @@
     "Tod@s contra el fuego": "All against fire",
     "Ya habías notificado un fuego hoy. Si por algún motivo necesitas reportar más de un fuego al día, ponte en contacto con nosotros: info@comunes.org ¡Gracias!": "You have notified a fire today. If you need to notify more than one fire by day, please contact us at: info@comunes.org  Thanks!",
     "sin viento": "No wind",
-    "wind": "wind direction {{dir}} of type '{{desc}}'"
+    "wind": "wind direction {{dir}} of type '{{desc}}'",
+    "serviceStatus": "There are {{count}} active fires in the world (data updated {{since}})."
 }
