@@ -7052,7 +7052,7 @@
         "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error.message;\n    return email;",
         "outputs": 1,
         "noerr": 0,
-        "x": 430,
+        "x": 540,
         "y": 380,
         "wires": [
             [
@@ -7070,7 +7070,7 @@
         "secure": false,
         "name": "",
         "dname": "send email with error",
-        "x": 900,
+        "x": 1010,
         "y": 380,
         "wires": []
     },
@@ -7324,7 +7324,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1790,
+        "x": 1830,
         "y": 140,
         "wires": [
             [
@@ -7340,7 +7340,7 @@
         "func": "msg.lon = msg.payload.ourid.coordinates[0];\nmsg.lat = msg.payload.ourid.coordinates[1];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1940,
+        "x": 1960,
         "y": 140,
         "wires": [
             [
@@ -7981,7 +7981,7 @@
                 "type": "msg"
             }
         ],
-        "x": 660,
+        "x": 770,
         "y": 380,
         "wires": [
             [
@@ -8246,7 +8246,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "find new",
-        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    global.set('active-now', null); // we disable timestamp to semaphore deadlock detection\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return [null, msg];\n}",
+        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1380,
@@ -8280,7 +8280,8 @@
                 "94d3538b.7c29e",
                 "c19f9fb2.881cd",
                 "9d976e2.ac2229",
-                "7d8a7620.05a6f8"
+                "7d8a7620.05a6f8",
+                "ebbd2a34.9fb728"
             ]
         ]
     },
@@ -8304,7 +8305,7 @@
         "z": "c1e7ebde.3e0b68",
         "config": "267e38ad.11f318",
         "name": "leave",
-        "x": 1670,
+        "x": 1650,
         "y": 140,
         "wires": [
             [
@@ -8319,7 +8320,7 @@
         "z": "c1e7ebde.3e0b68",
         "config": "267e38ad.11f318",
         "name": "leave",
-        "x": 390,
+        "x": 500,
         "y": 420,
         "wires": [
             []
@@ -8461,7 +8462,7 @@
         "func": "var trackedfires = {};\ntrackedfires.payload = [{}];\nreturn [trackedfires, null]",
         "outputs": 1,
         "noerr": 0,
-        "x": 1810,
+        "x": 1830,
         "y": 40,
         "wires": [
             [
@@ -8505,8 +8506,71 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 710,
+        "x": 820,
         "y": 440,
+        "wires": []
+    },
+    {
+        "id": "84634618.51fc18",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "check timer",
+        "func": "var timer = context.global.moment(global.get('active-now'));\nvar now = context.global.moment();\n\nif (timer.add(1, 'hours').isBefore(now)) {\n\t// One hour with the samphore! Releas...\n\treturn msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 320,
+        "wires": [
+            [
+                "1bfe0ffb.5e7a6",
+                "48219ca2.511564",
+                "8257d805.55e868"
+            ]
+        ]
+    },
+    {
+        "id": "8e475bd3.43a128",
+        "type": "inject",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "3600",
+        "crontab": "",
+        "once": false,
+        "x": 110,
+        "y": 320,
+        "wires": [
+            [
+                "84634618.51fc18"
+            ]
+        ]
+    },
+    {
+        "id": "ebbd2a34.9fb728",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "reset timer",
+        "func": "global.set('active-now', null); // we disable timestamp to semaphore deadlock detection",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1650,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8257d805.55e868",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "timeout in semaphore!",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 560,
+        "y": 320,
         "wires": []
     }
 ]
