@@ -1378,7 +1378,7 @@
             {
                 "p": "ftp-path",
                 "pt": "global",
-                "to": "/data/",
+                "to": "/opt/node-red-data/",
                 "tot": "str"
             },
             {
@@ -1390,7 +1390,7 @@
             {
                 "p": "conf-path",
                 "pt": "global",
-                "to": "/data/",
+                "to": "/opt/node-red-data/",
                 "tot": "str"
             }
         ],
