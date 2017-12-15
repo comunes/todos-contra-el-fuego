@@ -89,5 +89,6 @@
   "sur": "sur",
   "suroeste": "suroeste",
   "oeste": "oeste",
-  "noroeste": "noroeste"
+  "noroeste": "noroeste",
+  "serviceStatus": "Hay {{count}} fuegos activos en el mundo (datos actualizados {{since}})."
 }

@@ -1124,14 +1124,14 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "send location",
-        "func": "var t = msg.i18n;\nvar km = msg.payload[0].distance;\nif (msg.payload.length > 0) {\n    var caption = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"message\",\n          content: t('kmdistancia', {km: km})\n        }\n    }\n    \n    var location = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.payload[0].location.lon,\n             latitude: msg.payload[0].location.lat\n          }\n        }\n    }\n    return [caption, location, null];\n}",
+        "func": "var t = msg.i18n;\nvar km = msg.payload[0].distance;\nif (msg.payload.length > 0) {\n    var caption = {\n        payload : {\n          chatId : msg.payload[0].chatId,\n          type : \"message\",\n          content: t('kmdistancia', {km: km})\n        },\n        i18n: t,\n        lang: msg.lang\n    }\n    \n    var location = {\n        payload : {\n            chatId : msg.payload[0].chatId,\n            type : \"location\",\n            content: {\n               longitude: msg.payload[0].location.lon,\n               latitude: msg.payload[0].location.lat\n            },\n        },\n        i18n: msg.i18n,\n        lang: msg.lang\n    }\n    return [caption, location, null];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1070,
         "y": 840,
         "wires": [
             [
-                "fbac8488.5194a8"
+                "1e81ed1a.57bfa3"
             ],
             [
                 "74146dac.0d0704"
@@ -1154,7 +1154,7 @@
         "y": 800,
         "wires": [
             [
-                "fbac8488.5194a8"
+                "1e81ed1a.57bfa3"
             ]
         ]
     },
@@ -2136,7 +2136,9 @@
         "y": 860,
         "wires": [
             [
-                "33cd0275.71172e"
+                "33cd0275.71172e",
+                "1727d097.85a84f",
+                "5f91ea91.19aff4"
             ]
         ]
     },
@@ -8169,7 +8171,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "update",
-        "func": "var type = msg.type;\nvar collection = \"activefires\"; // + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid, type: type}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    bulkUpdate.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "func": "var type = msg.type;\nvar collection = \"activefires\"; // + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nglobal.set('last-fire-check', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid, type: type}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    bulkUpdate.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
         "outputs": "1",
         "noerr": 0,
         "x": 1090,
@@ -8571,6 +8573,113 @@
         "complete": "payload",
         "x": 560,
         "y": 320,
+        "wires": []
+    },
+    {
+        "id": "45268ce5.0dd8c4",
+        "type": "mongodb2 in",
+        "z": "93cb4937.6fc068",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "",
+        "collection": "activefires",
+        "operation": "count",
+        "x": 1620,
+        "y": 1020,
+        "wires": [
+            [
+                "933dd7fe.916ab8"
+            ]
+        ]
+    },
+    {
+        "id": "933dd7fe.916ab8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "send status",
+        "func": "var t = msg.i18n;\nvar count = msg.payload;\nvar last = context.global.moment(global.get('last-fire-check'));\n\nif (msg.lang === 'ast') {\n    msg.lang = 'es';\n} \ncontext.global.moment.locale(msg.lang);\n\nvar since = context.global.moment(last).fromNow()\n\nvar status = {\n    payload : {\n          chatId : msg.chatId,\n          type : \"message\",\n          content: t('serviceStatus', {count: count, since: since})\n        }\n    }\n\nreturn status;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1830,
+        "y": 1020,
+        "wires": [
+            [
+                "ae6f1258.7ec31"
+            ]
+        ]
+    },
+    {
+        "id": "1727d097.85a84f",
+        "type": "assert",
+        "z": "93cb4937.6fc068",
+        "name": "assert before info",
+        "rules": [
+            {
+                "property": "last-fire-check",
+                "propertyType": "global",
+                "type": "nnull",
+                "failMsg": "Wrong date!"
+            },
+            {
+                "property": "lang",
+                "propertyType": "msg",
+                "type": "nnull",
+                "failMsg": "Wrong lang!"
+            }
+        ],
+        "x": 1450,
+        "y": 940,
+        "wires": [
+            [
+                "f99f7b1f.c91d68"
+            ]
+        ]
+    },
+    {
+        "id": "f99f7b1f.c91d68",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "find",
+        "func": "msg.originalPayload = msg.payload;\nmsg.chatId = msg.payload.chatId;\nmsg.payload = {};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1610,
+        "y": 940,
+        "wires": [
+            [
+                "45268ce5.0dd8c4"
+            ]
+        ]
+    },
+    {
+        "id": "ae6f1258.7ec31",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1990,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5f91ea91.19aff4",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 1400,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "1e81ed1a.57bfa3",
+        "type": "subflow:76bd701f.29d0f",
+        "z": "93cb4937.6fc068",
+        "x": 1410,
+        "y": 760,
         "wires": []
     }
 ]
