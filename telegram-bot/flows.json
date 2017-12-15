@@ -7056,7 +7056,8 @@
         "y": 380,
         "wires": [
             [
-                "f4e5590a.995258"
+                "f4e5590a.995258",
+                "aa7b971c.c41c58"
             ]
         ]
     },
@@ -7266,8 +7267,7 @@
             [
                 "840c7f68.e29b2",
                 "de8cfdcc.f432c",
-                "27477a8e.84a7f6",
-                "545a675e.141c98"
+                "27477a8e.84a7f6"
             ]
         ]
     },
@@ -7446,11 +7446,11 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "match tracked fires",
-        "func": "var type = msg.type;\nvar collection = \"trackedfires\";\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lon = pay.longitude;\n    var lat = pay.latitude;\n    \n    if (typeof lat === 'number' && typeof lon === 'number') {\n        pay.type = type;\n        var fires = {};\n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n        fires.collection = collection;\n        fires.payload = [{\n            ourid:\n            { $near : {\n                $geometry: { \n                type: \"Point\",  \n                coordinates: [ lon, lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 400\n          }\n        }\n        }];\n        fires.originalPayload = pay;\n        node.send(fires);\n    }\n}",
+        "func": "var pay = msg.payload;\nvar lon = msg.payload.ourid.coordinates[0];\nvar lat = msg.payload.ourid.coordinates[1];\n\nvar fires = {};\n// http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\nfires.collection = \"activefires\";\nfires.payload = [{\n    ourid:\n    { $near : {\n        $geometry: { \n        type: \"Point\",  \n        coordinates: [ lon, lat]\n    },\n    $minDistance: 0,\n    $maxDistance: 400\n  }\n}\n}];\nfires.originalPayload = pay;\nreturn fires;\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1252.0000438690186,
-        "y": 284.00000762939453,
+        "x": 2322.0000438690186,
+        "y": 44.00000762939453,
         "wires": [
             [
                 "d0cf3de7.910f8"
@@ -7466,8 +7466,8 @@
         "name": "find tracked",
         "collection": "",
         "operation": "find.toArray",
-        "x": 1442.0000438690186,
-        "y": 284.00000762939453,
+        "x": 2522.0000438690186,
+        "y": 44.00000762939453,
         "wires": [
             [
                 "53e80775.53b498"
@@ -7479,11 +7479,11 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "store",
-        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var jsonfile = context.global.jsonfile;\n    var fire = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n        /* var n = {};\n        n.payload = {\n            tstamp: when\n        };\n        n.filename =  path + pay.file;\n        if (fire.type === 'modis') {\n            n.payload.data = fire.brightness;\n            node.send([n, null]);  \n        }\n        if (fire.type === 'viirs') {\n            n.payload.data = fire.bright_ti4;\n            node.send([null, n]);  \n        } */\n        /*var file = path + pay.file; \n        jsonfile.writeFile(file, fire, {flag: 'a'}, onError); */\n        // Sometimes the data is not well formed/downloaded\n        \n        var ourid = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            //_id: id,\n            ourid: ourid,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid}, update: set, upsert:true } });\n        \n        var email = {\n            fire: pay.name,\n            date: acdate,\n            time: actime\n        }\n        node.send([null, email]);\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    var fire = msg.payload;\n    var tracked = msg.originalPayload;\n    var acdate = fire.acq_date;\n    var actime = fire.acq_time;\n    var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n    fire.when = when;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var pay = msg.payload[i];\n\n        var ourid = {\n            type: fire.type,\n            when: when,\n            fire: pay.name\n        };\n\n        var setcommon = {\n            //_id: id,\n            ourid: ourid,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid}, update: set, upsert:true } });\n        \n        var email = {\n            fire: tracked.name,\n            date: acdate,\n            time: actime\n        }\n        node.send([null, email]);\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 1596.0000438690186,
-        "y": 284.00000762939453,
+        "x": 2676.0000438690186,
+        "y": 44.00000762939453,
         "wires": [
             [
                 "798e1ad0.168a24",
@@ -7506,8 +7506,8 @@
         "active": true,
         "console": "false",
         "complete": "false",
-        "x": 1792.0000438690186,
-        "y": 324.00000762939453,
+        "x": 2872.0000438690186,
+        "y": 84.00000762939453,
         "wires": []
     },
     {
@@ -7519,8 +7519,8 @@
         "name": "bulkWrite",
         "collection": "",
         "operation": "bulkWrite",
-        "x": 1782.0000438690186,
-        "y": 284.00000762939453,
+        "x": 2862.0000438690186,
+        "y": 44.00000762939453,
         "wires": [
             []
         ]
@@ -8017,23 +8017,23 @@
         "secure": false,
         "name": "",
         "dname": "send email with notification",
-        "x": 2220,
-        "y": 360,
+        "x": 3480,
+        "y": 120,
         "wires": []
     },
     {
         "id": "db0bc6e5.73ee58",
         "type": "credentials",
         "z": "c1e7ebde.3e0b68",
-        "name": "errors-email-to",
+        "name": "email-to",
         "props": [
             {
                 "value": "to",
                 "type": "msg"
             }
         ],
-        "x": 1800,
-        "y": 360,
+        "x": 2860,
+        "y": 120,
         "wires": [
             [
                 "f2df97e.e87ea68"
@@ -8045,14 +8045,14 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "tracked fire alarm",
-        "func": "var email = {};\nemail.from = \"noreply@comunes.org\";\nemail.to = msg.to;\nemail.topic = \"Fuego detectado en \" + msg.fire;\nemail.payload = \"Detectado a las \" + msg.date +  \" \" + msg.time + \"(UTC)\\n\\n\";\nreturn email;",
+        "func": "var email = {};\nemail.from = \"noreply@comunes.org\";\nemail.to = msg.to;\nemail.topic = \"Fuego detectado en \" + msg.fire;\nemail.payload  = \"Detectado a las \" + msg.date +  \" \" + msg.time + \"(UTC)\\n\\n\";\nemail.payload += \"Recibirás como máximo dos avisos al día.\\n\\n\";\nreturn email;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1990,
-        "y": 360,
+        "x": 3050,
+        "y": 120,
         "wires": [
             [
-                "abfebd4d.00253"
+                "c26f0a58.34eac8"
             ]
         ]
     },
@@ -8162,62 +8162,6 @@
         "y": 1020,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "17c226.e0b85dda",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "test msg",
-        "func": "var msg = {};\nmsg.date = \"12-12-2017\";\nmsg.time = \"1:30\";\nmsg.fire = \"La la la\";\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1600,
-        "y": 360,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "58c4d929.e51d88",
-        "type": "delay",
-        "z": "c1e7ebde.3e0b68",
-        "name": "rate 1x2min",
-        "pauseType": "rate",
-        "timeout": "5",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "2",
-        "rateUnits": "minute",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 1070,
-        "y": 280,
-        "wires": [
-            [
-                "b4c882e8.05a0c"
-            ]
-        ]
-    },
-    {
-        "id": "440da7fb.ce7728",
-        "type": "inject",
-        "z": "c1e7ebde.3e0b68",
-        "name": "inject on start",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "x": 1410,
-        "y": 360,
-        "wires": [
-            [
-                "17c226.e0b85dda"
-            ]
         ]
     },
     {
@@ -8335,7 +8279,8 @@
             [
                 "94d3538b.7c29e",
                 "c19f9fb2.881cd",
-                "9d976e2.ac2229"
+                "9d976e2.ac2229",
+                "7d8a7620.05a6f8"
             ]
         ]
     },
@@ -8363,7 +8308,8 @@
         "y": 140,
         "wires": [
             [
-                "51e12e27.c4964"
+                "51e12e27.c4964",
+                "5612bdd5.bc69e4"
             ]
         ]
     },
@@ -8404,38 +8350,163 @@
         "wires": []
     },
     {
-        "id": "545a675e.141c98",
-        "type": "delay",
+        "id": "7ce43ef3.e38ba",
+        "type": "debug",
         "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "2",
-        "timeoutUnits": "minutes",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 920,
-        "y": 280,
+        "name": "errors",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 1410,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "5e90f4f.8bf400c",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test msg",
+        "func": "var msg = {};\nmsg.date = \"12-12-2017\";\nmsg.time = \"1:30\";\nmsg.fire = \"La la la\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 1080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "17d0fb13.cded65",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "inject on start",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 120,
+        "y": 1080,
         "wires": [
             [
-                "58c4d929.e51d88"
+                "5e90f4f.8bf400c"
             ]
         ]
     },
     {
-        "id": "7ce43ef3.e38ba",
+        "id": "c26f0a58.34eac8",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "12",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 3260,
+        "y": 120,
+        "wires": [
+            [
+                "abfebd4d.00253"
+            ]
+        ]
+    },
+    {
+        "id": "362e60f4.1d5f7",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find tracked",
+        "collection": "trackedfires",
+        "operation": "find.toArray",
+        "x": 1970,
+        "y": 40,
+        "wires": [
+            [
+                "2adf71f2.73479e"
+            ]
+        ]
+    },
+    {
+        "id": "2adf71f2.73479e",
+        "type": "split",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 2150,
+        "y": 40,
+        "wires": [
+            [
+                "b4c882e8.05a0c"
+            ]
+        ]
+    },
+    {
+        "id": "5612bdd5.bc69e4",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "find",
+        "func": "var trackedfires = {};\ntrackedfires.payload = [{}];\nreturn [trackedfires, null]",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1810,
+        "y": 40,
+        "wires": [
+            [
+                "362e60f4.1d5f7"
+            ]
+        ]
+    },
+    {
+        "id": "1f0da6d1.c9ed79",
         "type": "debug",
         "z": "c1e7ebde.3e0b68",
         "name": "errors",
         "active": true,
         "console": "false",
+        "complete": "error",
+        "x": 1810,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "7d8a7620.05a6f8",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "if error",
+        "func": "if (msg.error) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1660,
+        "y": 260,
+        "wires": [
+            [
+                "1f0da6d1.c9ed79"
+            ]
+        ]
+    },
+    {
+        "id": "aa7b971c.c41c58",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "catch error ----------------------",
+        "active": true,
+        "console": "false",
         "complete": "true",
-        "x": 1410,
-        "y": 80,
+        "x": 710,
+        "y": 440,
         "wires": []
     }
 ]
