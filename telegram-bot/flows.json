@@ -3096,7 +3096,9 @@
         "x": 450,
         "y": 40,
         "wires": [
-            []
+            [
+                "7817e97.07b9f18"
+            ]
         ]
     },
     {
@@ -3576,7 +3578,9 @@
         "x": 1590,
         "y": 340,
         "wires": [
-            []
+            [
+                "d64b5dd7.24b69"
+            ]
         ]
     },
     {
@@ -8681,5 +8685,61 @@
         "x": 1410,
         "y": 760,
         "wires": []
+    },
+    {
+        "id": "a6cec47b.33f458",
+        "type": "debug",
+        "z": "128790f6.dee0df",
+        "name": "Send errors in notifications",
+        "active": true,
+        "console": "true",
+        "complete": "true",
+        "x": 1990,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "97c6027.faeb8",
+        "type": "debug",
+        "z": "e81a68fa.695e38",
+        "name": "Send errors in tsend",
+        "active": true,
+        "console": "true",
+        "complete": "true",
+        "x": 910,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "7817e97.07b9f18",
+        "type": "function",
+        "z": "e81a68fa.695e38",
+        "name": "if error debug",
+        "func": "if (msg.error) {\n    return msg;\n}   ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 140,
+        "wires": [
+            [
+                "97c6027.faeb8"
+            ]
+        ]
+    },
+    {
+        "id": "d64b5dd7.24b69",
+        "type": "function",
+        "z": "128790f6.dee0df",
+        "name": "if error debug",
+        "func": "if (msg.error) {\n    return msg;\n}   ",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1740,
+        "y": 340,
+        "wires": [
+            [
+                "a6cec47b.33f458"
+            ]
+        ]
     }
 ]
