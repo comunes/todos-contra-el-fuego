@@ -7051,7 +7051,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "timeout getting fires",
-        "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error.message;\n    return email;",
+        "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error ? msg.error.message : '';\n    return email;",
         "outputs": 1,
         "noerr": 0,
         "x": 540,
