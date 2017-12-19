@@ -7058,7 +7058,7 @@
         "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error ? msg.error.message : '';\n    return email;",
         "outputs": 1,
         "noerr": 0,
-        "x": 540,
+        "x": 600,
         "y": 380,
         "wires": [
             [
@@ -7094,7 +7094,6 @@
         "y": 380,
         "wires": [
             [
-                "48219ca2.511564",
                 "1bfe0ffb.5e7a6"
             ]
         ]
@@ -7987,7 +7986,7 @@
                 "type": "msg"
             }
         ],
-        "x": 770,
+        "x": 800,
         "y": 380,
         "wires": [
             [
@@ -8326,10 +8325,12 @@
         "z": "c1e7ebde.3e0b68",
         "config": "267e38ad.11f318",
         "name": "leave",
-        "x": 500,
-        "y": 420,
+        "x": 410,
+        "y": 380,
         "wires": [
-            []
+            [
+                "48219ca2.511564"
+            ]
         ]
     },
     {
@@ -8512,7 +8513,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 820,
+        "x": 840,
         "y": 440,
         "wires": []
     },
@@ -8524,13 +8525,12 @@
         "func": "var timer = context.global.moment(global.get('active-now'));\nvar now = context.global.moment();\n\nif (timer.add(1, 'hours').isBefore(now)) {\n\t// One hour with the samphore! Releas...\n\treturn msg;\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 290,
+        "x": 270,
         "y": 320,
         "wires": [
             [
-                "1bfe0ffb.5e7a6",
-                "48219ca2.511564",
-                "8257d805.55e868"
+                "8257d805.55e868",
+                "1bfe0ffb.5e7a6"
             ]
         ]
     },
@@ -8575,7 +8575,7 @@
         "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 560,
+        "x": 600,
         "y": 320,
         "wires": []
     },
