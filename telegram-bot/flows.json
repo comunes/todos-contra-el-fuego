@@ -527,6 +527,32 @@
         "out": []
     },
     {
+        "id": "931aabf7.f24648",
+        "type": "subflow",
+        "name": "Subflow 1",
+        "info": "",
+        "in": [],
+        "out": []
+    },
+    {
+        "id": "f21ab878.9fd518",
+        "type": "subflow",
+        "name": "leave",
+        "info": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "e2c7bb0a.9c4f58"
+                    }
+                ]
+            }
+        ],
+        "out": []
+    },
+    {
         "id": "f93d1a38.c43218",
         "type": "telegram bot",
         "z": "",
@@ -7062,8 +7088,7 @@
         "y": 380,
         "wires": [
             [
-                "f4e5590a.995258",
-                "aa7b971c.c41c58"
+                "f4e5590a.995258"
             ]
         ]
     },
@@ -7508,7 +7533,7 @@
         "type": "debug",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "false",
         "x": 2872.0000438690186,
@@ -7990,7 +8015,8 @@
         "y": 380,
         "wires": [
             [
-                "1b05feb.f6de801"
+                "1b05feb.f6de801",
+                "aa7b971c.c41c58"
             ]
         ]
     },
@@ -8202,7 +8228,8 @@
         "wires": [
             [
                 "3f9d2c64.b978c4",
-                "7ce43ef3.e38ba"
+                "7ce43ef3.e38ba",
+                "ff680930.7f8c78"
             ]
         ]
     },
@@ -8238,7 +8265,8 @@
                 "25fb0a13.01b006"
             ],
             [
-                "66c61400.c2dddc"
+                "66c61400.c2dddc",
+                "d3fe9fa4.bc442"
             ]
         ],
         "outputLabels": [
@@ -8261,7 +8289,8 @@
                 "d6226d6b.2fad4"
             ],
             [
-                "8e803675.302558"
+                "8e803675.302558",
+                "f7f7ddf.bd7f72"
             ]
         ],
         "outputLabels": [
@@ -8362,7 +8391,7 @@
         "type": "debug",
         "z": "c1e7ebde.3e0b68",
         "name": "errors",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "true",
         "x": 1410,
@@ -8509,11 +8538,11 @@
         "id": "aa7b971c.c41c58",
         "type": "debug",
         "z": "c1e7ebde.3e0b68",
-        "name": "catch error ----------------------",
+        "name": "timeout getting fires",
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 840,
+        "x": 1020,
         "y": 440,
         "wires": []
     },
@@ -8522,7 +8551,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "check timer",
-        "func": "var timer = context.global.moment(global.get('active-now'));\nvar now = context.global.moment();\n\nif (timer.add(1, 'hours').isBefore(now)) {\n\t// One hour with the samphore! Releas...\n\treturn msg;\n}\n\n",
+        "func": "var timer = context.global.moment(global.get('active-now'));\nvar now = context.global.moment();\n\nif (timer.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\treturn msg;\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 270,
@@ -8741,5 +8770,44 @@
                 "a6cec47b.33f458"
             ]
         ]
+    },
+    {
+        "id": "e2c7bb0a.9c4f58",
+        "type": "semaphore-leave",
+        "z": "f21ab878.9fd518",
+        "config": "267e38ad.11f318",
+        "name": "leave",
+        "x": 210,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d3fe9fa4.bc442",
+        "type": "subflow:f21ab878.9fd518",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1210,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "ff680930.7f8c78",
+        "type": "subflow:f21ab878.9fd518",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1410,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "f7f7ddf.bd7f72",
+        "type": "subflow:f21ab878.9fd518",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1510,
+        "y": 220,
+        "wires": []
     }
 ]
