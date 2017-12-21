@@ -553,6 +553,35 @@
         "out": []
     },
     {
+        "id": "1f740501.0b8ccb",
+        "type": "subflow",
+        "name": "hash?",
+        "info": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "7141db39.a3c694"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 540,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "7141db39.a3c694",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "id": "f93d1a38.c43218",
         "type": "telegram bot",
         "z": "",
@@ -767,8 +796,8 @@
         "y": 360,
         "wires": [
             [
-                "55ebd8f8.436e38",
-                "17af36df.d20ff9"
+                "17af36df.d20ff9",
+                "1a02f494.12ac8b"
             ],
             [
                 "11e83fb2.09a37",
@@ -1388,6 +1417,12 @@
                 "pt": "global",
                 "to": "./",
                 "tot": "str"
+            },
+            {
+                "p": "website",
+                "pt": "global",
+                "to": "https://fuegos.comunes.org/auth/",
+                "tot": "str"
             }
         ],
         "active": true,
@@ -1417,6 +1452,12 @@
                 "p": "conf-path",
                 "pt": "global",
                 "to": "/opt/node-red-data/",
+                "tot": "str"
+            },
+            {
+                "p": "website",
+                "pt": "global",
+                "to": "https://fuegos.comunes.org/auth/",
                 "tot": "str"
             }
         ],
@@ -2353,7 +2394,7 @@
         "z": "93cb4937.6fc068",
         "name": "",
         "x": 570,
-        "y": 340,
+        "y": 320,
         "wires": []
     },
     {
@@ -6338,18 +6379,6 @@
         "wires": []
     },
     {
-        "id": "f2de1625.f47288",
-        "type": "debug",
-        "z": "76bd701f.29d0f",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 670,
-        "y": 200,
-        "wires": []
-    },
-    {
         "id": "e5f28b05.bf6ea8",
         "type": "debug",
         "z": "76bd701f.29d0f",
@@ -8835,5 +8864,89 @@
         "x": 1510,
         "y": 240,
         "wires": []
+    },
+    {
+        "id": "f2de1625.f47288",
+        "type": "debug",
+        "z": "76bd701f.29d0f",
+        "name": "start msg",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "7141db39.a3c694",
+        "type": "function",
+        "z": "1f740501.0b8ccb",
+        "name": "check for hash",
+        "func": "if (msg.payload.content) {\n    // msg with hash\n    return [null, msg];    \n} else {\n    // normal /start\n    return [msg, null];\n}\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 300,
+        "y": 40,
+        "wires": [
+            [],
+            [
+                "eb0d7746.e96e18"
+            ]
+        ],
+        "outputLabels": [
+            "normal",
+            "hash"
+        ]
+    },
+    {
+        "id": "59c9129.f66d6ec",
+        "type": "subflow:e81a68fa.695e38",
+        "z": "1f740501.0b8ccb",
+        "name": "",
+        "x": 770,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb647330.4056c",
+        "type": "function",
+        "z": "1f740501.0b8ccb",
+        "name": "send hash check",
+        "func": "var t = msg.i18n;\nvar hash = msg.payload.content.trim();\nvar url = global.get('website') + hash;\nvar text = t('serviceAuth');\nmsg.payload.type = \"message\";\nmsg.payload.options = {};\nmsg.payload.options.parse_mode = \"HTML\";\nmsg.payload.options.disable_web_page_preview = true; \nmsg.payload.content = `${text} <a href=\"${url}\">${url}</a>`;\nreturn msg;\n",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 590,
+        "y": 120,
+        "wires": [
+            [
+                "59c9129.f66d6ec"
+            ]
+        ]
+    },
+    {
+        "id": "eb0d7746.e96e18",
+        "type": "subflow:4384af8e.a7409",
+        "z": "1f740501.0b8ccb",
+        "x": 410,
+        "y": 120,
+        "wires": [
+            [
+                "eb647330.4056c"
+            ]
+        ]
+    },
+    {
+        "id": "1a02f494.12ac8b",
+        "type": "subflow:1f740501.0b8ccb",
+        "z": "93cb4937.6fc068",
+        "x": 290,
+        "y": 340,
+        "wires": [
+            [
+                "55ebd8f8.436e38"
+            ]
+        ]
     }
 ]

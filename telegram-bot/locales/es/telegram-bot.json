@@ -90,5 +90,6 @@
   "suroeste": "suroeste",
   "oeste": "oeste",
   "noroeste": "noroeste",
-  "serviceStatus": "Hay {{count}} fuegos activos en el mundo (datos actualizados {{since}})."
+  "serviceStatus": "Hay {{count}} fuegos activos en el mundo (datos actualizados {{since}}).",
+  "serviceAuth": "¡Hola humano! Pulsa en este enlace para autorizarme: "
 }
