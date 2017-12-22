@@ -8256,8 +8256,7 @@
         "y": 80,
         "wires": [
             [
-                "3f9d2c64.b978c4",
-                "45d48058.9b14c"
+                "3f9d2c64.b978c4"
             ]
         ]
     },
@@ -8283,7 +8282,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "del",
-        "func": "if (msg.payload.ok || !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
+        "func": "if (msg.payload.ok && !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1090,
@@ -8307,7 +8306,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "find new",
-        "func": "if (msg.payload.ok || !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return [null, msg];\n}",
+        "func": "if (msg.payload.ok && !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1380,
@@ -8400,18 +8399,6 @@
         "complete": "true",
         "x": 1210,
         "y": 180,
-        "wires": []
-    },
-    {
-        "id": "7ce43ef3.e38ba",
-        "type": "debug",
-        "z": "c1e7ebde.3e0b68",
-        "name": "errors",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 1470,
-        "y": 80,
         "wires": []
     },
     {
@@ -8810,15 +8797,6 @@
         "wires": []
     },
     {
-        "id": "ff680930.7f8c78",
-        "type": "subflow:f21ab878.9fd518",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "x": 1470,
-        "y": 40,
-        "wires": []
-    },
-    {
         "id": "f7f7ddf.bd7f72",
         "type": "subflow:f21ab878.9fd518",
         "z": "c1e7ebde.3e0b68",
@@ -8826,23 +8804,6 @@
         "x": 1810,
         "y": 300,
         "wires": []
-    },
-    {
-        "id": "45d48058.9b14c",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "if error",
-        "func": "if (msg.error) {\n    return msg;\n}",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1350,
-        "y": 40,
-        "wires": [
-            [
-                "ff680930.7f8c78",
-                "7ce43ef3.e38ba"
-            ]
-        ]
     },
     {
         "id": "a2a4a352.3d10d",
