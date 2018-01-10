@@ -27,6 +27,7 @@
     "node-red-node-openweathermap": "~0.1.16",
     "node-red-node-rbe": "^0.1.13",
     "node-telegram-bot-api": "^0.29.0",
+    "objectid": "^3.2.1",
     "openweather-apis": "^3.3.5"
   }
 }

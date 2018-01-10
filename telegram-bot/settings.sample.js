@@ -205,6 +205,7 @@ module.exports = {
         jsonfile:require('jsonfile'),
         weather:require('openweather-apis'),
         beaufortScale:require('beaufort-scale'),
+        objectid:require('objectid')
         // os:require('os'),
         // octalbonescript:require('octalbonescript'),
         // jfive:require("johnny-five"),
