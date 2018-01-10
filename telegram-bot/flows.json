@@ -4100,10 +4100,10 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "save",
-        "func": "var date = new Date();\nvar formated = context.global.moment(date).format('YYYYMMDD');\nvar lon = msg.location.lon;\nvar lat = msg.location.lat;\nvar text = msg.location.text;\n\nvar chatId = msg.payload.chatId;\n\nvar newMsg = {\n    query : {\n        // solo un fuego por usuario por ahora\n        chatId : chatId \n    },\n    payload: {\n       $set: {        \n    location: {\n        lat: lat,\n        lon: lon,\n        text: text // msg.address\n    },\n    // _id: msg.chatId,\n    chatId: msg.chatId,\n    aviso: date,\n    dateformat: formated,\n    geo: {\n        type: \"Point\",\n        coordinates: [lon, lat]\n    }\n    }\n    },\n    location: {\n        lat: lat,\n        lon: lon\n    },\n    chatId: chatId,\n    \n}\nreturn newMsg;",
+        "func": "var date = new Date();\nvar formated = context.global.moment(date).format('YYYYMMDD');\nvar lon = msg.location.lon;\nvar lat = msg.location.lat;\n// var text = msg.location.text; // empty\nvar chatId = msg.payload.chatId;\n\nvar newMsg = {\n    query : {\n        // solo un fuego por usuario por ahora\n        chatId : chatId \n    },\n    payload: {\n       $set: {        \n            location: {\n                lat: lat,\n                lon: lon\n                // text\n            },\n            chatId,\n            aviso: date,\n            dateformat: formated,\n            geo: {\n                type: \"Point\",\n                coordinates: [lon, lat]\n            },\n            owner: msg.user\n        }\n    },\n    location: {\n        lat: lat,\n        lon: lon\n    },\n    chatId: chatId,\n};\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 690,
+        "x": 850,
         "y": 1560,
         "wires": [
             [
@@ -4122,7 +4122,7 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 970,
+        "x": 1030,
         "y": 1560,
         "wires": []
     },
@@ -4134,7 +4134,7 @@
         "func": "var day = context.global.moment.utc().dayOfYear();\n\nvar newMsg = {\n    query : {\n        day: day,\n        name: \"numfuegos\"\n    },\n    payload: {\n        $inc: { value: 1 }\n    }\n};\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 710,
+        "x": 700,
         "y": 1520,
         "wires": [
             [
@@ -4153,7 +4153,7 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 970,
+        "x": 870,
         "y": 1520,
         "wires": []
     },
@@ -4178,7 +4178,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "answer confirm",
-        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar key = 'location-' + msg.payload.chatId;\nvar location = global.get(key);\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set(key, null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('📣 Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: msg.payload.chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
+        "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar key = 'location-' + msg.payload.chatId;\nvar location = global.get(key);\nvar chatId = msg.payload.chatId;\nlocation.chatId = chatId;\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set(key, null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('📣 Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
         "outputs": "3",
         "noerr": 0,
         "x": 480,
@@ -4190,8 +4190,9 @@
             ],
             [
                 "76cd31f0.40e6",
-                "b47755bb.64af48",
-                "b19e4ad8.90f058"
+                "b19e4ad8.90f058",
+                "930b53f0.787a9",
+                "5f48c4ee.744aac"
             ],
             [
                 "a1aac5f6.cf0228"
@@ -4207,7 +4208,7 @@
         "id": "a1aac5f6.cf0228",
         "type": "subflow:c6a40c11.dfc6b",
         "z": "93cb4937.6fc068",
-        "x": 770,
+        "x": 690,
         "y": 1480,
         "wires": []
     },
@@ -4216,7 +4217,7 @@
         "type": "debug",
         "z": "93cb4937.6fc068",
         "name": "previous confirm",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
         "x": 390,
@@ -4232,7 +4233,7 @@
         "console": "false",
         "complete": "true",
         "x": 870,
-        "y": 1700,
+        "y": 1640,
         "wires": []
     },
     {
@@ -4240,8 +4241,8 @@
         "type": "subflow:2b8628df.fdcca8",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 990,
-        "y": 1640,
+        "x": 880,
+        "y": 1600,
         "wires": []
     },
     {
@@ -4253,7 +4254,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 690,
-        "y": 1640,
+        "y": 1600,
         "wires": [
             [
                 "311b07de.9a7238",
@@ -9332,6 +9333,51 @@
         "complete": "true",
         "x": 790,
         "y": 120,
+        "wires": []
+    },
+    {
+        "id": "930b53f0.787a9",
+        "type": "subflow:8903a5fd.4fbc88",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 700,
+        "y": 1560,
+        "wires": [
+            [
+                "b47755bb.64af48"
+            ]
+        ]
+    },
+    {
+        "id": "a5a1ad93.0eb1d",
+        "type": "comment",
+        "z": "8903a5fd.4fbc88",
+        "name": "msg.user == user._id",
+        "info": "",
+        "x": 950,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "f1a59416.8e6838",
+        "type": "comment",
+        "z": "8903a5fd.4fbc88",
+        "name": "msg.chatId query",
+        "info": "",
+        "x": 220,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5f48c4ee.744aac",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 530,
+        "y": 1680,
         "wires": []
     }
 ]
