@@ -8150,7 +8150,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "find new",
-        "func": "if (msg.payload.ok && !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion\" + msg.error);\n    return [null, msg];\n}",
+        "func": "if (msg.payload.ok && !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} \n\nif (msg.error) {\n    node.log(\"Error in deletion: \" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1380,
@@ -8849,7 +8849,7 @@
         "ttlType": "msg",
         "ttlProperty": "",
         "useString": false,
-        "x": 1420,
+        "x": 1410,
         "y": 1320,
         "wires": []
     },
