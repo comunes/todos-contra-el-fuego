@@ -497,7 +497,7 @@
         "info": "",
         "in": [
             {
-                "x": 60,
+                "x": 40,
                 "y": 100,
                 "wires": [
                     {
@@ -602,7 +602,7 @@
     {
         "id": "8903a5fd.4fbc88",
         "type": "subflow",
-        "name": "find user",
+        "name": "find user by chatId",
         "info": "",
         "in": [
             {
@@ -651,6 +651,64 @@
                 "wires": [
                     {
                         "id": "97f74b45.1f64e8",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "161177e4.37eca8",
+        "type": "subflow",
+        "name": "add weather",
+        "info": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "f672b9a9.7f30f8"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 620,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "870dd05.0bd283",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "85e2a4b3.4947a8",
+        "type": "subflow",
+        "name": "find user by id",
+        "info": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "36073f85.3f7c9"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 960,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "bce62c6b.0dc38",
                         "port": 0
                     }
                 ]
@@ -817,7 +875,7 @@
         "id": "488013b6.1183ec",
         "type": "Cache",
         "z": "",
-        "name": "userslang",
+        "name": "chatIdLang",
         "defaultTtl": "120",
         "checkPeriod": "100"
     },
@@ -847,19 +905,27 @@
         "parallelism": "-1"
     },
     {
-        "id": "a144aa33.31d428",
-        "type": "Cache",
-        "z": "95e78a8b.50a428",
-        "name": "weather",
-        "defaultTtl": "180",
-        "checkPeriod": "0"
-    },
-    {
         "id": "267e38ad.11f318",
         "type": "semaphore-config",
         "z": "",
         "name": "semaphore",
         "capacity": "1"
+    },
+    {
+        "id": "da772a3d.b17c88",
+        "type": "Cache",
+        "z": "",
+        "name": "userIdLang",
+        "defaultTtl": "120",
+        "checkPeriod": "100"
+    },
+    {
+        "id": "fdb2fbe2.1f8a48",
+        "type": "Cache",
+        "z": "161177e4.37eca8",
+        "name": "weather",
+        "defaultTtl": "240",
+        "checkPeriod": "0"
     },
     {
         "id": "bdb6d01f.a399d",
@@ -1239,11 +1305,11 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload.chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        },\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var notification = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var newMsg = {\n        payload: {\n            chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        cacheKey: msg.lat + \",\" + msg.lon,\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    node.send(newMsg);\n}\n\n",
+        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload.chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        },\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var notification = {\n        // find if we send previously this notification\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var newMsg = {\n        payload: {\n            userId: msg.user._id,\n            // chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        cacheKey: msg.lat + \",\" + msg.lon,\n        i18n: t,\n        user: msg.user,\n        notitype: msg.payload.type,\n        lang: msg.lang\n    };\n    \n    node.send(newMsg);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 191,
-        "y": 97,
+        "x": 200,
+        "y": 100,
         "wires": [
             [
                 "c0e6a5d.fb1e058"
@@ -1308,21 +1374,6 @@
         ]
     },
     {
-        "id": "c063defc.417ea",
-        "type": "mongodb out",
-        "z": "95e78a8b.50a428",
-        "mongodb": "51a7af07.93444",
-        "name": "save notis",
-        "collection": "notifications",
-        "payonly": false,
-        "upsert": true,
-        "multi": true,
-        "operation": "store",
-        "x": 1190,
-        "y": 60,
-        "wires": []
-    },
-    {
         "id": "53f7be24.9be16",
         "type": "mongodb in",
         "z": "95e78a8b.50a428",
@@ -1339,42 +1390,22 @@
         ]
     },
     {
-        "id": "6329567.da6b7a8",
-        "type": "function",
-        "z": "95e78a8b.50a428",
-        "name": "noti query",
-        "func": "if (msg.payload.type === \"location\") {\n    var newMsg = {\n        chatId: msg.payload.chatId,\n        geo: {\n            type: \"Point\",\n            coordinates: [ \n                msg.payload.content.longitude,\n                msg.payload.content.latitude\n            ]\n        }\n    };\n    return newMsg;\n}\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1020,
-        "y": 60,
-        "wires": [
-            [
-                "c063defc.417ea"
-            ]
-        ]
-    },
-    {
         "id": "990b8bb6.bacdd8",
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "save and send",
-        "func": "if (msg.payload.length === 0) {\n    // No yet notified save and \n    // send notifications\n    return [ msg.notification, msg, null];\n} else {\n    // Already notified, do nothing\n}\n",
-        "outputs": "2",
+        "func": "if (msg.payload.length === 0) {\n    // No yet notified save and \n    // send notifications\n    return msg;\n} else {\n    // Already notified, do nothing\n}\n",
+        "outputs": "1",
         "noerr": 0,
         "x": 683,
         "y": 100,
         "wires": [
             [
-                "6329567.da6b7a8"
-            ],
-            [
-                "f672b9a9.7f30f8"
+                "3560f00b.6d6ac"
             ]
         ],
         "outputLabels": [
-            "persist",
-            "caption+location"
+            "persist"
         ]
     },
     {
@@ -1392,8 +1423,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 356,
-        "y": 96,
+        "x": 360,
+        "y": 100,
         "wires": [
             [
                 "53f7be24.9be16"
@@ -1415,8 +1446,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1020,
-        "y": 100,
+        "x": 1540,
+        "y": 80,
         "wires": [
             [
                 "d79d8e7b.539c8"
@@ -1688,8 +1719,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 1190,
-        "y": 100,
+        "x": 1710,
+        "y": 80,
         "wires": [
             [
                 "a890056b.ebcff8",
@@ -1890,7 +1921,7 @@
         "upsert": true,
         "multi": false,
         "operation": "update",
-        "x": 1510,
+        "x": 2090,
         "y": 60,
         "wires": []
     },
@@ -1902,7 +1933,7 @@
         "func": "// var day = context.global.moment.utc().dayOfYear()\n\nvar newMsg = {\n    query : {\n        // day: day,\n        name: \"sendnotis\"\n    },\n    payload: {\n        $inc: { value: 1 }\n    }\n}\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1360,
+        "x": 1900,
         "y": 60,
         "wires": [
             [
@@ -3758,7 +3789,7 @@
         "type": "function",
         "z": "4384af8e.a7409",
         "name": "user? no:ask-lang",
-        "func": "if (msg.payload.length === 0) {\n    msg.payload = msg.originalPayload;\n    return [msg, null];\n} else {\n    // user register\n    var lang = msg.payload[0].lang;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    return [null, msg];\n}\n\n",
+        "func": "if (msg.payload.length === 0) {\n    msg.payload = msg.originalPayload;\n    return [msg, null];\n} else {\n    // user registered\n    var lang = msg.payload[0].lang;\n    var user = msg.payload[0]._id;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    msg.user = user;\n    return [null, msg];\n}\n\n",
         "outputs": "2",
         "noerr": 0,
         "x": 1230,
@@ -3769,7 +3800,8 @@
             ],
             [
                 "c46a6a2.a934698",
-                "e11dde1f.ea412"
+                "e11dde1f.ea412",
+                "811b82bc.ffc63"
             ]
         ],
         "outputLabels": [
@@ -3781,14 +3813,14 @@
         "id": "6173b8ee.c73038",
         "type": "Cache in",
         "z": "4384af8e.a7409",
-        "name": "users-lang-out",
+        "name": "chatId-lang-cache",
         "cache": "488013b6.1183ec",
         "keyType": "msg",
         "keyProperty": "chatId",
         "valueType": "msg",
         "valueProperty": "lang",
         "useString": false,
-        "x": 540,
+        "x": 550,
         "y": 40,
         "wires": [
             [
@@ -3836,7 +3868,7 @@
         "func": "if (typeof msg.lang === 'undefined'  || msg.lang === null) {\n    // node.log(\"Lang no cached\");\n    return [msg, null];\n} else {\n    // node.log(\"Lang cached\");\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 710,
+        "x": 730,
         "y": 40,
         "wires": [
             [
@@ -3981,10 +4013,10 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "query user",
-        "func": "msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {\"telegramChatId\": msg.chatId };\nreturn msg;",
+        "func": "var owner = msg.payload.owner;\n// msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {\"_id\": owner };\n// msg.payload = {\"telegramChatId\": msg.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1670,
+        "x": 1680,
         "y": 200,
         "wires": [
             [
@@ -4019,19 +4051,17 @@
         "id": "bd354f75.34da3",
         "type": "Cache in",
         "z": "2b8628df.fdcca8",
-        "name": "users-lang-out",
+        "name": "chatId-lang-cache",
         "cache": "488013b6.1183ec",
         "keyType": "msg",
         "keyProperty": "payload.chatId",
         "valueType": "msg",
         "valueProperty": "lang",
         "useString": true,
-        "x": 1260,
+        "x": 1270,
         "y": 240,
         "wires": [
-            [
-                "999d94d.8b58768"
-            ]
+            []
         ]
     },
     {
@@ -4049,7 +4079,7 @@
         "y": 240,
         "wires": [
             [
-                "bd354f75.34da3"
+                "237a3af6.86ed06"
             ]
         ]
     },
@@ -4341,8 +4371,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 2370,
-        "y": 160,
+        "x": 2340,
+        "y": 180,
         "wires": []
     },
     {
@@ -4569,8 +4599,8 @@
         "z": "95e78a8b.50a428",
         "name": "users notifications are removed everyday",
         "info": "",
-        "x": 266,
-        "y": 155,
+        "x": 200,
+        "y": 160,
         "wires": []
     },
     {
@@ -5861,15 +5891,15 @@
         "z": "95e78a8b.50a428",
         "name": "msg.payload.location and chatId for user info",
         "info": "",
-        "x": 284,
-        "y": 48,
+        "x": 210,
+        "y": 40,
         "wires": []
     },
     {
         "id": "a8447ee4.5f9bc",
         "type": "subflow:465e67f.6ebf598",
         "z": "95e78a8b.50a428",
-        "x": 1520,
+        "x": 1920,
         "y": 100,
         "wires": []
     },
@@ -6352,7 +6382,7 @@
         "id": "e11dde1f.ea412",
         "type": "Cache out",
         "z": "4384af8e.a7409",
-        "name": "cache",
+        "name": "chadId-lang-cache",
         "cache": "488013b6.1183ec",
         "keyType": "msg",
         "keyProperty": "chatId",
@@ -6361,7 +6391,7 @@
         "ttlType": "msg",
         "ttlProperty": "",
         "useString": false,
-        "x": 1450,
+        "x": 1490,
         "y": 80,
         "wires": []
     },
@@ -7624,17 +7654,15 @@
     {
         "id": "870dd05.0bd283",
         "type": "function",
-        "z": "95e78a8b.50a428",
+        "z": "161177e4.37eca8",
         "name": "+weather",
-        "func": "var t = msg.i18n;\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction isNumeric(n) {\n  return !isNaN(parseFloat(n)) && isFinite(n);\n}\n\nfunction getDirection(degree){\n    if (degree>337.5) return t(\"norte\") + \" ⬆\";\n    if (degree>292.5) return t(\"noroeste\") + \" ↖\";\n    if(degree>247.5) return t(\"oeste\") + \" ⬅\";\n    if(degree>202.5) return t(\"suroeste\") + \" ↙\";\n    if(degree>157.5) return t(\"sur\") + \" ⬇\";\n    if(degree>122.5) return t(\"sureste\") + \" ↘\"; \n    if(degree>67.5) return t(\"este\") + \" ➡\"; \n    if(degree>22.5){return t(\"noreste\") + \" ↗\";}\n    return t(\"norte\") + \" ⬆\";\n}\n\n// msg.caption, msg.notification]\nvar onWeather = function (err, w, msg) {\n    /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    \n    if (err || !w.wind || !isNumeric(w.wind.deg) || !isNumeric(w.wind.speed)) {\n        // send without weather info\n        // console.log(\"weather : \" + JSON.stringify(w) + \", err : \" + JSON.stringify(err));\n        msg.caption.payload.content += \":\";\n        node.send(msg.caption);\n        node.send(msg.notification);\n    } else {\n        var dir = getDirection(w.wind.deg);\n        // sometimes gust (rafagas)\n        // lang: es, so we use translation from Spanish later\n        var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n        if (type && dir) {\n            if (type.grade > 0) {\n                // \"(dirección del viento {{dir}} de tipo '{{desc}}')\",\n                \n                var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n                msg.caption.payload.content += \", \" + windinfo + \":\";\n            } else {\n                msg.caption.payload.content += \", \" + t(\"sin viento\") + \":\";\n            }\n        } else {\n            msg.caption.payload.content += \":\";\n        }\n        node.send(msg.caption);\n        node.send(msg.notification);\n    }\n};\n\nif (typeof msg.weather === 'undefined' || msg.weather === null) {\n    // not cached\n    weather.setCoordinate(msg.notification.payload.content.latitude, msg.notification.payload.content.longitude);\n    weather.setAPPID(msg.weatherapi);\n    weather.getAllWeather(function(err, w){\n        onWeather(err, w, msg);\n        // put in cache the weather with some ttl (to avoid many petitions to openweathermap)\n        msg.weather = w;\n        node.send([null, msg]);\n    });\n} else {\n    // cached\n    // node.log(\"Weather cached\");\n    onWeather(null, msg.weather, msg);\n}\n// clear API from message\nmsg.weatherapi=\"\";\n\n",
+        "func": "var t = msg.i18n;\nvar weather = context.global.weather;\nvar beaufortScale = context.global.beaufortScale;\n\nfunction isNumeric(n) {\n  return !isNaN(parseFloat(n)) && isFinite(n);\n}\n\nfunction getDirection(degree){\n    if (degree>337.5) return t(\"norte\") + \" ⬆\";\n    if (degree>292.5) return t(\"noroeste\") + \" ↖\";\n    if(degree>247.5) return t(\"oeste\") + \" ⬅\";\n    if(degree>202.5) return t(\"suroeste\") + \" ↙\";\n    if(degree>157.5) return t(\"sur\") + \" ⬇\";\n    if(degree>122.5) return t(\"sureste\") + \" ↘\"; \n    if(degree>67.5) return t(\"este\") + \" ➡\"; \n    if(degree>22.5){return t(\"noreste\") + \" ↗\";}\n    return t(\"norte\") + \" ⬆\";\n}\n\n// msg.caption, msg.notification]\nvar onWeather = function (err, w, msg) {\n    /* wind.speed Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.\n     wind.deg Wind direction, degrees (meteorological)*/\n    \n    if (err || !w.wind || !isNumeric(w.wind.deg) || !isNumeric(w.wind.speed)) {\n        // send without weather info\n        // console.log(\"weather : \" + JSON.stringify(w) + \", err : \" + JSON.stringify(err));\n        msg.caption.payload.content += \":\";\n        // node.send(msg.caption);\n        // node.send(msg.notification);\n        node.send(msg);\n    } else {\n        var dir = getDirection(w.wind.deg);\n        // sometimes gust (rafagas)\n        // lang: es, so we use translation from Spanish later\n        var type = beaufortScale(w.wind.speed, {lang: 'es', int: true});\n        if (type && dir) {\n            if (type.grade > 0) {\n                // \"(dirección del viento {{dir}} de tipo '{{desc}}')\",\n                \n                var windinfo = t(\"wind\", {dir: dir, desc: t(type.desc).toLowerCase()});\n                msg.caption.payload.content += \", \" + windinfo + \":\";\n            } else {\n                msg.caption.payload.content += \", \" + t(\"sin viento\") + \":\";\n            }\n        } else {\n            msg.caption.payload.content += \":\";\n        }\n        node.send(msg);\n        // node.send(msg.caption);\n        // node.send(msg.notification);\n    }\n};\n\nif (typeof msg.weather === 'undefined' || msg.weather === null) {\n    // not cached\n    weather.setCoordinate(msg.notification.payload.content.latitude, msg.notification.payload.content.longitude);\n    weather.setAPPID(msg.weatherapi);\n    weather.getAllWeather(function(err, w){\n        onWeather(err, w, msg);\n        // put in cache the weather with some ttl (to avoid many petitions to openweathermap)\n        msg.weather = w;\n        node.send([null, msg]);\n    });\n} else {\n    // cached\n    // node.log(\"Weather cached\");\n    onWeather(null, msg.weather, msg);\n}\n// clear API from message\nmsg.weatherapi=\"\";\n\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 900,
-        "y": 180,
+        "x": 480,
+        "y": 80,
         "wires": [
-            [
-                "cf97891b.2928a8"
-            ],
+            [],
             [
                 "1679cfff.d1e81"
             ]
@@ -7647,7 +7675,7 @@
     {
         "id": "f672b9a9.7f30f8",
         "type": "credentials",
-        "z": "95e78a8b.50a428",
+        "z": "161177e4.37eca8",
         "name": "api",
         "props": [
             {
@@ -7655,8 +7683,8 @@
                 "type": "msg"
             }
         ],
-        "x": 590,
-        "y": 180,
+        "x": 170,
+        "y": 80,
         "wires": [
             [
                 "406a361e.4ef9e8"
@@ -7793,16 +7821,16 @@
     {
         "id": "406a361e.4ef9e8",
         "type": "Cache in",
-        "z": "95e78a8b.50a428",
+        "z": "161177e4.37eca8",
         "name": "weather",
-        "cache": "a144aa33.31d428",
+        "cache": "fdb2fbe2.1f8a48",
         "keyType": "msg",
         "keyProperty": "cacheKey",
         "valueType": "msg",
         "valueProperty": "weather",
         "useString": false,
-        "x": 740,
-        "y": 180,
+        "x": 320,
+        "y": 80,
         "wires": [
             [
                 "870dd05.0bd283"
@@ -7812,9 +7840,9 @@
     {
         "id": "1679cfff.d1e81",
         "type": "Cache out",
-        "z": "95e78a8b.50a428",
+        "z": "161177e4.37eca8",
         "name": "weather store",
-        "cache": "a144aa33.31d428",
+        "cache": "fdb2fbe2.1f8a48",
         "keyType": "msg",
         "keyProperty": "cacheKey",
         "valueType": "msg",
@@ -7822,8 +7850,8 @@
         "ttlType": "msg",
         "ttlProperty": "",
         "useString": false,
-        "x": 1100,
-        "y": 180,
+        "x": 680,
+        "y": 140,
         "wires": []
     },
     {
@@ -7848,30 +7876,6 @@
                 "a0b36fca.c59c5"
             ]
         ]
-    },
-    {
-        "id": "819f5df0.b4c7a",
-        "type": "debug",
-        "z": "95e78a8b.50a428",
-        "name": "weather cached",
-        "active": true,
-        "console": "false",
-        "complete": "weather",
-        "x": 920,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "42fde35b.9e3b0c",
-        "type": "debug",
-        "z": "95e78a8b.50a428",
-        "name": "cache!",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 1090,
-        "y": 240,
-        "wires": []
     },
     {
         "id": "f4e5590a.995258",
@@ -7961,18 +7965,6 @@
         ]
     },
     {
-        "id": "886927d8.2475b8",
-        "type": "debug",
-        "z": "95e78a8b.50a428",
-        "name": "send notis",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 570,
-        "y": 40,
-        "wires": []
-    },
-    {
         "id": "9632864e.b56228",
         "type": "debug",
         "z": "2b8628df.fdcca8",
@@ -7980,20 +7972,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 2580,
+        "x": 2520,
         "y": 180,
-        "wires": []
-    },
-    {
-        "id": "eb449fba.0b0f4",
-        "type": "debug",
-        "z": "95e78a8b.50a428",
-        "name": "send notis entry",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 180,
-        "y": 200,
         "wires": []
     },
     {
@@ -8840,7 +8820,7 @@
         "id": "496c1587.4ebd7c",
         "type": "Cache out",
         "z": "93cb4937.6fc068",
-        "name": "users-lang-in",
+        "name": "chatId-lang-cache",
         "cache": "488013b6.1183ec",
         "keyType": "msg",
         "keyProperty": "payload[1].$set.telegramChatId",
@@ -8849,7 +8829,7 @@
         "ttlType": "msg",
         "ttlProperty": "",
         "useString": false,
-        "x": 1410,
+        "x": 1430,
         "y": 1320,
         "wires": []
     },
@@ -9379,5 +9359,424 @@
         "x": 530,
         "y": 1680,
         "wires": []
+    },
+    {
+        "id": "ace9d2e0.975b6",
+        "type": "Cache in",
+        "z": "2b8628df.fdcca8",
+        "name": "userId-lang-cache",
+        "cache": "da772a3d.b17c88",
+        "keyType": "msg",
+        "keyProperty": "payload.owner",
+        "valueType": "msg",
+        "valueProperty": "lang",
+        "useString": false,
+        "x": 1270,
+        "y": 200,
+        "wires": [
+            [
+                "999d94d.8b58768"
+            ]
+        ]
+    },
+    {
+        "id": "4715076b.02d7e8",
+        "type": "Cache out",
+        "z": "93cb4937.6fc068",
+        "name": "userId-lang-cache",
+        "cache": "da772a3d.b17c88",
+        "keyType": "msg",
+        "keyProperty": "user",
+        "valueType": "msg",
+        "valueProperty": "lang",
+        "ttlType": "msg",
+        "ttlProperty": "",
+        "useString": false,
+        "x": 1430,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "811b82bc.ffc63",
+        "type": "Cache out",
+        "z": "4384af8e.a7409",
+        "name": "userId-lang-cache",
+        "cache": "da772a3d.b17c88",
+        "keyType": "msg",
+        "keyProperty": "user",
+        "valueType": "msg",
+        "valueProperty": "lang",
+        "ttlType": "msg",
+        "ttlProperty": "",
+        "useString": false,
+        "x": 1490,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "3560f00b.6d6ac",
+        "type": "subflow:161177e4.37eca8",
+        "z": "95e78a8b.50a428",
+        "name": "",
+        "x": 870,
+        "y": 100,
+        "wires": [
+            [
+                "df96962a.fac598"
+            ]
+        ]
+    },
+    {
+        "id": "41daf76.461cf08",
+        "type": "debug",
+        "z": "161177e4.37eca8",
+        "name": "weather cached",
+        "active": true,
+        "console": "false",
+        "complete": "weather",
+        "x": 320,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "22aa95fe.d8313a",
+        "type": "debug",
+        "z": "161177e4.37eca8",
+        "name": "cache!",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 490,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "df96962a.fac598",
+        "type": "switch",
+        "z": "95e78a8b.50a428",
+        "name": "telegram?",
+        "property": "notitype",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "telegram",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "web",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 3,
+        "x": 1040,
+        "y": 100,
+        "wires": [
+            [
+                "f9083a41.b80318",
+                "acd49174.ede59"
+            ],
+            [
+                "2145b257.4761fe",
+                "acd49174.ede59"
+            ],
+            [
+                "1e4f281a.ede6b8"
+            ]
+        ],
+        "outputLabels": [
+            "telegram",
+            "web",
+            "otherwise"
+        ]
+    },
+    {
+        "id": "1e4f281a.ede6b8",
+        "type": "debug",
+        "z": "95e78a8b.50a428",
+        "name": "wrong subs type",
+        "active": true,
+        "console": "true",
+        "complete": "true",
+        "x": 1270,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2145b257.4761fe",
+        "type": "debug",
+        "z": "95e78a8b.50a428",
+        "name": "web notif",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1240,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "62549691.c19fd8",
+        "type": "mongodb2 in",
+        "z": "85e2a4b3.4947a8",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find",
+        "collection": "users",
+        "operation": "find.toArray",
+        "x": 450,
+        "y": 120,
+        "wires": [
+            [
+                "ac3ea97a.bbed18"
+            ]
+        ]
+    },
+    {
+        "id": "3a74e2c8.63a63e",
+        "type": "function",
+        "z": "85e2a4b3.4947a8",
+        "name": "find user",
+        "func": "var newMsg = {}; \nnewMsg.originalMsg = msg;\nvar userId = msg.userId;\nnewMsg.payload = { _id: userId };\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 120,
+        "wires": [
+            [
+                "62549691.c19fd8"
+            ]
+        ]
+    },
+    {
+        "id": "ac3ea97a.bbed18",
+        "type": "assert",
+        "z": "85e2a4b3.4947a8",
+        "name": "user found",
+        "rules": [
+            {
+                "property": "payload.length",
+                "propertyType": "msg",
+                "type": "eq",
+                "value": "1",
+                "valueType": "num",
+                "failMsg": "Error in  user find"
+            },
+            {
+                "property": "payload[0]._id",
+                "propertyType": "msg",
+                "type": "nnull",
+                "failMsg": "Wrong user _id"
+            }
+        ],
+        "x": 610,
+        "y": 120,
+        "wires": [
+            [
+                "bce62c6b.0dc38"
+            ]
+        ]
+    },
+    {
+        "id": "36073f85.3f7c9",
+        "type": "assert",
+        "z": "85e2a4b3.4947a8",
+        "name": "",
+        "rules": [
+            {
+                "property": "userId",
+                "propertyType": "msg",
+                "type": "nnull",
+                "failMsg": "Wrong chatId in find user"
+            }
+        ],
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "3a74e2c8.63a63e"
+            ]
+        ]
+    },
+    {
+        "id": "bce62c6b.0dc38",
+        "type": "function",
+        "z": "85e2a4b3.4947a8",
+        "name": "Return origMsg + user",
+        "func": "var newMsg = msg.originalMsg;\nnewMsg.user = msg.payload[0];\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb2c8c2e.cf197",
+        "type": "comment",
+        "z": "85e2a4b3.4947a8",
+        "name": "msg.user == user",
+        "info": "",
+        "x": 910,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "803ee29e.49689",
+        "type": "comment",
+        "z": "85e2a4b3.4947a8",
+        "name": "msg.userId query",
+        "info": "",
+        "x": 180,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "237a3af6.86ed06",
+        "type": "change",
+        "z": "2b8628df.fdcca8",
+        "name": "setUserId",
+        "rules": [
+            {
+                "t": "set",
+                "p": "userId",
+                "pt": "msg",
+                "to": "payload.owner",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1240,
+        "y": 320,
+        "wires": [
+            [
+                "473fa064.799bb"
+            ]
+        ]
+    },
+    {
+        "id": "473fa064.799bb",
+        "type": "subflow:85e2a4b3.4947a8",
+        "z": "2b8628df.fdcca8",
+        "x": 1430,
+        "y": 320,
+        "wires": [
+            [
+                "b49d372.8deeec8"
+            ]
+        ]
+    },
+    {
+        "id": "b49d372.8deeec8",
+        "type": "change",
+        "z": "2b8628df.fdcca8",
+        "name": "set lang",
+        "rules": [
+            {
+                "t": "set",
+                "p": "lang",
+                "pt": "msg",
+                "to": "user.lang",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1620,
+        "y": 320,
+        "wires": [
+            [
+                "2a9cd9af.ae25c6"
+            ]
+        ]
+    },
+    {
+        "id": "f9083a41.b80318",
+        "type": "function",
+        "z": "95e78a8b.50a428",
+        "name": "send tel",
+        "func": "return [msg.caption, msg.notification];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 1240,
+        "y": 80,
+        "wires": [
+            [
+                "cf97891b.2928a8"
+            ],
+            [
+                "58a1cd97.d024e4"
+            ]
+        ],
+        "outputLabels": [
+            "caption",
+            "location"
+        ]
+    },
+    {
+        "id": "58a1cd97.d024e4",
+        "type": "delay",
+        "z": "95e78a8b.50a428",
+        "name": "d300ms",
+        "pauseType": "delay",
+        "timeout": "300",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 1380,
+        "y": 100,
+        "wires": [
+            [
+                "cf97891b.2928a8"
+            ]
+        ]
+    },
+    {
+        "id": "503a2e9e.53649",
+        "type": "mongodb out",
+        "z": "95e78a8b.50a428",
+        "mongodb": "51a7af07.93444",
+        "name": "upsert notif",
+        "collection": "notifications",
+        "payonly": false,
+        "upsert": true,
+        "multi": true,
+        "operation": "store",
+        "x": 1410,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "acd49174.ede59",
+        "type": "function",
+        "z": "95e78a8b.50a428",
+        "name": "save noti",
+        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.type = msg.notitype;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nreturn save;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1240,
+        "y": 140,
+        "wires": [
+            [
+                "503a2e9e.53649"
+            ]
+        ]
     }
 ]
