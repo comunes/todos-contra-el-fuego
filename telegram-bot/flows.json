@@ -1276,7 +1276,7 @@
         "name": "find subs near",
         "collection": "subscriptions",
         "operation": "find",
-        "x": 880,
+        "x": 900,
         "y": 240,
         "wires": [
             [
@@ -1289,7 +1289,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "near?",
-        "func": "msg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   }\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nreturn msg;",
+        "func": "msg.originalPayload = msg.payload;\nmsg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   };\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 710,
@@ -1305,7 +1305,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"chatId: \" + msg.payload.chatId + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        },\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var notification = {\n        // find if we send previously this notification\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var newMsg = {\n        payload: {\n            userId: msg.user._id,\n            // chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        cacheKey: msg.lat + \",\" + msg.lon,\n        i18n: t,\n        user: msg.user,\n        notitype: msg.payload.type,\n        lang: msg.lang\n    };\n    \n    node.send(newMsg);\n}\n\n",
+        "func": "var t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"userId: \" + msg.user._id + \" type \" + msg.payload.type + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    var when = msg.payload.when ? msg.payload.when : new Date();\n    \n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n    var caption = {\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"message\",\n          content: content\n        },\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var notification = {\n        // find if we send previously this notification\n        payload : {\n          chatId : msg.payload.chatId,\n          type : \"location\",\n          content: {\n             longitude: msg.lon,\n             latitude: msg.lat \n          }\n        },\n        // FIXME this shoudld be removed?\n        caption: caption,\n        i18n: t,\n        lang: msg.lang\n    };\n    \n    var newMsg = {\n        payload: {\n            userId: msg.user._id,\n            // chatId: msg.payload.chatId,\n            geo: { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [\n                        msg.lon,\n                        msg.lat\n                    ] },\n                $minDistance: 0,\n                $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                }\n            }\n        },\n        notification: notification,\n        caption: caption,\n        cacheKey: msg.lat + \",\" + msg.lon,\n        i18n: t,\n        user: msg.user,\n        notitype: msg.payload.type,\n        when: when,\n        originalPayload: msg.originalPayload,\n        lang: msg.lang\n    };\n    \n    node.send(newMsg);\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 200,
@@ -1453,18 +1453,6 @@
                 "d79d8e7b.539c8"
             ]
         ]
-    },
-    {
-        "id": "6294a71e.647c58",
-        "type": "debug",
-        "z": "2b8628df.fdcca8",
-        "name": "false positive",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 740,
-        "y": 320,
-        "wires": []
     },
     {
         "id": "70cddff9.2dbfb",
@@ -1763,8 +1751,8 @@
             "#c5b0d5"
         ],
         "useOldStyle": false,
-        "x": 1320,
-        "y": 140,
+        "x": 1380,
+        "y": 740,
         "wires": [
             [
                 "ac0b5f28.dea74"
@@ -1780,8 +1768,8 @@
         "func": "var newMsg  = {\n    payload: msg.payload.length,\n    label: 'Usuarios en la zona (notif. ' + msg.type + ')'\n}\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1110,
-        "y": 140,
+        "x": 1170,
+        "y": 740,
         "wires": [
             [
                 "8cffd8ff.5786d8"
@@ -2948,8 +2936,8 @@
         "z": "2b8628df.fdcca8",
         "name": "near-neighbours",
         "storageNode": "db913a18.f8bf88",
-        "x": 1520,
-        "y": 140,
+        "x": 1580,
+        "y": 740,
         "wires": []
     },
     {
@@ -2958,8 +2946,8 @@
         "z": "2b8628df.fdcca8",
         "name": "near-neighbours",
         "storageNode": "db913a18.f8bf88",
-        "x": 1110,
-        "y": 100,
+        "x": 1170,
+        "y": 700,
         "wires": [
             [
                 "8cffd8ff.5786d8"
@@ -3977,15 +3965,11 @@
         "func": "if (msg.payload.length === 0) {\n    // fallback\n    msg.lang = 'es';\n    msg.payload = msg.originalPayload;\n    return [msg, null];\n} else {\n    // user register\n    var lang = msg.payload[0].lang;\n    msg.payload = msg.originalPayload;\n    msg.lang = lang;\n    return [null, msg];\n}\n\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 2010,
-        "y": 200,
+        "x": 2070,
+        "y": 800,
         "wires": [
-            [
-                "6f05d6e0.346e98"
-            ],
-            [
-                "6f05d6e0.346e98"
-            ]
+            [],
+            []
         ],
         "outputLabels": [
             "ask",
@@ -4000,8 +3984,8 @@
         "name": "find users",
         "collection": "users",
         "operation": "find",
-        "x": 1840,
-        "y": 200,
+        "x": 1900,
+        "y": 800,
         "wires": [
             [
                 "b8099eb5.315a1"
@@ -4016,8 +4000,8 @@
         "func": "var owner = msg.payload.owner;\n// msg.chatId = msg.payload.chatId;\nmsg.originalPayload = msg.payload;\nmsg.payload = {\"_id\": owner };\n// msg.payload = {\"telegramChatId\": msg.chatId };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1680,
-        "y": 200,
+        "x": 1740,
+        "y": 800,
         "wires": [
             [
                 "1e94769b.4a6099"
@@ -4032,15 +4016,13 @@
         "func": "if (typeof msg.lang === 'undefined'  || msg.lang === null) {\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 1470,
-        "y": 240,
+        "x": 1530,
+        "y": 680,
         "wires": [
             [
                 "89857846.7f0968"
             ],
-            [
-                "6f05d6e0.346e98"
-            ]
+            []
         ],
         "outputLabels": [
             "no cached",
@@ -4058,8 +4040,8 @@
         "valueType": "msg",
         "valueProperty": "lang",
         "useString": true,
-        "x": 1270,
-        "y": 240,
+        "x": 1290,
+        "y": 560,
         "wires": [
             []
         ]
@@ -4091,12 +4073,10 @@
         "func": "\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 2170,
-        "y": 240,
+        "x": 2250,
+        "y": 800,
         "wires": [
-            [
-                "2a9cd9af.ae25c6"
-            ]
+            []
         ]
     },
     {
@@ -4117,7 +4097,7 @@
         "type": "subflow:6995c6a.1a0bf38",
         "z": "2b8628df.fdcca8",
         "name": "",
-        "x": 2340,
+        "x": 1820,
         "y": 240,
         "wires": [
             [
@@ -4316,30 +4296,6 @@
         ]
     },
     {
-        "id": "9524e182.148b2",
-        "type": "debug",
-        "z": "2b8628df.fdcca8",
-        "name": "positive?",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 450,
-        "y": 160,
-        "wires": []
-    },
-    {
-        "id": "fbdce741.552298",
-        "type": "debug",
-        "z": "2b8628df.fdcca8",
-        "name": "positive result",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 540,
-        "y": 320,
-        "wires": []
-    },
-    {
         "id": "74a88d3a.e6fe64",
         "type": "debug",
         "z": "2b8628df.fdcca8",
@@ -4347,8 +4303,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1090,
-        "y": 180,
+        "x": 1150,
+        "y": 780,
         "wires": []
     },
     {
@@ -4359,8 +4315,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1240,
-        "y": 280,
+        "x": 1260,
+        "y": 180,
         "wires": []
     },
     {
@@ -4371,7 +4327,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 2340,
+        "x": 1820,
         "y": 180,
         "wires": []
     },
@@ -5881,7 +5837,7 @@
         "type": "subflow:95e78a8b.50a428",
         "z": "2b8628df.fdcca8",
         "name": "",
-        "x": 2530,
+        "x": 2010,
         "y": 240,
         "wires": []
     },
@@ -6983,7 +6939,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "timeout getting fires",
-        "func": "    var email = {};\n    msg.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error ? msg.error.message : '';\n    return email;",
+        "func": "    var email = {};\n    email.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error ? msg.error.message : '';\n    return email;",
         "outputs": 1,
         "noerr": 0,
         "x": 600,
@@ -7972,7 +7928,7 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 2520,
+        "x": 2000,
         "y": 180,
         "wires": []
     },
@@ -9371,8 +9327,8 @@
         "valueType": "msg",
         "valueProperty": "lang",
         "useString": false,
-        "x": 1270,
-        "y": 200,
+        "x": 1330,
+        "y": 800,
         "wires": [
             [
                 "999d94d.8b58768"
@@ -9482,7 +9438,6 @@
                 "acd49174.ede59"
             ],
             [
-                "2145b257.4761fe",
                 "acd49174.ede59"
             ],
             [
@@ -9511,11 +9466,11 @@
         "id": "2145b257.4761fe",
         "type": "debug",
         "z": "95e78a8b.50a428",
-        "name": "web notif",
+        "name": "notif",
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1240,
+        "x": 1230,
         "y": 220,
         "wires": []
     },
@@ -9655,8 +9610,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1240,
-        "y": 320,
+        "x": 1260,
+        "y": 240,
         "wires": [
             [
                 "473fa064.799bb"
@@ -9667,8 +9622,8 @@
         "id": "473fa064.799bb",
         "type": "subflow:85e2a4b3.4947a8",
         "z": "2b8628df.fdcca8",
-        "x": 1430,
-        "y": 320,
+        "x": 1450,
+        "y": 240,
         "wires": [
             [
                 "b49d372.8deeec8"
@@ -9694,8 +9649,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1620,
-        "y": 320,
+        "x": 1640,
+        "y": 240,
         "wires": [
             [
                 "2a9cd9af.ae25c6"
@@ -9707,7 +9662,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "send tel",
-        "func": "return [msg.caption, msg.notification];",
+        "func": "var t = msg.i18n;\nvar alert = msg.caption.payload.content;\n\nif (msg.lang === 'ast') {\n    msg.lang = 'es';\n} \ncontext.global.moment.locale(msg.lang);\n\nvar when = context.global.moment(msg.when).fromNow();\nmsg.caption.payload.content = alert.replace(/:$/, \" (\" + t('fireDetected', {when: when}) + \"):\");\nreturn [msg.caption, msg.notification];",
         "outputs": "2",
         "noerr": 0,
         "x": 1240,
@@ -9768,7 +9723,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "save noti",
-        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.type = msg.notitype;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nreturn save;\n\n",
+        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.type = msg.notitype;\nsave.when = msg.when;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nreturn save;\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1240,
@@ -9778,5 +9733,17 @@
                 "503a2e9e.53649"
             ]
         ]
+    },
+    {
+        "id": "1f6e77cb.2803c8",
+        "type": "debug",
+        "z": "95e78a8b.50a428",
+        "name": "notif",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 450,
+        "y": 180,
+        "wires": []
     }
 ]
