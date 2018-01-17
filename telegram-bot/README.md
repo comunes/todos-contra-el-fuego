@@ -58,6 +58,12 @@ db.trackedfires.createIndex( { ourid : "2dsphere" } );
 db.trackedfires.createIndex( { "name": 1 }, { unique: true } );
 #
 db.trackedfireshistory.createIndex( { "ourid": 1 }, { unique: true } );
+#
+db.fires.createIndex( { ourid: "2dsphere" } );
+db.fires.createIndex( { when: 1 } );
+db.fires.createIndex( { updatedAt: 1 } );
+db.fires.createIndex( { createdAt: 1 } );
+db.fires.createIndex( { ourid: 1, type: 1 } )
 ```
 
 ## Telegram Comands
