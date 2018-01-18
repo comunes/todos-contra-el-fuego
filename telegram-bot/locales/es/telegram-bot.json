@@ -95,5 +95,7 @@
   "fireDetected":
   "fuego detectado {{when}}",
   "fireDetectedAt":
-  "fuego detectado el {{when}}"
+  "fuego detectado el {{when}}",
+  "firelink":
+  "más información [aquí](https://{{server}}/fire/{{enc}})"
 }
