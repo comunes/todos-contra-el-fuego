@@ -8065,7 +8065,7 @@
         "y": 140,
         "wires": [
             [
-                "1925c401.ddd95c"
+                "a2ecd564.22a048"
             ]
         ]
     },
@@ -8074,7 +8074,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "del",
-        "func": "if (msg.payload.ok && !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
+        "func": "if (typeof msg.error === 'undefined') {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1090,
@@ -8086,30 +8086,6 @@
             [
                 "66c61400.c2dddc",
                 "d3fe9fa4.bc442"
-            ]
-        ],
-        "outputLabels": [
-            "db",
-            "error"
-        ]
-    },
-    {
-        "id": "1925c401.ddd95c",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "find new",
-        "func": "if (msg.payload.ok && !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} \n\nif (msg.error) {\n    node.log(\"Error in deletion: \" + msg.error);\n    return [null, msg];\n}",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 1380,
-        "y": 140,
-        "wires": [
-            [
-                "d6226d6b.2fad4"
-            ],
-            [
-                "a2a4a352.3d10d",
-                "6dd55857.730018"
             ]
         ],
         "outputLabels": [
@@ -8604,7 +8580,7 @@
         "name": "errors",
         "active": true,
         "console": "false",
-        "complete": "error",
+        "complete": "true",
         "x": 1510,
         "y": 200,
         "wires": []
@@ -9889,6 +9865,30 @@
         "y": 1220,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "a2ecd564.22a048",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "find new",
+        "func": "// node.log(JSON.stringify(msg));\n\n// node.log(typeof msg.payload.ok);\n\nif (typeof msg.error === 'undefined') {\n    // node.log('Delete no active fires success');\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion: \" + msg.error);\n    return [null, msg];\n}\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 1380,
+        "y": 140,
+        "wires": [
+            [
+                "d6226d6b.2fad4"
+            ],
+            [
+                "a2a4a352.3d10d",
+                "6dd55857.730018"
+            ]
+        ],
+        "outputLabels": [
+            "db",
+            "error"
         ]
     }
 ]
