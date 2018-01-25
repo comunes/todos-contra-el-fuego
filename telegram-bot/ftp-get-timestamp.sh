@@ -41,7 +41,7 @@ VDIRTY=false
 
 for ZONE in $ZONES
 do
-    // TODO check if server up
+    # TODO check if server up
     modis="nrt4.modaps.eosdis.nasa.gov/FIRMS/c6/$ZONE/"
     viirs="nrt4.modaps.eosdis.nasa.gov/FIRMS/viirs/$ZONE/"
 
