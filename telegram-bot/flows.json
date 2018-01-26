@@ -8619,8 +8619,7 @@
         "wires": [
             [],
             [
-                "eb0d7746.e96e18",
-                "bf8b3a10.bb87b8"
+                "eb0d7746.e96e18"
             ]
         ],
         "outputLabels": [
@@ -9848,8 +9847,8 @@
         "type": "subflow:8903a5fd.4fbc88",
         "z": "5501c3cc.11327c",
         "name": "",
-        "x": 370,
-        "y": 1300,
+        "x": 410,
+        "y": 1320,
         "wires": [
             [
                 "dfb0cea8.435b"
@@ -10050,5 +10049,100 @@
         "x": 990,
         "y": 220,
         "wires": []
+    },
+    {
+        "id": "a0583170.5f1de",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "status",
+        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nif (last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n}\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n \nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: last.fromNow()\n    };\n// status.payload = JSON.stringify(status);\nstatus.payload = agos;\nreturn status;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 250,
+        "y": 1540,
+        "wires": [
+            [
+                "ae7d0936.c8ffc8"
+            ]
+        ]
+    },
+    {
+        "id": "ae7d0936.c8ffc8",
+        "type": "tcp out",
+        "z": "5501c3cc.11327c",
+        "host": "",
+        "port": "6789",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "name": "tcp :6790",
+        "x": 400,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "87b83152.5a167",
+        "type": "tcp in",
+        "z": "5501c3cc.11327c",
+        "name": "test :6790",
+        "server": "server",
+        "host": "",
+        "port": "6790",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 97.71034240722656,
+        "y": 1540.79931640625,
+        "wires": [
+            [
+                "a0583170.5f1de"
+            ]
+        ]
+    },
+    {
+        "id": "80301d51.4db5e",
+        "type": "http in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "/status",
+        "url": "/status",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 60,
+        "wires": [
+            [
+                "419651ae.c4514"
+            ]
+        ]
+    },
+    {
+        "id": "6d735f28.32142",
+        "type": "http response",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 460,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "419651ae.c4514",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "status",
+        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nlet statusCode;\n\nif (last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n\tstatusCode = 503;\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n\tstatusCode = 200;\n}\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n \nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: last.fromNow()\n    };\nmsg.payload = JSON.stringify(status);\nmsg.statusCode = statusCode;\n// msg.payload = agos;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 260,
+        "y": 59,
+        "wires": [
+            [
+                "6d735f28.32142"
+            ]
+        ]
     }
 ]
