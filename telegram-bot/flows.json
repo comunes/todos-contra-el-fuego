@@ -3777,7 +3777,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "send to all",
-        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    if (noti.payload.content === 'empty') {\n        noti.payload.content = '';\n    }\n    if (chatId !== 9998999) {  // test chatId\n        node.send(noti);\n    }\n}\n\n",
+        "func": "var noti = msg.notification;\nfor (var i = 0; i < msg.payload.length; i++) {\n    var chatId = msg.payload[i].chatId;\n    noti.payload.chatId = chatId;\n    if (noti.payload.content === 'empty') {\n        noti.payload.content = '';\n    }\n    if (typeof chatId === 'number' && chatId !== 9998999) {  // test chatId\n        node.send(noti);\n    }\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1030,
@@ -5941,7 +5941,7 @@
         "type": "debug",
         "z": "128790f6.dee0df",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
         "x": 1010,
@@ -5960,7 +5960,6 @@
         "y": 340,
         "wires": [
             [
-                "49f7750c.76675c",
                 "3eff4b32.9114b4"
             ]
         ]
@@ -10192,6 +10191,16 @@
         "complete": "error",
         "x": 1530,
         "y": 20,
+        "wires": []
+    },
+    {
+        "id": "b625046e.2f3668",
+        "type": "comment",
+        "z": "128790f6.dee0df",
+        "name": "this was sending duplicate news",
+        "info": "",
+        "x": 1670,
+        "y": 300,
         "wires": []
     }
 ]
