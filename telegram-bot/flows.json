@@ -1334,7 +1334,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "const Iron = context.global.iron;\n\nvar t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"userId: \" + msg.user._id + \" type \" + msg.payload.type + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    var when = msg.payload.when;\n    \n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n\n    var password = global.get('ironPassword');\n\n    delete msg.originalPayload._id;\n    \n    Iron.seal(msg.originalPayload, password, Iron.defaults).then(function(sealed) {\n        const link = t('firelink', { server: global.get('website'), enc: sealed, escapeInterpolation: false });\n        var caption = {\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"message\",\n              content: content + \", \" + link,\n              options: { parse_mode: \"Markdown\" }\n            },\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        var notification = {\n            // find if we send previously this notification\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"location\",\n              content: {\n                 longitude: msg.lon,\n                 latitude: msg.lat \n              }\n            },\n            // FIXME this shoudld be removed?\n            caption: caption,\n            i18n: t,\n            lang: msg.lang\n        };\n\n        \n        var newMsg = {\n            payload: {\n                userId: msg.user._id,\n                // chatId: msg.payload.chatId,\n                geo: { $near : {\n                    $geometry: { \n                        type: \"Point\",  \n                        coordinates: [\n                            msg.lon,\n                            msg.lat\n                        ] },\n                    $minDistance: 0,\n                    $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                    }\n                }\n            },\n            notification: notification,\n            caption: caption,\n            cacheKey: msg.lat + \",\" + msg.lon,\n            i18n: t,\n            user: msg.user,\n            notitype: msg.payload.type,\n            when: when,\n            originalPayload: msg.originalPayload,\n            lang: msg.lang\n        };\n        \n        node.send(newMsg);\n\n    }, function(reason) {\n        node.error(reason);\n    });\n\n\n    \n\n    \n}\n\n",
+        "func": "const Iron = context.global.iron;\n\nvar t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"userId: \" + msg.user._id + \" type \" + msg.payload.type + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    var when = msg.originalPayload.when;\n    \n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n\n    var password = global.get('ironPassword');\n\n    delete msg.originalPayload._id;\n    \n    msg.originalPayload.ourversion = \"1\";\n    \n    Iron.seal(msg.originalPayload, password, Iron.defaults).then(function(sealed) {\n        const link = t('firelink', { server: global.get('website'), enc: sealed, escapeInterpolation: false });\n        var caption = {\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"message\",\n              content: content,\n              options: { parse_mode: \"Markdown\" }\n            },\n            link,\n            sealed,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        var notification = {\n            // find if we send previously this notification\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"location\",\n              content: {\n                 longitude: msg.lon,\n                 latitude: msg.lat \n              }\n            },\n            // FIXME this shoudld be removed?\n            // caption: caption,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        // console.log(when);\n        \n        var newMsg = {\n            payload: {\n                userId: msg.user._id,\n                // chatId: msg.payload.chatId,\n                geo: { $near : {\n                    $geometry: { \n                        type: \"Point\",  \n                        coordinates: [\n                            msg.lon,\n                            msg.lat\n                        ] },\n                    $minDistance: 0,\n                    $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                    }\n                }\n            },\n            notification: notification,\n            caption: caption,\n            cacheKey: msg.lat + \",\" + msg.lon,\n            i18n: t,\n            user: msg.user,\n            notitype: msg.payload.type,\n            when: when,\n            originalPayload: msg.originalPayload,\n            lang: msg.lang\n        };\n        \n        node.send(newMsg);\n\n    }, function(reason) {\n        node.error(reason);\n    });\n\n\n    \n\n    \n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 200,
@@ -3562,7 +3562,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "news to send",
-        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Ahora incorporamos información del viento (fuerza y dirección) que hace en cada fuego\\r\\n\"\nnews.payload.content += \"➖ Muchas mejoras internas y solución de pequeños errores\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Estrenamos página web: [https://fuegos.comunes.org](https://fuegos.comunes.org). Además de vía telegram ahora podemos recibir alertas de fuegos por correo y/o en nuestro navegador, visibilizar los fuegos actuales, las áreas cubiertas por nuestros usuari@s, etc\\r\\n\";\nnews.payload.content += \"➖ Además podemos aportar más [información sobre cada fuego](https://fuegos.comunes.org/fire/Fe26.2**b6781b869b766977b1fcec45ab7dc9900c71752964f3f0ede058c9554b6fbfbf*yWUEzDk3M25ScGlOAlPDjw*yDV4tUDHMDBI9Y4u4TRjsER8SI350M5DP6Hj_ZI9Jsnxwf4le_256oDRA-LuC7vFGaxbPBlPjC94OpNjYXYLhvCtSqDu0rDkER4GWAVVTZzsTiKaztzGm9itg4sJWGHR8mvvIYhRwhVNfz3m-pSuRzV-FYwRwcF0YTgyRUuinOtd9PHdkxXMxG_BDoKAh-zR6V308MaDHj2j2di3TmBUtqVSAZCMXzj7_WWO0NOCC1F_ZvW-67bbRXoWjNG13UmdPbDbEcWGBV89HA_fpjYdR-iAIw_2UqVHObfKMenIpiP4JNezK5E3hghIQxuA9jb498wjZkn9BC62W26y8KZcpFtceLj_1kD-X9woH3oyKTOyaqY-azfFHCT3q_-FDBBz1DiDiS5cyddfy2ggl5mVWiCkww6o_b0ZKMCYo3NeOLBcD3EQ9mLrmR63G6xMzHDW2nDWeHw9XgeZILSOolAw3VTd2hA11Kn54uN-CbciIeQlXk7beom2EvK6HJyzvWFZ6pmDX3iB2GbiPD4dDHK7v0sTF5ediaqMKu7cwssAXno**8573bcd9c4bdaf70223c3e0478ba0481994c2f6d3df40af72f7b3a492445b027*PNm7pYbNGNLTWuSe2VOFDeErqsbmn9XxongS1dxj7ko) en nuestra web, por ejemplo, como se accede al fuego (para facilitar la extinción o posterior investigación), posibles causas, etc\\r\\n\";\nnews.payload.content += \"➖ Hemos incorporado en las alertas la hora de detección del fuego\\r\\n\"\nnews.payload.content += \"➖ Además de muchas mejoras internas en nuestro bot y solución de pequeños errores\\r\\n\";\nnews.payload.content += \"Seguimos en pruebas, comentarios, bienvenidos...\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
         "outputs": 1,
         "noerr": 0,
         "x": 510,
@@ -8021,18 +8021,22 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "update",
-        "func": "var type = msg.type;\nvar collection = \"activefires\"; // + type; // to detect new fires \n\nvar now = new Date();\nglobal.set('active-now', now);\nglobal.set('last-fire-check', now);\nflow.set('active-collection', collection);\nflow.set('active-type', type);\n\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid, type: type}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    bulkUpdate.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
-        "outputs": "1",
+        "func": "var type = msg.type;\n\nvar now = new Date();\nglobal.set('active-now', now);\nglobal.set('last-fire-check', now);\nflow.set('active-type', type);\n\nconst lastCheckSet = { \n    $set: {\n        name: 'last-fire-check',\n        value: now,\n        description: 'Time of last NASA check',\n        type: 'date'\n    }\n};\n\nconst lastCheckUpdate = {};\nlastCheckUpdate.payload = [[{ updateOne: { filter: {name: 'last-fire-check'}, update: lastCheckSet, upsert:true } }], {w: 1, wtimeout: 60000}];\nnode.send([null, lastCheckUpdate]);\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid, type: type}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "outputs": "2",
         "noerr": 0,
-        "x": 1090,
+        "x": 1100,
         "y": 80,
         "wires": [
             [
                 "b8fa4570.ae07f8"
+            ],
+            [
+                "6f765bbb.193864"
             ]
         ],
         "outputLabels": [
-            "update/save"
+            "update/save",
+            ""
         ]
     },
     {
@@ -8042,9 +8046,9 @@
         "service": "_ext_",
         "configNode": "d5559ee5.960e2",
         "name": "bulkWrite",
-        "collection": "",
+        "collection": "activefires",
         "operation": "bulkWrite",
-        "x": 1220,
+        "x": 1240,
         "y": 80,
         "wires": [
             [
@@ -8059,13 +8063,13 @@
         "service": "_ext_",
         "configNode": "d5559ee5.960e2",
         "name": "deleteMany",
-        "collection": "",
+        "collection": "activefires",
         "operation": "deleteMany",
         "x": 1230,
         "y": 140,
         "wires": [
             [
-                "1925c401.ddd95c"
+                "a2ecd564.22a048"
             ]
         ]
     },
@@ -8074,7 +8078,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "del",
-        "func": "if (msg.payload.ok && !msg.error) {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var collection = flow.get('active-collection');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    del.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
+        "func": "if (typeof msg.error === 'undefined') {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
         "x": 1090,
@@ -8094,37 +8098,13 @@
         ]
     },
     {
-        "id": "1925c401.ddd95c",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "find new",
-        "func": "if (msg.payload.ok && !msg.error) {\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    var collection = flow.get('active-collection');\n    \n    var newfires = {};\n    newfires.type = type;\n    newfires.collection = collection;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} \n\nif (msg.error) {\n    node.log(\"Error in deletion: \" + msg.error);\n    return [null, msg];\n}",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 1380,
-        "y": 140,
-        "wires": [
-            [
-                "d6226d6b.2fad4"
-            ],
-            [
-                "a2a4a352.3d10d",
-                "6dd55857.730018"
-            ]
-        ],
-        "outputLabels": [
-            "db",
-            "error"
-        ]
-    },
-    {
         "id": "d6226d6b.2fad4",
         "type": "mongodb2 in",
         "z": "c1e7ebde.3e0b68",
         "service": "_ext_",
         "configNode": "d5559ee5.960e2",
         "name": "find",
-        "collection": "",
+        "collection": "activefires",
         "operation": "find.toArray",
         "x": 1510,
         "y": 140,
@@ -8318,7 +8298,7 @@
         "type": "function",
         "z": "c1e7ebde.3e0b68",
         "name": "if error",
-        "func": "if (msg.error) {\n    return msg;\n}",
+        "func": "if (typeof msg.error !== 'undefined') {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 1670,
@@ -8604,7 +8584,7 @@
         "name": "errors",
         "active": true,
         "console": "false",
-        "complete": "error",
+        "complete": "true",
         "x": 1510,
         "y": 200,
         "wires": []
@@ -8638,8 +8618,8 @@
         "func": "if (msg.payload.content) {\n    // msg with hash\n    return [null, msg];    \n} else {\n    // normal /start\n    return [msg, null];\n}\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 280,
-        "y": 40,
+        "x": 220,
+        "y": 80,
         "wires": [
             [],
             [
@@ -8656,7 +8636,7 @@
         "type": "subflow:e81a68fa.695e38",
         "z": "1f740501.0b8ccb",
         "name": "",
-        "x": 810,
+        "x": 1210,
         "y": 80,
         "wires": [
             []
@@ -8666,34 +8646,30 @@
         "id": "eb647330.4056c",
         "type": "function",
         "z": "1f740501.0b8ccb",
-        "name": "send hash check",
-        "func": "var t = msg.i18n;\nvar hash = msg.payload.content.trim();\nvar url = 'https://' + global.get('website') + \"/auth/\" + hash;\nvar text = t('serviceAuth');\nmsg.payload.type = \"message\";\nmsg.payload.options = {};\nmsg.payload.options.parse_mode = \"HTML\";\nmsg.payload.options.disable_web_page_preview = true; \nmsg.payload.content = `${text} <a href=\"${url}\">${url}</a>`;\n\nvar update = {};\nupdate.payload = [\n    {\n        telegramChatId : msg.payload.chatId \n    },\n    {\n       $set: {\n           authHash: hash,\n           updatedHash: new Date(),\n           updated: new Date()\n       }\n    },\n    { upsert: false }\n];\nreturn [msg, update];\n",
-        "outputs": "2",
+        "name": "send hash back",
+        "func": "const t = msg.i18n;\nconst hash = msg.token;\nconst website = 'https://' + global.get('website');\nconst url =  website + \"/auth/\" + hash;\nconst text = t('serviceAuth');\nmsg.payload.type = \"message\";\nmsg.payload.chatId = msg.chatId;\nmsg.payload.options = {};\nmsg.payload.options.parse_mode = \"HTML\";\nmsg.payload.options.disable_web_page_preview = true; \nmsg.payload.content = `${text} <a href=\"${url}\">${website}</a>`;\nreturn msg;\n",
+        "outputs": "1",
         "noerr": 0,
-        "x": 630,
+        "x": 1020,
         "y": 80,
         "wires": [
             [
                 "59c9129.f66d6ec"
-            ],
-            [
-                "5a94caa1.eab934"
             ]
         ],
         "outputLabels": [
-            "msg",
-            "db"
+            "msg"
         ]
     },
     {
         "id": "eb0d7746.e96e18",
         "type": "subflow:4384af8e.a7409",
         "z": "1f740501.0b8ccb",
-        "x": 470,
+        "x": 390,
         "y": 80,
         "wires": [
             [
-                "eb647330.4056c"
+                "b41a3405.3d7a58"
             ]
         ]
     },
@@ -8964,51 +8940,6 @@
         "y": 100,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "5a94caa1.eab934",
-        "type": "mongodb2 in",
-        "z": "1f740501.0b8ccb",
-        "service": "_ext_",
-        "configNode": "d5559ee5.960e2",
-        "name": "updateOne",
-        "collection": "users",
-        "operation": "updateOne",
-        "x": 850,
-        "y": 140,
-        "wires": [
-            [
-                "5f1d996d.978d28"
-            ]
-        ]
-    },
-    {
-        "id": "9cfc5f59.d87b7",
-        "type": "debug",
-        "z": "1f740501.0b8ccb",
-        "name": "error setting user.hash ",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 1230,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "5f1d996d.978d28",
-        "type": "function",
-        "z": "1f740501.0b8ccb",
-        "name": "if error",
-        "func": "if (msg.error) {\n    return msg;\n}",
-        "outputs": "1",
-        "noerr": 0,
-        "x": 1020,
-        "y": 140,
-        "wires": [
-            [
-                "9cfc5f59.d87b7"
-            ]
         ]
     },
     {
@@ -9674,7 +9605,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "send tel",
-        "func": "var t = msg.i18n;\nvar alert = msg.caption.payload.content;\n\nif (msg.lang === 'ast') {\n    msg.lang = 'es';\n} \ncontext.global.moment.locale(msg.lang);\n\nvar when = context.global.moment(msg.when).fromNow();\nmsg.caption.payload.content = alert.replace(/:$/, \" (\" + t('fireDetected', {when: when}) + \"):\");\ndelete msg.notification.caption;\nnode.log(JSON.stringify(msg.notification));\nreturn [msg.caption, msg.notification];",
+        "func": "var t = msg.i18n;\nvar alert = msg.caption.payload.content;\n\nif (msg.lang === 'ast') {\n    msg.lang = 'es';\n} \ncontext.global.moment.locale(msg.lang);\n\nvar when = context.global.moment(msg.when).fromNow();\nmsg.caption.payload.content = alert.replace(/:$/, \" (\" + t('fireDetected', {when: when}) + \", \" + msg.caption.link + \"):\");\ndelete msg.caption.link;\ndelete msg.caption.sealed;\ndelete msg.notification.caption;\n// node.log(JSON.stringify(msg.notification));\nreturn [msg.caption, msg.notification];",
         "outputs": "2",
         "noerr": 0,
         "x": 1240,
@@ -9735,7 +9666,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "save noti",
-        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.type = msg.notitype;\nsave.when = msg.when;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nreturn save;\n\n",
+        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.sealed = msg.caption.sealed;\nsave.type = msg.notitype;\nsave.when = msg.when;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nreturn save;\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1240,
@@ -9838,7 +9769,7 @@
         "type": "function",
         "z": "5501c3cc.11327c",
         "name": "test wrong decimal location",
-        "func": "\nvar newmsg = {\n    \"payload\": {\n        \"chatId\": -253600015,\n        \"type\": \"location\", \n        \"content\": {\n            \"longitude\": -3.47239,\n            \"latitude\": 40.24621\n            // \"longitude\": -3.4723,\n            // \"latitude\": 40.2462\n            \n        }\n    }};\nreturn newmsg;\n",
+        "func": "\nvar newmsg = {\n    \"payload\": {\n        \"chatId\": -253600015,\n        \"type\": \"location\", \n        \"content\": {\n            \"longitude\": -3.47238,\n            \"latitude\": 40.24621\n            // \"longitude\": -3.4723,\n            // \"latitude\": 40.2462\n            \n        }\n    }};\nreturn newmsg;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 360,
@@ -9890,5 +9821,377 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "a2ecd564.22a048",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "find new",
+        "func": "// node.log(JSON.stringify(msg));\n\n// node.log(typeof msg.payload.ok);\n\nif (typeof msg.error === 'undefined') {\n    // node.log('Delete no active fires success');\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n\n    var newfires = {};\n    newfires.type = type;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion: \" + msg.error);\n    return [null, msg];\n}\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 1380,
+        "y": 140,
+        "wires": [
+            [
+                "d6226d6b.2fad4"
+            ],
+            [
+                "a2a4a352.3d10d",
+                "6dd55857.730018"
+            ]
+        ],
+        "outputLabels": [
+            "db",
+            "error"
+        ]
+    },
+    {
+        "id": "e89f5a78.fa06d8",
+        "type": "subflow:8903a5fd.4fbc88",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "x": 410,
+        "y": 1320,
+        "wires": [
+            [
+                "dfb0cea8.435b"
+            ]
+        ]
+    },
+    {
+        "id": "e526a3d3.260c7",
+        "type": "debug",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1010,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "dfb0cea8.435b",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "set verify token",
+        "func": "const Iron = context.global.iron;\nconst hash = \"Fe26.2**5759fac7e58777549e861c21cc5c85db5817d1c86aa3ae3570e1245ed70b666b*30s5YMNPjZS3waOlOA-gYg*_0vV22lIY7I6Pu15R3H93sL7sOvzOWOhfCIIrPJyUjIKfAjKoan2RGW9swOIhal6YiMBpGIvrBBslMYqFvEJXJ8P__BL-7KCQ3gjA1YcrZ8Z0-t-TNk5mAqk85IGXNGV_V6bMZ8a5jZ87Sk1ySzQXA**9b21f19ca380b5639b3fe8328c35c00b5f6ca2afca732903d4f6c8a1a26b3772*Z5hS97tlK_AYug54ardzVtuqoJG5q7R-WIoNjWmmPEk\";\nvar password = global.get('ironPassword');\nIron.unseal(hash, password, Iron.defaults).then(function(hashedToken) {\n    msg.enc = hashedToken.hashedToken;\n    const update = {};\n    update.payload = [\n        {_id : msg.user},\n        {$addToSet: { \"services.resume.loginTokens\": hashedToken}}\n    ];\n    node.send(update);\n  }, function(reason) {\n  node.error(reason);\n});\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 620,
+        "y": 1320,
+        "wires": [
+            [
+                "c6be1f8.5625be",
+                "e526a3d3.260c7"
+            ]
+        ]
+    },
+    {
+        "id": "95b1db49.992508",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "test msg",
+        "func": "var m = {};\nm.payload = {};\nm.chatId = 4885772;\nreturn m;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 1380,
+        "wires": [
+            [
+                "e89f5a78.fa06d8"
+            ]
+        ]
+    },
+    {
+        "id": "1599bc2f.a723b4",
+        "type": "inject",
+        "z": "5501c3cc.11327c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 120,
+        "y": 1380,
+        "wires": [
+            [
+                "95b1db49.992508"
+            ]
+        ]
+    },
+    {
+        "id": "e731ef48.16d1d",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "upsert User",
+        "func": "var objectid = context.global.objectid;\n\nvar orig = msg.originalMessage;\n\nif (msg.payload.length === 1) {\n    msg.id = msg.payload[0]._id;\n} \n\nmsg.payload = msg.originalPayload;\n\nvar update = {};\nupdate.payload = [\n    {\n        telegramChatId : msg.payload.chatId \n    },\n    {\n       $set: {\n           _id: msg.id || objectid().toString(),\n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       },\n       $setOnInsert: { createdAt: new Date() }\n    },\n    { upsert: true }\n];\nreturn update;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 543.076904296875,
+        "y": 1442.5640869140625,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c6be1f8.5625be",
+        "type": "mongodb2 in",
+        "z": "5501c3cc.11327c",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "updateOne",
+        "collection": "users",
+        "operation": "updateOne",
+        "x": 850,
+        "y": 1340,
+        "wires": [
+            [
+                "e526a3d3.260c7"
+            ]
+        ]
+    },
+    {
+        "id": "b41a3405.3d7a58",
+        "type": "subflow:8903a5fd.4fbc88",
+        "z": "1f740501.0b8ccb",
+        "name": "",
+        "x": 570,
+        "y": 80,
+        "wires": [
+            [
+                "8f81054d.b88c78"
+            ]
+        ]
+    },
+    {
+        "id": "8f81054d.b88c78",
+        "type": "function",
+        "z": "1f740501.0b8ccb",
+        "name": "set verify token",
+        "func": "const Iron = context.global.iron;\nconst hash = msg.payload.content.trim();\nvar password = global.get('ironPassword');\nIron.unseal(hash, password, Iron.defaults).then(function(hashedToken) {\n    const update = {};\n    update.payload = [\n        {_id : msg.user},\n        {$addToSet: { \"services.resume.loginTokens\": hashedToken}}\n    ];\n    update.token = hashedToken.hashedToken;\n    update.lang = msg.lang;\n    update.i18n = msg.i18n;\n    update.user = msg.user;\n    update.chatId = msg.payload.chatId;\n    \n    node.send(update);\n  }, function(reason) {\n  node.error(reason);\n});\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 780,
+        "y": 80,
+        "wires": [
+            [
+                "255c8b5a.c81f94",
+                "eb647330.4056c",
+                "79433d1e.b3a374"
+            ]
+        ]
+    },
+    {
+        "id": "255c8b5a.c81f94",
+        "type": "mongodb2 in",
+        "z": "1f740501.0b8ccb",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "updateOne",
+        "collection": "users",
+        "operation": "updateOne",
+        "x": 1010,
+        "y": 140,
+        "wires": [
+            [
+                "cb764a9b.8ca008"
+            ]
+        ]
+    },
+    {
+        "id": "b732ef4b.1fa5a",
+        "type": "debug",
+        "z": "1f740501.0b8ccb",
+        "name": "error setting user.hash ",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1388.4615478515625,
+        "y": 139.23077392578125,
+        "wires": []
+    },
+    {
+        "id": "cb764a9b.8ca008",
+        "type": "function",
+        "z": "1f740501.0b8ccb",
+        "name": "if error",
+        "func": "if (msg.error) {\n    return msg;\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 1178.4615478515625,
+        "y": 139.23077392578125,
+        "wires": [
+            [
+                "b732ef4b.1fa5a"
+            ]
+        ]
+    },
+    {
+        "id": "bf8b3a10.bb87b8",
+        "type": "debug",
+        "z": "1f740501.0b8ccb",
+        "name": "start hash",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 390,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "79433d1e.b3a374",
+        "type": "debug",
+        "z": "1f740501.0b8ccb",
+        "name": "user token update",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 990,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "a0583170.5f1de",
+        "type": "function",
+        "z": "5501c3cc.11327c",
+        "name": "status",
+        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nif (last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n}\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n \nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: last.fromNow()\n    };\n// status.payload = JSON.stringify(status);\nstatus.payload = agos;\nreturn status;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 250,
+        "y": 1540,
+        "wires": [
+            [
+                "ae7d0936.c8ffc8"
+            ]
+        ]
+    },
+    {
+        "id": "ae7d0936.c8ffc8",
+        "type": "tcp out",
+        "z": "5501c3cc.11327c",
+        "host": "",
+        "port": "6789",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "name": "tcp :6790",
+        "x": 400,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "87b83152.5a167",
+        "type": "tcp in",
+        "z": "5501c3cc.11327c",
+        "name": "test :6790",
+        "server": "server",
+        "host": "",
+        "port": "6790",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 97.71034240722656,
+        "y": 1540.79931640625,
+        "wires": [
+            [
+                "a0583170.5f1de"
+            ]
+        ]
+    },
+    {
+        "id": "80301d51.4db5e",
+        "type": "http in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "/status",
+        "url": "/status",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 60,
+        "wires": [
+            [
+                "419651ae.c4514"
+            ]
+        ]
+    },
+    {
+        "id": "6d735f28.32142",
+        "type": "http response",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 460,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "419651ae.c4514",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "status",
+        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nlet statusCode;\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n\nif (ago === 0 || last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n\tstatusCode = 503;\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n\tstatusCode = 200;\n}\n\nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: when.fromNow()\n    };\nmsg.payload = JSON.stringify(status);\nmsg.statusCode = statusCode;\n// msg.payload = agos;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 260,
+        "y": 59,
+        "wires": [
+            [
+                "6d735f28.32142"
+            ]
+        ]
+    },
+    {
+        "id": "6f765bbb.193864",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "bulkWrite",
+        "collection": "siteSettings",
+        "operation": "bulkWrite",
+        "x": 1240,
+        "y": 20,
+        "wires": [
+            [
+                "9a511032.485c4"
+            ]
+        ]
+    },
+    {
+        "id": "9a511032.485c4",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "if error",
+        "func": "if (typeof msg.error !== 'undefined') {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1390,
+        "y": 20,
+        "wires": [
+            [
+                "46708f6a.8fc57"
+            ]
+        ]
+    },
+    {
+        "id": "46708f6a.8fc57",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors",
+        "active": true,
+        "console": "false",
+        "complete": "error",
+        "x": 1530,
+        "y": 20,
+        "wires": []
     }
 ]

@@ -41,8 +41,9 @@ VDIRTY=false
 
 for ZONE in $ZONES
 do
+    # TODO check if server up
     modis="nrt4.modaps.eosdis.nasa.gov/FIRMS/c6/$ZONE/"
-    viirs="nrt3.modaps.eosdis.nasa.gov/FIRMS/viirs/$ZONE/"
+    viirs="nrt4.modaps.eosdis.nasa.gov/FIRMS/viirs/$ZONE/"
 
     modisftp=`ftp-timestamp $modis`
     if [[ $DEBUG -eq 1 ]] ; then echo $modisftp; fi
