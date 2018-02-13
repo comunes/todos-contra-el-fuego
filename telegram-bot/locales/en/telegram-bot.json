@@ -94,5 +94,5 @@
     "serviceAuth": "Hello human! Click on this link to authorize me: ",
     "fireDetected": "fire detected {{when}}",
     "fireDetectedAt": "fire detected on {{when}}",
-    "firelink": "more information [here](https://{{server}}/fire/{{enc}})"
+    "firelink": "[more information](https://{{server}}/fire/{{enc}})"
 }
