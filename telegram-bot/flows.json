@@ -971,6 +971,13 @@
         "interval": "60"
     },
     {
+        "id": "372ec561.04074a",
+        "type": "persist-store",
+        "z": "",
+        "filename": "comment-anon-in-time.json",
+        "interval": "60"
+    },
+    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -1777,7 +1784,7 @@
         "z": "2b8628df.fdcca8",
         "name": "to dash",
         "group": "601660c.cd104a",
-        "order": 14,
+        "order": 16,
         "width": "0",
         "height": "0",
         "label": "Usuarios cercanos",
@@ -5030,7 +5037,8 @@
                 "2cb7dc7e.180204",
                 "997b33bf.c90ae",
                 "79c5a18b.dc663",
-                "56638eac.27187"
+                "56638eac.27187",
+                "47d9b91c.d37ec8"
             ]
         ]
     },
@@ -5104,7 +5112,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 10,
+        "order": 12,
         "width": 0,
         "height": 0,
         "name": "sus",
@@ -5120,7 +5128,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 8,
+        "order": 9,
         "width": 0,
         "height": 0,
         "name": "subs real",
@@ -5168,7 +5176,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 11,
+        "order": 13,
         "width": 0,
         "height": 0,
         "name": "desus",
@@ -5216,7 +5224,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 12,
+        "order": 14,
         "width": 0,
         "height": 0,
         "name": "notis",
@@ -5232,7 +5240,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 13,
+        "order": 15,
         "width": 0,
         "height": 0,
         "name": "avisos",
@@ -6739,8 +6747,8 @@
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 730,
-        "y": 2220,
+        "x": 710,
+        "y": 2400,
         "wires": [
             [
                 "5983db7f.7b6614"
@@ -6755,8 +6763,8 @@
         "func": "var t = msg.i18n;\nvar m = {}\nm.payload = {};\nm.payload.chatId = msg.chatId;\nm.payload.content = \"Lenguaje \" + msg.lang + \", sample: \" + t('Desuscribirme') + ', ' + t('kmdistancia', {km: 99});\nm.payload.type = \"message\";\nreturn m;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1080,
-        "y": 2240,
+        "x": 1060,
+        "y": 2420,
         "wires": [
             [
                 "eee020eb.36a75"
@@ -6767,23 +6775,11 @@
         "id": "20f4d6ba.631d1a",
         "type": "subflow:e81a68fa.695e38",
         "z": "93cb4937.6fc068",
-        "x": 1370,
-        "y": 2240,
+        "x": 1350,
+        "y": 2420,
         "wires": [
             []
         ]
-    },
-    {
-        "id": "60a6109e.2065a",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 1290,
-        "y": 2340,
-        "wires": []
     },
     {
         "id": "2f1fab9a.fbb754",
@@ -6792,8 +6788,8 @@
         "name": "/mylang",
         "command": "/mylang",
         "bot": "f93d1a38.c43218",
-        "x": 100,
-        "y": 2220,
+        "x": 80,
+        "y": 2400,
         "wires": [
             [
                 "c9679475.577988"
@@ -6812,8 +6808,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 430,
-        "y": 2280,
+        "x": 410,
+        "y": 2460,
         "wires": [
             [
                 "c9679475.577988",
@@ -6830,8 +6826,8 @@
         "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 520,
-        "y": 2220,
+        "x": 500,
+        "y": 2400,
         "wires": [
             [
                 "71ddbc3a.d5e9a4"
@@ -6846,8 +6842,8 @@
         "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1240,
-        "y": 2240,
+        "x": 1220,
+        "y": 2420,
         "wires": [
             [
                 "20f4d6ba.631d1a"
@@ -6862,8 +6858,8 @@
         "func": "var c = context.get('counter2') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter2', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter2', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 920,
-        "y": 2240,
+        "x": 900,
+        "y": 2420,
         "wires": [
             [
                 "2d3ed690.563dfa"
@@ -6922,18 +6918,6 @@
         "complete": "payload",
         "x": 650,
         "y": 100,
-        "wires": []
-    },
-    {
-        "id": "bd4fe03a.9cbf5",
-        "type": "debug",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "true",
-        "x": 270,
-        "y": 2320,
         "wires": []
     },
     {
@@ -10224,7 +10208,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 7,
+        "order": 8,
         "width": 0,
         "height": 0,
         "name": "usuarios",
@@ -10341,7 +10325,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 9,
+        "order": 10,
         "width": 0,
         "height": 0,
         "name": "comentarios",
@@ -10392,7 +10376,7 @@
         "name": "comments-in-time",
         "storageNode": "69bdf451.05197c",
         "x": 1170,
-        "y": 2160,
+        "y": 2180,
         "wires": [
             [
                 "2d2926db.d591ea"
@@ -10435,7 +10419,7 @@
         ],
         "useOldStyle": false,
         "x": 1150,
-        "y": 2120,
+        "y": 2140,
         "wires": [
             [
                 "38a26bc6.250834"
@@ -10450,7 +10434,124 @@
         "name": "comments-in-time",
         "storageNode": "69bdf451.05197c",
         "x": 1350,
-        "y": 2120,
+        "y": 2140,
+        "wires": []
+    },
+    {
+        "id": "fed29111.b7e59",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 11,
+        "width": 0,
+        "height": 0,
+        "name": "com-anon",
+        "label": "Comentarios (anon)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 970,
+        "y": 2280,
+        "wires": []
+    },
+    {
+        "id": "bb4ea329.78858",
+        "type": "mongodb in",
+        "z": "93cb4937.6fc068",
+        "mongodb": "51a7af07.93444",
+        "name": "count comments anon",
+        "collection": "commentsui-anonymoususer",
+        "operation": "count",
+        "x": 780,
+        "y": 2280,
+        "wires": [
+            [
+                "fed29111.b7e59",
+                "f35944b1.d59d48"
+            ]
+        ]
+    },
+    {
+        "id": "47d9b91c.d37ec8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count all",
+        "func": "msg.payload = {};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 560,
+        "y": 2280,
+        "wires": [
+            [
+                "bb4ea329.78858"
+            ]
+        ]
+    },
+    {
+        "id": "84740e25.b2dec",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "comments-anon-in-time",
+        "storageNode": "372ec561.04074a",
+        "x": 1190,
+        "y": 2280,
+        "wires": [
+            [
+                "f35944b1.d59d48"
+            ]
+        ]
+    },
+    {
+        "id": "f35944b1.d59d48",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "comments-a to dash",
+        "group": "601660c.cd104a",
+        "order": 7,
+        "width": "0",
+        "height": "0",
+        "label": "Comentarios anon",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1160,
+        "y": 2240,
+        "wires": [
+            [
+                "10de0b52.64df25"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "10de0b52.64df25",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "comments-anon-in-time",
+        "storageNode": "372ec561.04074a",
+        "x": 1370,
+        "y": 2240,
         "wires": []
     }
 ]
