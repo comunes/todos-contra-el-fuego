@@ -870,7 +870,7 @@
         "name": "Estadísticas",
         "tab": "dac4dde2.62c72",
         "disp": true,
-        "width": "9"
+        "width": "6"
     },
     {
         "id": "103d89d5.f04ab6",
@@ -1342,7 +1342,7 @@
         "func": "msg.originalPayload = msg.payload;\nmsg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   };\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 710,
+        "x": 750,
         "y": 240,
         "wires": [
             [
@@ -3228,7 +3228,7 @@
         "y": 240,
         "wires": [
             [
-                "59c0890d.7d97e8"
+                "6e743ab8.ff0cb4"
             ],
             []
         ],
@@ -10553,5 +10553,58 @@
         "x": 1370,
         "y": 2240,
         "wires": []
+    },
+    {
+        "id": "6e743ab8.ff0cb4",
+        "type": "function",
+        "z": "2b8628df.fdcca8",
+        "name": "industry?",
+        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 350\n          }\n       }\n   }\nquery.originalMessage = msg;\nreturn query;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "4d7e84ae.531c2c"
+            ]
+        ]
+    },
+    {
+        "id": "4d7e84ae.531c2c",
+        "type": "mongodb in",
+        "z": "2b8628df.fdcca8",
+        "mongodb": "51a7af07.93444",
+        "name": "find",
+        "collection": "industries",
+        "operation": "find",
+        "x": 390,
+        "y": 320,
+        "wires": [
+            [
+                "4eceb0da.a51cc"
+            ]
+        ]
+    },
+    {
+        "id": "4eceb0da.a51cc",
+        "type": "function",
+        "z": "2b8628df.fdcca8",
+        "name": "false?",
+        "func": "if (msg.payload.length > 0) {\n    // node.log(\"Is an industrie\");\n    return [null, msg.originalMessage];\n} else {\n    // node.log(\"Not an industrie positive\");\n    return [msg.originalMessage, null];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 530,
+        "y": 320,
+        "wires": [
+            [
+                "59c0890d.7d97e8"
+            ],
+            []
+        ],
+        "outputLabels": [
+            "not false positive",
+            "false"
+        ]
     }
 ]
