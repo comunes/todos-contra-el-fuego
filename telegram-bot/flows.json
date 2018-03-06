@@ -1574,6 +1574,12 @@
                 "pt": "global",
                 "to": "SjYt56AE9kdgLnYgGPybnNKtKQuHmuRzUbZgBmcKX",
                 "tot": "str"
+            },
+            {
+                "p": "telegramBot",
+                "pt": "global",
+                "to": "es",
+                "tot": "str"
             }
         ],
         "active": true,
@@ -1615,6 +1621,12 @@
                 "p": "ironPassword",
                 "pt": "global",
                 "to": "SjYt56AE9kdgLnYgGPybnNKtKQuHmuRzUbZgBmcKX",
+                "tot": "str"
+            },
+            {
+                "p": "telegramBot",
+                "pt": "global",
+                "to": "es",
                 "tot": "str"
             }
         ],
@@ -8718,7 +8730,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "upsert User",
-        "func": "var objectid = context.global.objectid;\n\nvar orig = msg.originalMessage;\n\nif (msg.payload.length === 1) {\n    msg.id = msg.payload[0]._id;\n} \n\nmsg.payload = msg.originalPayload;\n\nvar update = {};\nupdate.payload = [\n    {\n        telegramChatId : msg.payload.chatId \n    },\n    {\n       $set: {\n           _id: msg.id || objectid().toString(),\n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       },\n       $setOnInsert: { createdAt: new Date() }\n    },\n    { upsert: true }\n];\nreturn update;",
+        "func": "var objectid = context.global.objectid;\n\nvar orig = msg.originalMessage;\n\nif (msg.payload.length === 1) {\n    msg.id = msg.payload[0]._id;\n} \n\nmsg.payload = msg.originalPayload;\n\nvar update = {};\nupdate.payload = [\n    {\n        telegramChatId : msg.payload.chatId \n    },\n    {\n       $set: {\n           _id: msg.id || objectid().toString(),\n           telegramBot: global.get('telegramBot'),\n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       },\n       $setOnInsert: { createdAt: new Date() }\n    },\n    { upsert: true }\n];\nreturn update;",
         "outputs": 1,
         "noerr": 0,
         "x": 1210,
@@ -9920,20 +9932,6 @@
             [
                 "95b1db49.992508"
             ]
-        ]
-    },
-    {
-        "id": "e731ef48.16d1d",
-        "type": "function",
-        "z": "5501c3cc.11327c",
-        "name": "upsert User",
-        "func": "var objectid = context.global.objectid;\n\nvar orig = msg.originalMessage;\n\nif (msg.payload.length === 1) {\n    msg.id = msg.payload[0]._id;\n} \n\nmsg.payload = msg.originalPayload;\n\nvar update = {};\nupdate.payload = [\n    {\n        telegramChatId : msg.payload.chatId \n    },\n    {\n       $set: {\n           _id: msg.id || objectid().toString(),\n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       },\n       $setOnInsert: { createdAt: new Date() }\n    },\n    { upsert: true }\n];\nreturn update;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 570,
-        "y": 1460,
-        "wires": [
-            []
         ]
     },
     {
