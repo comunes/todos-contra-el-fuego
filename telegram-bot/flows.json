@@ -1339,7 +1339,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "near?",
-        "func": "msg.originalPayload = msg.payload;\nmsg.payload = {\n     geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 1000000\n          }\n       }\n   };\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nreturn msg;",
+        "func": "msg.originalPayload = msg.payload;\n\nconst or = global.get('notifyWebUsers') ? \n    { $or: [ { telegramBot: global.get('telegramBot') }, { type: 'web' } ] } :\n    { telegramBot: global.get('telegramBot') };\n\nmsg.payload = {\n    $and: [\n        or,\n        { geo:\n            { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [ msg.lon, msg.lat]\n                },\n                $minDistance: 0,\n                $maxDistance: 1000000\n            }}\n        }\n    ]\n};\n\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 750,
@@ -1580,6 +1580,12 @@
                 "pt": "global",
                 "to": "es",
                 "tot": "str"
+            },
+            {
+                "p": "notifyWebUsers",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
             }
         ],
         "active": true,
@@ -1628,6 +1634,12 @@
                 "pt": "global",
                 "to": "es",
                 "tot": "str"
+            },
+            {
+                "p": "notifyWebUsers",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
             }
         ],
         "active": false,
@@ -8730,7 +8742,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "upsert User",
-        "func": "var objectid = context.global.objectid;\n\nvar orig = msg.originalMessage;\n\nif (msg.payload.length === 1) {\n    msg.id = msg.payload[0]._id;\n} \n\nmsg.payload = msg.originalPayload;\n\nvar update = {};\nupdate.payload = [\n    {\n        telegramChatId : msg.payload.chatId \n    },\n    {\n       $set: {\n           _id: msg.id || objectid().toString(),\n           telegramBot: global.get('telegramBot'),\n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       },\n       $setOnInsert: { createdAt: new Date() }\n    },\n    { upsert: true }\n];\nreturn update;",
+        "func": "var objectid = context.global.objectid;\n\nvar orig = msg.originalMessage;\n\nif (msg.payload.length === 1) {\n    msg.id = msg.payload[0]._id;\n} \n\nmsg.payload = msg.originalPayload;\n\nvar update = {};\nupdate.payload = [\n    {\n        telegramChatId : msg.payload.chatId \n    },\n    {\n       $set: {\n           _id: msg.id || objectid().toString(),\n           telegramChatId : msg.payload.chatId,\n           telegramUsername : orig.from.username,\n           telegramFirstName : orig.from.first_name,\n           telegramLanguageCode : orig.from.language_code,\n           lang : msg.lang,\n           updated: new Date()\n       },\n       $setOnInsert: { createdAt: new Date() }\n    },\n    { upsert: true }\n];\nreturn update;",
         "outputs": 1,
         "noerr": 0,
         "x": 1210,
@@ -9000,7 +9012,7 @@
         "type": "function",
         "z": "289c75f9.8cd11a",
         "name": "save subs-user",
-        "func": "msg.payload.$set.owner = msg.user;\nreturn msg;\n\n",
+        "func": "msg.payload.$set.owner = msg.user;\nmsg.payload.$set.telegramBot = global.get('telegramBot');\nreturn msg;\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 440,
