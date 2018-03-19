@@ -17,6 +17,7 @@
     "node-red-contrib-counter": "^0.1.4",
     "node-red-contrib-credentials": "~0.1.0",
     "node-red-contrib-file-function": "~1.1.2",
+    "node-red-contrib-inotify": "~1.1.0",
     "node-red-contrib-jsonpath": "~0.1.1",
     "node-red-contrib-mongodb2": "^0.5.6",
     "node-red-contrib-persist": "^1.0.1",
