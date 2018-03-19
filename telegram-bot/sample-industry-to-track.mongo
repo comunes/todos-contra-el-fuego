@@ -1,0 +1,11 @@
+db.trackedfires.insert({
+    "ourid" : {
+        "type" : "Point",
+        "coordinates" : [
+          118.896022,
+          39.659938 
+        ]
+    },
+    "name": "ACME Industries",
+    "file": "acme-industries.json"
+})
