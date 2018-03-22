@@ -76,3 +76,11 @@ modis-*.txt
 modis-timestamp-*.txt
 *.seg
 sample-file-function.js
+comment-anon-in-time.json
+comments-in-time.json
+disappeared-fires.json
+fires-to-notif.json
+ftp-read-fires.json
+last-fire-detected.json
+tracked.json
+users-in-time.json

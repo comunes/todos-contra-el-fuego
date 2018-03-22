@@ -527,14 +527,6 @@
         "out": []
     },
     {
-        "id": "931aabf7.f24648",
-        "type": "subflow",
-        "name": "Subflow 1",
-        "info": "",
-        "in": [],
-        "out": []
-    },
-    {
         "id": "f21ab878.9fd518",
         "type": "subflow",
         "name": "leave",
@@ -743,6 +735,107 @@
                 ]
             }
         ]
+    },
+    {
+        "id": "fc78b15f.c64b7",
+        "type": "subflow",
+        "name": "only one bot",
+        "info": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "9a280b29.7a7178"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 400,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "9a280b29.7a7178",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "cb92bddb.cd891",
+        "type": "subflow",
+        "name": "count fires to notif",
+        "info": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "39f436ba.2892aa"
+                    }
+                ]
+            }
+        ],
+        "out": []
+    },
+    {
+        "id": "274b3b4f.3ee674",
+        "type": "subflow",
+        "name": "count disappeared fires ",
+        "info": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "41d766b4.a750d8"
+                    }
+                ]
+            }
+        ],
+        "out": []
+    },
+    {
+        "id": "29f2a71d.f90dd8",
+        "type": "subflow",
+        "name": "count ftp-read-fires ",
+        "info": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "ca4baf0d.cf966"
+                    }
+                ]
+            }
+        ],
+        "out": []
+    },
+    {
+        "id": "ed14151e.813358",
+        "type": "subflow",
+        "name": "last stats",
+        "info": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "580930a4.dd3ed"
+                    }
+                ]
+            }
+        ],
+        "out": []
     },
     {
         "id": "f93d1a38.c43218",
@@ -975,6 +1068,34 @@
         "type": "persist-store",
         "z": "",
         "filename": "comment-anon-in-time.json",
+        "interval": "60"
+    },
+    {
+        "id": "60b3c803.aa7258",
+        "type": "persist-store",
+        "z": "",
+        "filename": "last-fire-detected.json",
+        "interval": "60"
+    },
+    {
+        "id": "2cac9837.f79ed8",
+        "type": "persist-store",
+        "z": "",
+        "filename": "fires-to-notif.json",
+        "interval": "60"
+    },
+    {
+        "id": "684810a9.5bc6e",
+        "type": "persist-store",
+        "z": "",
+        "filename": "disappeared-fires.json",
+        "interval": "60"
+    },
+    {
+        "id": "bc532db6.6386f",
+        "type": "persist-store",
+        "z": "",
+        "filename": "ftp-read-fires.json",
         "interval": "60"
     },
     {
@@ -1808,7 +1929,7 @@
         "z": "2b8628df.fdcca8",
         "name": "to dash",
         "group": "601660c.cd104a",
-        "order": 16,
+        "order": 20,
         "width": "0",
         "height": "0",
         "label": "Usuarios cercanos",
@@ -1867,7 +1988,7 @@
         "type": "function",
         "z": "3f0768a7.1fac78",
         "name": "count active",
-        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos (\" + msg.type + \"\"\n    }\n    return newMsg;\n}\n",
+        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos\" //  (\" + msg.type + \"\"\n    };\n    return newMsg;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "x": 210,
@@ -1882,9 +2003,9 @@
         "id": "44fbc396.81360c",
         "type": "ui_chart",
         "z": "3f0768a7.1fac78",
-        "name": "to dash",
+        "name": "count active",
         "group": "601660c.cd104a",
-        "order": 1,
+        "order": 3,
         "width": "0",
         "height": "0",
         "label": "Fuegos activos en el mundo (fuente NASA)",
@@ -1913,7 +2034,7 @@
             "#c5b0d5"
         ],
         "useOldStyle": false,
-        "x": 400,
+        "x": 410,
         "y": 60,
         "wires": [
             [
@@ -4717,28 +4838,6 @@
         ]
     },
     {
-        "id": "3abe9bb7.e50244",
-        "type": "tcp in",
-        "z": "557e0255.d1220c",
-        "name": "test :6789 ",
-        "server": "server",
-        "host": "",
-        "port": "6789",
-        "datamode": "stream",
-        "datatype": "utf8",
-        "newline": "\\n",
-        "topic": "",
-        "base64": false,
-        "x": 120,
-        "y": 80,
-        "wires": [
-            [
-                "95b8009f.b410c",
-                "e2056e63.a9e84"
-            ]
-        ]
-    },
-    {
         "id": "95b8009f.b410c",
         "type": "function",
         "z": "557e0255.d1220c",
@@ -5055,14 +5154,7 @@
         "y": 1900,
         "wires": [
             [
-                "8be77355.e4b82",
-                "df3b630.a229ea",
-                "6e94e3ec.29eafc",
-                "2cb7dc7e.180204",
-                "997b33bf.c90ae",
-                "79c5a18b.dc663",
-                "56638eac.27187",
-                "47d9b91c.d37ec8"
+                "6cb0558a.3408bc"
             ]
         ]
     },
@@ -5136,7 +5228,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 12,
+        "order": 17,
         "width": 0,
         "height": 0,
         "name": "sus",
@@ -5152,7 +5244,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 9,
+        "order": 13,
         "width": 0,
         "height": 0,
         "name": "subs real",
@@ -5200,7 +5292,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 13,
+        "order": 18,
         "width": 0,
         "height": 0,
         "name": "desus",
@@ -5212,59 +5304,11 @@
         "wires": []
     },
     {
-        "id": "a7eaa9d3.8d2808",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "count notis",
-        "func": "var newMsg = {\n    payload : {\n        name: \"sendnotis\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nreturn newMsg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 570,
-        "y": 1960,
-        "wires": [
-            [
-                "ca5bbef.da2244"
-            ]
-        ]
-    },
-    {
-        "id": "ca5bbef.da2244",
-        "type": "mongodb in",
-        "z": "93cb4937.6fc068",
-        "mongodb": "51a7af07.93444",
-        "name": "find stats",
-        "collection": "fstats",
-        "operation": "find",
-        "x": 780,
-        "y": 1960,
-        "wires": [
-            [
-                "3c951498.389fac"
-            ]
-        ]
-    },
-    {
-        "id": "3c951498.389fac",
-        "type": "ui_text",
-        "z": "93cb4937.6fc068",
-        "group": "601660c.cd104a",
-        "order": 14,
-        "width": 0,
-        "height": 0,
-        "name": "notis",
-        "label": "Notificaciones enviadas",
-        "format": "{{msg.payload[0].value}}",
-        "layout": "row-spread",
-        "x": 950,
-        "y": 1960,
-        "wires": []
-    },
-    {
         "id": "28213612.28e18a",
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 15,
+        "order": 19,
         "width": 0,
         "height": 0,
         "name": "avisos",
@@ -5311,9 +5355,9 @@
         "id": "61f539b5.950d08",
         "type": "ui_chart",
         "z": "93cb4937.6fc068",
-        "name": "to dash",
+        "name": "daily alerts",
         "group": "601660c.cd104a",
-        "order": 3,
+        "order": 8,
         "width": "0",
         "height": "0",
         "label": "Avisos diarios",
@@ -5413,7 +5457,7 @@
         "z": "93cb4937.6fc068",
         "name": "subs to dash",
         "group": "601660c.cd104a",
-        "order": 5,
+        "order": 2,
         "width": "0",
         "height": "0",
         "label": "Suscripciones",
@@ -5688,8 +5732,8 @@
         "z": "c8522537.c6f908",
         "name": "nasa-new-fire-actives",
         "storageNode": "9a28d188.bb94e",
-        "x": 200,
-        "y": 80,
+        "x": 180,
+        "y": 100,
         "wires": [
             [
                 "796f3781.151c38"
@@ -5700,9 +5744,9 @@
         "id": "796f3781.151c38",
         "type": "ui_chart",
         "z": "c8522537.c6f908",
-        "name": "to dash",
+        "name": "count new",
         "group": "601660c.cd104a",
-        "order": 2,
+        "order": 4,
         "width": "0",
         "height": "0",
         "label": "Fuegos activos nuevos",
@@ -5731,7 +5775,7 @@
             "#c5b0d5"
         ],
         "useOldStyle": false,
-        "x": 420,
+        "x": 430,
         "y": 40,
         "wires": [
             [
@@ -5755,7 +5799,7 @@
         "type": "function",
         "z": "c8522537.c6f908",
         "name": "count active",
-        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos nuevos (\" + msg.type + \")\"\n    }\n    return newMsg;\n}\n",
+        "func": "if (Array.isArray(msg.payload)) {\n    var newMsg  = {\n        payload: msg.payload.length,\n        topic: \"Fuegos activos nuevos\" //  (\" + msg.type + \")\"\n    };\n    return newMsg;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "x": 210,
@@ -6975,8 +7019,8 @@
         "func": "    var email = {};\n    email.from = \"noreply@comunes.org\"\n    email.topic = \"Bloqueo en el procesamiento de fuegos\";\n    email.payload = \"Pues eso...\\n\\n\";\n    email.payload += msg.error ? msg.error.message : '';\n    return email;",
         "outputs": 1,
         "noerr": 0,
-        "x": 600,
-        "y": 380,
+        "x": 580,
+        "y": 460,
         "wires": [
             [
                 "f4e5590a.995258"
@@ -6992,8 +7036,8 @@
         "secure": false,
         "name": "",
         "dname": "send email with error",
-        "x": 1010,
-        "y": 380,
+        "x": 990,
+        "y": 460,
         "wires": []
     },
     {
@@ -7006,53 +7050,11 @@
             "25fb0a13.01b006",
             "d6226d6b.2fad4"
         ],
-        "x": 150,
-        "y": 380,
+        "x": 130,
+        "y": 460,
         "wires": [
             [
                 "1bfe0ffb.5e7a6"
-            ]
-        ]
-    },
-    {
-        "id": "560ecd7f.581254",
-        "type": "tcp in",
-        "z": "c1e7ebde.3e0b68",
-        "name": "modis-listen",
-        "server": "server",
-        "host": "",
-        "port": "40001",
-        "datamode": "single",
-        "datatype": "utf8",
-        "newline": "",
-        "topic": "",
-        "base64": false,
-        "x": 110,
-        "y": 140,
-        "wires": [
-            [
-                "2c0b967b.4cae8a"
-            ]
-        ]
-    },
-    {
-        "id": "a23a968c.a040b8",
-        "type": "tcp in",
-        "z": "c1e7ebde.3e0b68",
-        "name": "viirs-listen",
-        "server": "server",
-        "host": "",
-        "port": "40002",
-        "datamode": "single",
-        "datatype": "utf8",
-        "newline": "",
-        "topic": "modis-viirs",
-        "base64": false,
-        "x": 100,
-        "y": 180,
-        "wires": [
-            [
-                "b8eec86.79ece38"
             ]
         ]
     },
@@ -7064,8 +7066,8 @@
         "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"viir.txt\";\nfile.type = \"viirs\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 260,
-        "y": 180,
+        "x": 240,
+        "y": 260,
         "wires": [
             [
                 "46a349eb.45da68",
@@ -7081,8 +7083,8 @@
         "func": "var file = {};\nfile.filename = global.get('ftp-path') + \"modis.txt\";\nfile.type = \"modis\";\nreturn file;",
         "outputs": 1,
         "noerr": 0,
-        "x": 260,
-        "y": 140,
+        "x": 240,
+        "y": 220,
         "wires": [
             [
                 "2005640b.f800bc",
@@ -7099,8 +7101,8 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 430,
-        "y": 140,
+        "x": 410,
+        "y": 220,
         "wires": [
             [
                 "cb6427c6.0c2058"
@@ -7116,8 +7118,8 @@
         "format": "utf8",
         "chunk": false,
         "sendError": true,
-        "x": 430,
-        "y": 180,
+        "x": 410,
+        "y": 260,
         "wires": [
             [
                 "33d38060.1d916"
@@ -7132,8 +7134,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 440,
-        "y": 220,
+        "x": 420,
+        "y": 300,
         "wires": []
     },
     {
@@ -7147,8 +7149,8 @@
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 632.0000438690186,
-        "y": 184.00000762939453,
+        "x": 612.0000438690186,
+        "y": 264.00000762939453,
         "wires": [
             [
                 "ab66e9e6.ee9c48"
@@ -7166,8 +7168,8 @@
         "multi": "mult",
         "ret": "\\n",
         "temp": "",
-        "x": 622.0000438690186,
-        "y": 144.00000762939453,
+        "x": 602.0000438690186,
+        "y": 224.00000762939453,
         "wires": [
             [
                 "ab66e9e6.ee9c48"
@@ -7182,24 +7184,14 @@
         "func": "if (Array.isArray(msg.payload)) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 822.0000438690186,
-        "y": 144.00000762939453,
+        "x": 802.0000438690186,
+        "y": 224.00000762939453,
         "wires": [
             [
-                "840c7f68.e29b2",
                 "de8cfdcc.f432c",
                 "27477a8e.84a7f6"
             ]
         ]
-    },
-    {
-        "id": "840c7f68.e29b2",
-        "type": "subflow:3f0768a7.1fac78",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "x": 1012.0000438690186,
-        "y": 184.00000762939453,
-        "wires": []
     },
     {
         "id": "de8cfdcc.f432c",
@@ -7209,8 +7201,8 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1012.0000438690186,
-        "y": 224.00000762939453,
+        "x": 992.0000438690186,
+        "y": 304.00000762939453,
         "wires": []
     },
     {
@@ -7221,84 +7213,8 @@
         "active": true,
         "console": "false",
         "complete": "payload.length",
-        "x": 1720,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "94d3538b.7c29e",
-        "type": "subflow:c8522537.c6f908",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "x": 1720,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "51e12e27.c4964",
-        "type": "split",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 1830,
-        "y": 140,
-        "wires": [
-            [
-                "5c054d9b.8452f4"
-            ]
-        ]
-    },
-    {
-        "id": "5c054d9b.8452f4",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "set lat/lon",
-        "func": "msg.lon = msg.payload.ourid.coordinates[0];\nmsg.lat = msg.payload.ourid.coordinates[1];\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1960,
-        "y": 140,
-        "wires": [
-            [
-                "8795dd0e.a135a"
-            ]
-        ]
-    },
-    {
-        "id": "8795dd0e.a135a",
-        "type": "delay",
-        "z": "c1e7ebde.3e0b68",
-        "name": "1000msg/5seg",
-        "pauseType": "rate",
-        "timeout": "5",
-        "timeoutUnits": "minutes",
-        "rate": "1000",
-        "nbRateUnits": "5",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 2120,
-        "y": 140,
-        "wires": [
-            [
-                "7a5495a3.d75efc"
-            ]
-        ]
-    },
-    {
-        "id": "7a5495a3.d75efc",
-        "type": "subflow:2b8628df.fdcca8",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "x": 2330,
-        "y": 140,
+        "x": 1700,
+        "y": 300,
         "wires": []
     },
     {
@@ -7342,8 +7258,8 @@
         "z": "c1e7ebde.3e0b68",
         "name": "catch all",
         "scope": null,
-        "x": 102.00004386901855,
-        "y": 524.0000076293945,
+        "x": 82.00004386901855,
+        "y": 604.0000076293945,
         "wires": [
             [
                 "1a8f241d.48463c"
@@ -7358,93 +7274,9 @@
         "active": true,
         "console": "true",
         "complete": "true",
-        "x": 332.00004386901855,
-        "y": 524.0000076293945,
+        "x": 312.00004386901855,
+        "y": 604.0000076293945,
         "wires": []
-    },
-    {
-        "id": "b4c882e8.05a0c",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "match tracked fires",
-        "func": "var pay = msg.payload;\nvar lon = msg.payload.ourid.coordinates[0];\nvar lat = msg.payload.ourid.coordinates[1];\n\nvar fires = {};\n// http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\nfires.collection = \"activefires\";\nfires.payload = [{\n    ourid:\n    { $near : {\n        $geometry: { \n        type: \"Point\",  \n        coordinates: [ lon, lat]\n    },\n    $minDistance: 0,\n    $maxDistance: 400\n  }\n}\n}];\nfires.originalPayload = pay;\nreturn fires;\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 2322.0000438690186,
-        "y": 44.00000762939453,
-        "wires": [
-            [
-                "d0cf3de7.910f8"
-            ]
-        ]
-    },
-    {
-        "id": "d0cf3de7.910f8",
-        "type": "mongodb2 in",
-        "z": "c1e7ebde.3e0b68",
-        "service": "_ext_",
-        "configNode": "d5559ee5.960e2",
-        "name": "find tracked",
-        "collection": "",
-        "operation": "find.toArray",
-        "x": 2522.0000438690186,
-        "y": 44.00000762939453,
-        "wires": [
-            [
-                "53e80775.53b498"
-            ]
-        ]
-    },
-    {
-        "id": "53e80775.53b498",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "store",
-        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    \n    var tracked = msg.originalPayload;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var fire = msg.payload[i];\n        var acdate = fire.acq_date;\n        var actime = fire.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n        fire.when = when;\n\n        var ourid = {\n            type: fire.type,\n            when: when,\n            fire: tracked.name\n        };\n\n        var setcommon = {\n            //_id: id,\n            ourid: ourid,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid}, update: set, upsert:true } });\n        \n        var email = {\n            fire: tracked.name,\n            date: acdate,\n            time: actime\n        }\n        node.send([null, email]);\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
-        "outputs": "2",
-        "noerr": 0,
-        "x": 2676.0000438690186,
-        "y": 44.00000762939453,
-        "wires": [
-            [
-                "798e1ad0.168a24",
-                "7862f974.52aad8"
-            ],
-            [
-                "db0bc6e5.73ee58"
-            ]
-        ],
-        "outputLabels": [
-            "db",
-            "email"
-        ]
-    },
-    {
-        "id": "7862f974.52aad8",
-        "type": "debug",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "active": false,
-        "console": "false",
-        "complete": "false",
-        "x": 2872.0000438690186,
-        "y": 84.00000762939453,
-        "wires": []
-    },
-    {
-        "id": "798e1ad0.168a24",
-        "type": "mongodb2 in",
-        "z": "c1e7ebde.3e0b68",
-        "service": "_ext_",
-        "configNode": "d5559ee5.960e2",
-        "name": "bulkWrite",
-        "collection": "",
-        "operation": "bulkWrite",
-        "x": 2862.0000438690186,
-        "y": 44.00000762939453,
-        "wires": [
-            []
-        ]
     },
     {
         "id": "37453c0b.19dd74",
@@ -7877,8 +7709,8 @@
                 "type": "msg"
             }
         ],
-        "x": 800,
-        "y": 380,
+        "x": 780,
+        "y": 460,
         "wires": [
             [
                 "1b05feb.f6de801",
@@ -7902,54 +7734,6 @@
         "wires": [
             [
                 "765fb9d8.730558"
-            ]
-        ]
-    },
-    {
-        "id": "abfebd4d.00253",
-        "type": "e-mail",
-        "z": "c1e7ebde.3e0b68",
-        "server": "selver.comunes.org",
-        "port": "587",
-        "secure": false,
-        "name": "",
-        "dname": "send email with notification",
-        "x": 3480,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "db0bc6e5.73ee58",
-        "type": "credentials",
-        "z": "c1e7ebde.3e0b68",
-        "name": "email-to",
-        "props": [
-            {
-                "value": "to",
-                "type": "msg"
-            }
-        ],
-        "x": 2860,
-        "y": 120,
-        "wires": [
-            [
-                "f2df97e.e87ea68"
-            ]
-        ]
-    },
-    {
-        "id": "f2df97e.e87ea68",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "tracked fire alarm",
-        "func": "var email = {};\nemail.from = \"noreply@comunes.org\";\nemail.to = msg.to;\nemail.topic = \"Fuego detectado en \" + msg.fire;\nemail.payload  = \"Detectado a las \" + msg.date +  \" \" + msg.time + \"(UTC)\\n\\n\";\nemail.payload += \"Recibirás como máximo dos avisos al día.\\n\\n\";\nreturn email;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 3050,
-        "y": 120,
-        "wires": [
-            [
-                "c26f0a58.34eac8"
             ]
         ]
     },
@@ -8047,8 +7831,8 @@
         "func": "var type = msg.type;\n\nvar now = new Date();\nglobal.set('active-now', now);\nglobal.set('last-fire-check', now);\nflow.set('active-type', type);\n\nconst lastCheckSet = { \n    $set: {\n        name: 'last-fire-check',\n        value: now,\n        description: 'Time of last NASA check',\n        type: 'date',\n        isPublic: true\n    }\n};\n\nconst lastCheckUpdate = {};\nlastCheckUpdate.payload = [[{ updateOne: { filter: {name: 'last-fire-check'}, update: lastCheckSet, upsert:true } }], {w: 1, wtimeout: 60000}];\nnode.send([null, lastCheckUpdate]);\n\nvar updates = [];\n\n// for (var i = 0; i < 10; i++) {\nfor (var i = 0; i < msg.payload.length; i++) {\n    var pay = msg.payload[i];\n    var lat = pay.latitude;\n    var lon = pay.longitude;\n    if (typeof lat === 'number' && typeof lon === 'number')  {\n        // Sometimes the data is not well formed/downloaded\n        var ourid = {\n            type: \"Point\",\n            coordinates: [ lon, lat ]\n        };\n        \n        // dates sample\n        // acq_date: \"2017-11-09\"\n        ///acq_time: \"06:30\"\n        var acdate = pay.acq_date;\n        var actime = pay.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n\n        var setcommon = {\n            ourid: ourid,\n            lat: lat,\n            lon: lon,\n            updatedAt: now,\n            type: type,\n            when : when,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : pay.scan,\n            track : pay.track,\n            satellite : pay.satellite,\n            confidence : pay.confidence,\n            version : pay.version,\n            frp : pay.frp,\n            daynight : pay.daynight,\n        };\n        var setdiff;\n        if (type === \"modis\") {\n            setdiff = {\n                brightness : pay.brightness,\n                bright_t31 : pay.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : pay.bright_ti4,\n                bright_ti5 : pay.bright_ti5,\n            };\n            }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n        \n        // remove empties\n        /* Object.keys(setjoin).forEach((key) => (setjoin[key] === null || typeof setjoin[key] === 'undefined') && \n               delete setjoin[key]); */\n\n        var set = { \n            $set: setjoin,\n            $setOnInsert: { createdAt: now }\n        };\n        \n        /* mongo basic\n        var update = {};\n        update.payload = set;\n        update.query = { _id:  id };\n        updates.push(update);\n        */\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid, type: type}, update: set, upsert:true } });\n    }\n}\n\nif (updates.length > 0 ) {\n    // If we have updates\n    var bulkUpdate = {};\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 1100,
-        "y": 80,
+        "x": 1080,
+        "y": 160,
         "wires": [
             [
                 "b8fa4570.ae07f8"
@@ -8071,8 +7855,8 @@
         "name": "bulkWrite",
         "collection": "activefires",
         "operation": "bulkWrite",
-        "x": 1240,
-        "y": 80,
+        "x": 1220,
+        "y": 160,
         "wires": [
             [
                 "3f9d2c64.b978c4"
@@ -8088,8 +7872,8 @@
         "name": "deleteMany",
         "collection": "activefires",
         "operation": "deleteMany",
-        "x": 1230,
-        "y": 140,
+        "x": 1210,
+        "y": 220,
         "wires": [
             [
                 "a2ecd564.22a048"
@@ -8104,8 +7888,8 @@
         "func": "if (typeof msg.error === 'undefined') {\n    // var type = flow.get('type');\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n    \n    // del not active fires\n    var del = {};\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#deleteMany\n    // deleteMany(filter, options, callback)\n    del.payload = [{updatedAt: {$ne: now}, type: type}, null];\n    return [del, null];\n} else {\n    node.log(\"Error in update\" + msg.error);\n    return [null, msg];\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 1090,
-        "y": 140,
+        "x": 1070,
+        "y": 220,
         "wires": [
             [
                 "25fb0a13.01b006"
@@ -8129,11 +7913,10 @@
         "name": "find",
         "collection": "activefires",
         "operation": "find.toArray",
-        "x": 1510,
-        "y": 140,
+        "x": 1490,
+        "y": 220,
         "wires": [
             [
-                "94d3538b.7c29e",
                 "c19f9fb2.881cd",
                 "9d976e2.ac2229",
                 "7d8a7620.05a6f8",
@@ -8147,8 +7930,8 @@
         "z": "c1e7ebde.3e0b68",
         "config": "267e38ad.11f318",
         "name": "take",
-        "x": 970,
-        "y": 80,
+        "x": 950,
+        "y": 160,
         "wires": [
             [
                 "9e68b220.6e1bb"
@@ -8161,13 +7944,10 @@
         "z": "c1e7ebde.3e0b68",
         "config": "267e38ad.11f318",
         "name": "leave",
-        "x": 1650,
-        "y": 140,
+        "x": 1630,
+        "y": 220,
         "wires": [
-            [
-                "51e12e27.c4964",
-                "5612bdd5.bc69e4"
-            ]
+            []
         ]
     },
     {
@@ -8176,8 +7956,8 @@
         "z": "c1e7ebde.3e0b68",
         "config": "267e38ad.11f318",
         "name": "leave",
-        "x": 410,
-        "y": 380,
+        "x": 390,
+        "y": 460,
         "wires": [
             [
                 "48219ca2.511564"
@@ -8192,8 +7972,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1210,
-        "y": 180,
+        "x": 1190,
+        "y": 260,
         "wires": []
     },
     {
@@ -8230,81 +8010,6 @@
         ]
     },
     {
-        "id": "c26f0a58.34eac8",
-        "type": "delay",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "pauseType": "rate",
-        "timeout": "5",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "12",
-        "rateUnits": "hour",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": true,
-        "x": 3260,
-        "y": 120,
-        "wires": [
-            [
-                "abfebd4d.00253"
-            ]
-        ]
-    },
-    {
-        "id": "362e60f4.1d5f7",
-        "type": "mongodb2 in",
-        "z": "c1e7ebde.3e0b68",
-        "service": "_ext_",
-        "configNode": "d5559ee5.960e2",
-        "name": "find tracked",
-        "collection": "trackedfires",
-        "operation": "find.toArray",
-        "x": 1970,
-        "y": 40,
-        "wires": [
-            [
-                "2adf71f2.73479e"
-            ]
-        ]
-    },
-    {
-        "id": "2adf71f2.73479e",
-        "type": "split",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 2150,
-        "y": 40,
-        "wires": [
-            [
-                "b4c882e8.05a0c"
-            ]
-        ]
-    },
-    {
-        "id": "5612bdd5.bc69e4",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "find",
-        "func": "var trackedfires = {};\ntrackedfires.payload = [{}];\nreturn [trackedfires, null]",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1830,
-        "y": 40,
-        "wires": [
-            [
-                "362e60f4.1d5f7"
-            ]
-        ]
-    },
-    {
         "id": "1f0da6d1.c9ed79",
         "type": "debug",
         "z": "c1e7ebde.3e0b68",
@@ -8312,8 +8017,8 @@
         "active": true,
         "console": "false",
         "complete": "error",
-        "x": 1810,
-        "y": 260,
+        "x": 1790,
+        "y": 340,
         "wires": []
     },
     {
@@ -8324,8 +8029,8 @@
         "func": "if (typeof msg.error !== 'undefined') {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1670,
-        "y": 260,
+        "x": 1650,
+        "y": 340,
         "wires": [
             [
                 "1f0da6d1.c9ed79",
@@ -8341,8 +8046,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1020,
-        "y": 440,
+        "x": 1000,
+        "y": 520,
         "wires": []
     },
     {
@@ -8353,8 +8058,8 @@
         "func": "var timer = context.global.moment(global.get('active-now'));\nvar now = context.global.moment();\n\nif (timer.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\treturn msg;\n}\n\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 270,
-        "y": 320,
+        "x": 290,
+        "y": 400,
         "wires": [
             [
                 "8257d805.55e868",
@@ -8373,12 +8078,10 @@
         "repeat": "3600",
         "crontab": "",
         "once": false,
-        "x": 110,
-        "y": 320,
+        "x": 90,
+        "y": 400,
         "wires": [
-            [
-                "84634618.51fc18"
-            ]
+            []
         ]
     },
     {
@@ -8389,8 +8092,8 @@
         "func": "global.set('active-now', null); // we disable timestamp to semaphore deadlock detection",
         "outputs": 1,
         "noerr": 0,
-        "x": 1650,
-        "y": 80,
+        "x": 1490,
+        "y": 140,
         "wires": [
             []
         ]
@@ -8403,8 +8106,8 @@
         "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 600,
-        "y": 320,
+        "x": 580,
+        "y": 400,
         "wires": []
     },
     {
@@ -8587,8 +8290,8 @@
         "type": "subflow:f21ab878.9fd518",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1210,
-        "y": 220,
+        "x": 1190,
+        "y": 300,
         "wires": []
     },
     {
@@ -8596,8 +8299,8 @@
         "type": "subflow:f21ab878.9fd518",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1810,
-        "y": 300,
+        "x": 1790,
+        "y": 380,
         "wires": []
     },
     {
@@ -8608,8 +8311,8 @@
         "active": true,
         "console": "false",
         "complete": "true",
-        "x": 1510,
-        "y": 200,
+        "x": 1490,
+        "y": 280,
         "wires": []
     },
     {
@@ -8617,8 +8320,8 @@
         "type": "subflow:f21ab878.9fd518",
         "z": "c1e7ebde.3e0b68",
         "name": "",
-        "x": 1510,
-        "y": 240,
+        "x": 1490,
+        "y": 320,
         "wires": []
     },
     {
@@ -9853,8 +9556,8 @@
         "func": "// node.log(JSON.stringify(msg));\n\n// node.log(typeof msg.payload.ok);\n\nif (typeof msg.error === 'undefined') {\n    // node.log('Delete no active fires success');\n    var type = msg.type;\n    var now = global.get('active-now');\n    var type = flow.get('active-type');\n\n    var newfires = {};\n    newfires.type = type;\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\n    newfires.payload = [{ createdAt: now, type: type }];\n    return [newfires, null];\n} else {\n    node.log(\"Error in deletion: \" + msg.error);\n    return [null, msg];\n}\n",
         "outputs": "2",
         "noerr": 0,
-        "x": 1380,
-        "y": 140,
+        "x": 1360,
+        "y": 220,
         "wires": [
             [
                 "d6226d6b.2fad4"
@@ -10064,57 +9767,6 @@
         "wires": []
     },
     {
-        "id": "a0583170.5f1de",
-        "type": "function",
-        "z": "5501c3cc.11327c",
-        "name": "status",
-        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nif (last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n}\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n \nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: last.fromNow()\n    };\n// status.payload = JSON.stringify(status);\nstatus.payload = agos;\nreturn status;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 250,
-        "y": 1540,
-        "wires": [
-            [
-                "ae7d0936.c8ffc8"
-            ]
-        ]
-    },
-    {
-        "id": "ae7d0936.c8ffc8",
-        "type": "tcp out",
-        "z": "5501c3cc.11327c",
-        "host": "",
-        "port": "6789",
-        "beserver": "reply",
-        "base64": false,
-        "end": false,
-        "name": "tcp :6790",
-        "x": 400,
-        "y": 1540,
-        "wires": []
-    },
-    {
-        "id": "87b83152.5a167",
-        "type": "tcp in",
-        "z": "5501c3cc.11327c",
-        "name": "test :6790",
-        "server": "server",
-        "host": "",
-        "port": "6790",
-        "datamode": "stream",
-        "datatype": "utf8",
-        "newline": "\\n",
-        "topic": "",
-        "base64": false,
-        "x": 97.71034240722656,
-        "y": 1540.79931640625,
-        "wires": [
-            [
-                "a0583170.5f1de"
-            ]
-        ]
-    },
-    {
         "id": "80301d51.4db5e",
         "type": "http in",
         "z": "c1e7ebde.3e0b68",
@@ -10123,8 +9775,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 90,
-        "y": 60,
+        "x": 70,
+        "y": 140,
         "wires": [
             [
                 "419651ae.c4514"
@@ -10138,8 +9790,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 460,
-        "y": 60,
+        "x": 440,
+        "y": 140,
         "wires": []
     },
     {
@@ -10150,8 +9802,8 @@
         "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nlet statusCode;\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n\nif (ago === 0 || last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n\tstatusCode = 503;\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n\tstatusCode = 200;\n}\n\nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: when.fromNow()\n    };\nmsg.payload = JSON.stringify(status);\nmsg.statusCode = statusCode;\n// msg.payload = agos;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 260,
-        "y": 59,
+        "x": 240,
+        "y": 139,
         "wires": [
             [
                 "6d735f28.32142"
@@ -10167,8 +9819,8 @@
         "name": "bulkWrite",
         "collection": "siteSettings",
         "operation": "bulkWrite",
-        "x": 1240,
-        "y": 20,
+        "x": 1220,
+        "y": 100,
         "wires": [
             [
                 "9a511032.485c4"
@@ -10183,8 +9835,8 @@
         "func": "if (typeof msg.error !== 'undefined') {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1390,
-        "y": 20,
+        "x": 1370,
+        "y": 100,
         "wires": [
             [
                 "46708f6a.8fc57"
@@ -10199,8 +9851,8 @@
         "active": true,
         "console": "false",
         "complete": "error",
-        "x": 1530,
-        "y": 20,
+        "x": 1510,
+        "y": 100,
         "wires": []
     },
     {
@@ -10218,7 +9870,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 8,
+        "order": 12,
         "width": 0,
         "height": 0,
         "name": "usuarios",
@@ -10282,7 +9934,7 @@
         "z": "93cb4937.6fc068",
         "name": "users to dash",
         "group": "601660c.cd104a",
-        "order": 4,
+        "order": 1,
         "width": "0",
         "height": "0",
         "label": "Usuarios",
@@ -10335,7 +9987,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 10,
+        "order": 15,
         "width": 0,
         "height": 0,
         "name": "comentarios",
@@ -10399,7 +10051,7 @@
         "z": "93cb4937.6fc068",
         "name": "comments to dash",
         "group": "601660c.cd104a",
-        "order": 6,
+        "order": 10,
         "width": "0",
         "height": "0",
         "label": "Comentarios",
@@ -10452,7 +10104,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 11,
+        "order": 16,
         "width": 0,
         "height": 0,
         "name": "com-anon",
@@ -10516,7 +10168,7 @@
         "z": "93cb4937.6fc068",
         "name": "comments-a to dash",
         "group": "601660c.cd104a",
-        "order": 7,
+        "order": 11,
         "width": "0",
         "height": "0",
         "label": "Comentarios anon",
@@ -10616,5 +10268,1099 @@
             "not false positive",
             "false"
         ]
+    },
+    {
+        "id": "2d1f11c9.bb155e",
+        "type": "split",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1550,
+        "y": 740,
+        "wires": [
+            [
+                "9d8b3c7e.498b",
+                "eaba3cfa.9782b"
+            ]
+        ]
+    },
+    {
+        "id": "f52e79fc.196b48",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "1000msg/5seg",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "minutes",
+        "rate": "1000",
+        "nbRateUnits": "5",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 1940,
+        "y": 740,
+        "wires": [
+            [
+                "185b9977.ad8c57"
+            ]
+        ]
+    },
+    {
+        "id": "185b9977.ad8c57",
+        "type": "subflow:2b8628df.fdcca8",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 2150,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "d66ede91.62de4",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "match tracked fires",
+        "func": "var pay = msg.payload;\nvar lon = msg.payload.ourid.coordinates[0];\nvar lat = msg.payload.ourid.coordinates[1];\n\nvar fires = {};\n// http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find\nfires.collection = \"activefires\";\nfires.payload = [{\n    ourid:\n    { $near : {\n        $geometry: { \n        type: \"Point\",  \n        coordinates: [ lon, lat]\n    },\n    $minDistance: 0,\n    $maxDistance: 400\n  }\n}\n}];\nfires.originalPayload = pay;\nreturn fires;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1530,
+        "y": 880,
+        "wires": [
+            [
+                "8b3931ab.4733a"
+            ]
+        ]
+    },
+    {
+        "id": "7fc4e8e9.ae5088",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find tracked",
+        "collection": "trackedfires",
+        "operation": "find.toArray",
+        "x": 1177.9999561309814,
+        "y": 875.9999923706055,
+        "wires": [
+            [
+                "c7d8a9c0.68e118"
+            ]
+        ]
+    },
+    {
+        "id": "c7d8a9c0.68e118",
+        "type": "split",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1357.9999561309814,
+        "y": 875.9999923706055,
+        "wires": [
+            [
+                "d66ede91.62de4"
+            ]
+        ]
+    },
+    {
+        "id": "78ecc59a.9af62c",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "find",
+        "func": "var trackedfires = {};\ntrackedfires.payload = [{}];\nreturn [trackedfires, null]",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1037.9999561309814,
+        "y": 875.9999923706055,
+        "wires": [
+            [
+                "7fc4e8e9.ae5088"
+            ]
+        ]
+    },
+    {
+        "id": "8b3931ab.4733a",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find tracked",
+        "collection": "",
+        "operation": "find.toArray",
+        "x": 1730,
+        "y": 880,
+        "wires": [
+            [
+                "65a6556e.2c1acc"
+            ]
+        ]
+    },
+    {
+        "id": "65a6556e.2c1acc",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "store",
+        "func": "var onError = function (err) {\n    if (err) {\n        node.error(err);\n    }\n};\n\nif (Array.isArray(msg.payload) && \n    msg.payload.length > 0) {\n    \n    var tracked = msg.originalPayload;\n    // node.log(\"Processing fire \" + when);\n    var path = global.get('ftp-path');\n    var updates = [];\n    for (var i = 0; i < msg.payload.length; i++) {\n        var fire = msg.payload[i];\n        var acdate = fire.acq_date;\n        var actime = fire.acq_time;\n        var when = context.global.moment.utc(acdate + \" \" + actime, \"YYYY-MM-DD HH:mm\").toDate(); // .valueOf();\n        fire.when = when;\n\n        var ourid = {\n            type: fire.type,\n            when: when,\n            fire: tracked.name\n        };\n\n        var setcommon = {\n            //_id: id,\n            ourid: ourid,\n            when : when,\n            longitude: fire.longitude,\n            latitude: fire.latitude,\n            acq_date: acdate,\n            acq_time: actime,\n            scan : fire.scan,\n            track : fire.track,\n            satellite : fire.satellite,\n            confidence : fire.confidence,\n            version : fire.version,\n            frp : fire.frp,\n            daynight : fire.daynight,\n        };\n        var setdiff;\n        if (fire.type === \"modis\") {\n            setdiff = {\n                brightness : fire.brightness,\n                bright_t31 : fire.bright_t31\n            };\n        } else { // viirs\n            setdiff = {\n                bright_ti4 : fire.bright_ti4,\n                bright_ti5 : fire.bright_ti5,\n            };\n        }\n        \n        var setjoin = Object.assign(setcommon, setdiff);\n\n        var set = { \n            $set: setjoin\n        };\n        \n        // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n        // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }\n        updates.push({ updateOne: { filter: {ourid: ourid}, update: set, upsert:true } });\n        \n        var email = {\n            fire: tracked.name,\n            date: acdate,\n            time: actime\n        }\n        node.send([null, email]);\n    }\n    var bulkUpdate = {};\n    bulkUpdate.collection = \"trackedfireshistory\";\n    // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite\n    // https://docs.mongodb.com/manual/reference/write-concern/\n    bulkUpdate.payload = [updates, {w: 1, wtimeout: 60000}];\n    return bulkUpdate;\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 1884,
+        "y": 880,
+        "wires": [
+            [
+                "67a49970.cb1498",
+                "9537932a.82321"
+            ],
+            [
+                "4bfe00a0.45866"
+            ]
+        ],
+        "outputLabels": [
+            "db",
+            "email"
+        ]
+    },
+    {
+        "id": "9537932a.82321",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 2080,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "67a49970.cb1498",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "bulkWrite",
+        "collection": "",
+        "operation": "bulkWrite",
+        "x": 2070,
+        "y": 880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1a45c24.a8cd93e",
+        "type": "e-mail",
+        "z": "c1e7ebde.3e0b68",
+        "server": "selver.comunes.org",
+        "port": "587",
+        "secure": false,
+        "name": "",
+        "dname": "send email with notification",
+        "x": 2687.9999561309814,
+        "y": 955.9999923706055,
+        "wires": []
+    },
+    {
+        "id": "4bfe00a0.45866",
+        "type": "credentials",
+        "z": "c1e7ebde.3e0b68",
+        "name": "email-to",
+        "props": [
+            {
+                "value": "to",
+                "type": "msg"
+            }
+        ],
+        "x": 2067.9999561309814,
+        "y": 955.9999923706055,
+        "wires": [
+            [
+                "3b0ef9e7.190336"
+            ]
+        ]
+    },
+    {
+        "id": "3b0ef9e7.190336",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "tracked fire alarm",
+        "func": "var email = {};\nemail.from = \"noreply@comunes.org\";\nemail.to = msg.to;\nemail.topic = \"Fuego detectado en \" + msg.fire;\nemail.payload  = \"Detectado a las \" + msg.date +  \" \" + msg.time + \"(UTC)\\n\\n\";\nemail.payload += \"Recibirás como máximo dos avisos al día.\\n\\n\";\nreturn email;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 2257.9999561309814,
+        "y": 955.9999923706055,
+        "wires": [
+            [
+                "8d569fc2.4bb7c"
+            ]
+        ]
+    },
+    {
+        "id": "8d569fc2.4bb7c",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "12",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 2467.9999561309814,
+        "y": 955.9999923706055,
+        "wires": [
+            [
+                "1a45c24.a8cd93e"
+            ]
+        ]
+    },
+    {
+        "id": "9d8b3c7e.498b",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 1750,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "46d0f45d.c0b6cc",
+        "type": "delay",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 620,
+        "y": 800,
+        "wires": [
+            [
+                "b32399ec.e8a038"
+            ]
+        ]
+    },
+    {
+        "id": "faa3f288.2a46c",
+        "type": "switch",
+        "z": "c1e7ebde.3e0b68",
+        "name": "bot?",
+        "property": "telegramBot",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "es",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 470,
+        "y": 740,
+        "wires": [
+            [
+                "b32399ec.e8a038"
+            ],
+            [
+                "46d0f45d.c0b6cc"
+            ]
+        ],
+        "outputLabels": [
+            "es",
+            "others"
+        ]
+    },
+    {
+        "id": "c93179dd.45f798",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "wait for touch",
+        "func": "const pay = msg.payload;\nif (pay && \n    pay.type === \"file\" && \n    pay.event && \n    pay.event.mask === 32 &&\n    pay.event.name === \"new\") {\n    const newMsg = {};\n    newMsg.payload = \"new data\";\n    return newMsg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 740,
+        "wires": [
+            [
+                "faa3f288.2a46c"
+            ]
+        ]
+    },
+    {
+        "id": "b32399ec.e8a038",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "continue",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 760,
+        "y": 740,
+        "wires": [
+            [
+                "3581b605.8735ea",
+                "3090c420.32e79c"
+            ]
+        ]
+    },
+    {
+        "id": "4126fba3.c70e44",
+        "type": "inotify",
+        "z": "c1e7ebde.3e0b68",
+        "folder": "/var/tmp/nasa-data",
+        "persistent": true,
+        "name": "nasa-data",
+        "x": 120,
+        "y": 740,
+        "wires": [
+            [
+                "c93179dd.45f798",
+                "1af37caf.5f5a73",
+                "1018361c.620a8a"
+            ]
+        ]
+    },
+    {
+        "id": "c5afb643.c445f8",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "findUnion",
+        "collection": "siteSettings",
+        "operation": "findOne",
+        "x": 1040,
+        "y": 720,
+        "wires": [
+            [
+                "122f4647.c27b2a",
+                "1e8ed4d7.19e3cb"
+            ]
+        ]
+    },
+    {
+        "id": "122f4647.c27b2a",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "if error",
+        "func": "if (typeof msg.error !== 'undefined') {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1130,
+        "y": 780,
+        "wires": [
+            [
+                "21bb60ad.a38a7"
+            ]
+        ]
+    },
+    {
+        "id": "21bb60ad.a38a7",
+        "type": "debug",
+        "z": "c1e7ebde.3e0b68",
+        "name": "errors",
+        "active": true,
+        "console": "false",
+        "complete": "error",
+        "x": 1270,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "3581b605.8735ea",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "subs?",
+        "func": "msg.payload = [{ name: 'subs-private-union'}];\nreturn msg;\n",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 910,
+        "y": 720,
+        "wires": [
+            [
+                "c5afb643.c445f8"
+            ]
+        ]
+    },
+    {
+        "id": "1e8ed4d7.19e3cb",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "fires to notif",
+        "func": "const value = msg.payload.value;\nconst union = JSON.parse(value);\nmsg.payload = [{\n    ourid: {\n        $geoWithin: {\n            $geometry: union.geometry\n        }\n    }\n}];\nreturn msg;\n    \n",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 1230,
+        "y": 720,
+        "wires": [
+            [
+                "cb517a81.ecf308"
+            ]
+        ]
+    },
+    {
+        "id": "cb517a81.ecf308",
+        "type": "mongodb2 in",
+        "z": "c1e7ebde.3e0b68",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find",
+        "collection": "activefires",
+        "operation": "find.toArray",
+        "x": 1410,
+        "y": 720,
+        "wires": [
+            [
+                "2d1f11c9.bb155e"
+            ]
+        ]
+    },
+    {
+        "id": "eaba3cfa.9782b",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "lat/lon/type out pay",
+        "func": "msg.lon = msg.payload.ourid.coordinates[0];\nmsg.lat = msg.payload.ourid.coordinates[1];\nmsg.type = msg.payload.type;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1730,
+        "y": 740,
+        "wires": [
+            [
+                "f52e79fc.196b48"
+            ]
+        ]
+    },
+    {
+        "id": "1af37caf.5f5a73",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "set last-fire-check",
+        "func": "const pay = msg.payload;\nif (pay && \n    pay.type === \"file\" && \n    pay.event && \n    pay.event.mask === 32 &&\n    pay.event.name === \"new\") {\n    global.set('last-fire-check', new Date());\n    /* const newMsg = {};\n    newMsg.payload = \"new data\";\n    return newMsg; */\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 310,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9a280b29.7a7178",
+        "type": "function",
+        "z": "fc78b15f.c64b7",
+        "name": "only one bot",
+        "func": "if (global.get(\"notifyWebUsers\")) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 250,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a5ddbebe.57485",
+        "type": "comment",
+        "z": "557e0255.d1220c",
+        "name": "original lintening in 6789",
+        "info": "Liste on  6789\nstream of string\ndelimiter \\n\ntopic: blank\nName: test:6789",
+        "x": 160,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "15f88e76.10d0d2",
+        "type": "comment",
+        "z": "c1e7ebde.3e0b68",
+        "name": "Originally listen on 40001 and 40002",
+        "info": "singe string\n",
+        "x": 170,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "9025d4c7.080bc8",
+        "type": "subflow:fc78b15f.c64b7",
+        "z": "c1e7ebde.3e0b68",
+        "name": "only one bot",
+        "x": 510,
+        "y": 980,
+        "wires": [
+            [
+                "8d64c71.986bc38",
+                "e1ad7f59.37f74",
+                "18442d0b.f42373",
+                "fd821777.954738",
+                "60c258f3.cbe8c8",
+                "df8afba7.cfb678"
+            ]
+        ]
+    },
+    {
+        "id": "6cb0558a.3408bc",
+        "type": "subflow:fc78b15f.c64b7",
+        "z": "93cb4937.6fc068",
+        "x": 310,
+        "y": 1900,
+        "wires": [
+            [
+                "79c5a18b.dc663",
+                "8be77355.e4b82",
+                "df3b630.a229ea",
+                "6e94e3ec.29eafc",
+                "2cb7dc7e.180204",
+                "56638eac.27187",
+                "47d9b91c.d37ec8",
+                "997b33bf.c90ae"
+            ]
+        ]
+    },
+    {
+        "id": "4e83d06d.3abec",
+        "type": "subflow:c8522537.c6f908",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1020,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "5357e7c4.ec7f08",
+        "type": "subflow:3f0768a7.1fac78",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1010,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "df8afba7.cfb678",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "find last",
+        "func": "var query = {};\nquery.payload = [{}, { sort: { when: -1 } }];\nreturn [query, null]",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 760,
+        "y": 1160,
+        "wires": [
+            [
+                "8fad9ca.0e9836"
+            ]
+        ]
+    },
+    {
+        "id": "8d64c71.986bc38",
+        "type": "file in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "ftp-read-fires",
+        "filename": "/var/tmp/nasa-data/ftp-read-fires-stats",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "x": 770,
+        "y": 960,
+        "wires": [
+            [
+                "19801b66.e2d305"
+            ]
+        ]
+    },
+    {
+        "id": "fd821777.954738",
+        "type": "file in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "new-fires",
+        "filename": "/var/tmp/nasa-data/new-fires-stats",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "x": 760,
+        "y": 1080,
+        "wires": [
+            [
+                "4e83d06d.3abec"
+            ]
+        ]
+    },
+    {
+        "id": "60c258f3.cbe8c8",
+        "type": "file in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "total-fires",
+        "filename": "/var/tmp/nasa-data/total-fires-stats",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "x": 760,
+        "y": 1120,
+        "wires": [
+            [
+                "5357e7c4.ec7f08"
+            ]
+        ]
+    },
+    {
+        "id": "18442d0b.f42373",
+        "type": "file in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "fires-to-notif",
+        "filename": "/var/tmp/nasa-data/fires-to-notif-stats",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "x": 770,
+        "y": 1040,
+        "wires": [
+            [
+                "dcca1ae4.5cd828"
+            ]
+        ]
+    },
+    {
+        "id": "e1ad7f59.37f74",
+        "type": "file in",
+        "z": "c1e7ebde.3e0b68",
+        "name": "disappeared-fires",
+        "filename": "/var/tmp/nasa-data/disappeared-fires-stats",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "x": 790,
+        "y": 1000,
+        "wires": [
+            [
+                "c7e590df.11826"
+            ]
+        ]
+    },
+    {
+        "id": "1018361c.620a8a",
+        "type": "function",
+        "z": "c1e7ebde.3e0b68",
+        "name": "wait for end",
+        "func": "const pay = msg.payload;\nif (pay && \n    pay.type === \"file\" && \n    pay.event && \n    pay.event.mask === 32 &&\n    pay.event.name === \"end\") {\n    const newMsg = {};\n    newMsg.payload = \"new data\";\n    return newMsg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 270,
+        "y": 980,
+        "wires": [
+            [
+                "9025d4c7.080bc8"
+            ]
+        ]
+    },
+    {
+        "id": "3090c420.32e79c",
+        "type": "subflow:fc78b15f.c64b7",
+        "z": "c1e7ebde.3e0b68",
+        "name": "only one bot",
+        "x": 870,
+        "y": 840,
+        "wires": [
+            [
+                "78ecc59a.9af62c"
+            ]
+        ]
+    },
+    {
+        "id": "41d766b4.a750d8",
+        "type": "ui_chart",
+        "z": "274b3b4f.3ee674",
+        "name": "disappeared fires",
+        "group": "601660c.cd104a",
+        "order": 9,
+        "width": "0",
+        "height": "0",
+        "label": "Disappeared fires",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 290,
+        "y": 40,
+        "wires": [
+            [
+                "3c6423e9.9879bc"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "3c6423e9.9879bc",
+        "type": "persist in",
+        "z": "274b3b4f.3ee674",
+        "name": "disappeared-fires",
+        "storageNode": "684810a9.5bc6e",
+        "x": 510,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "5ab5ea3b.babca4",
+        "type": "persist out",
+        "z": "274b3b4f.3ee674",
+        "name": "disappeared-fires",
+        "storageNode": "684810a9.5bc6e",
+        "x": 290,
+        "y": 80,
+        "wires": [
+            [
+                "41d766b4.a750d8"
+            ]
+        ]
+    },
+    {
+        "id": "dcca1ae4.5cd828",
+        "type": "subflow:cb92bddb.cd891",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1010,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "39f436ba.2892aa",
+        "type": "ui_chart",
+        "z": "cb92bddb.cd891",
+        "name": "fires to notify",
+        "group": "601660c.cd104a",
+        "order": 7,
+        "width": "0",
+        "height": "0",
+        "label": "Fires to notify",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 310,
+        "y": 60,
+        "wires": [
+            [
+                "7a1c06a6.635ed8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "7a1c06a6.635ed8",
+        "type": "persist in",
+        "z": "cb92bddb.cd891",
+        "name": "fires-to-notif",
+        "storageNode": "2cac9837.f79ed8",
+        "x": 470,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b84936e7.951a08",
+        "type": "persist out",
+        "z": "cb92bddb.cd891",
+        "name": "fires-to-notif",
+        "storageNode": "2cac9837.f79ed8",
+        "x": 310,
+        "y": 100,
+        "wires": [
+            [
+                "39f436ba.2892aa"
+            ]
+        ]
+    },
+    {
+        "id": "ca4baf0d.cf966",
+        "type": "ui_chart",
+        "z": "29f2a71d.f90dd8",
+        "name": "ftp read fires",
+        "group": "601660c.cd104a",
+        "order": 5,
+        "width": "0",
+        "height": "0",
+        "label": "Fires read from ftp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 290,
+        "y": 60,
+        "wires": [
+            [
+                "e3ebc558.faf448"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "e3ebc558.faf448",
+        "type": "persist in",
+        "z": "29f2a71d.f90dd8",
+        "name": "ftp-read-fires",
+        "storageNode": "bc532db6.6386f",
+        "x": 450,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "30d9016.e25cefe",
+        "type": "persist out",
+        "z": "29f2a71d.f90dd8",
+        "name": "ftp-read-fires",
+        "storageNode": "bc532db6.6386f",
+        "x": 290,
+        "y": 100,
+        "wires": [
+            [
+                "ca4baf0d.cf966"
+            ]
+        ]
+    },
+    {
+        "id": "c7e590df.11826",
+        "type": "subflow:274b3b4f.3ee674",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1020,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "19801b66.e2d305",
+        "type": "subflow:29f2a71d.f90dd8",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 1010,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "8fad9ca.0e9836",
+        "type": "subflow:ed14151e.813358",
+        "z": "c1e7ebde.3e0b68",
+        "name": "",
+        "x": 980,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "580930a4.dd3ed",
+        "type": "mongodb2 in",
+        "z": "ed14151e.813358",
+        "service": "_ext_",
+        "configNode": "d5559ee5.960e2",
+        "name": "find in activefires",
+        "collection": "activefires",
+        "operation": "findOne",
+        "x": 310,
+        "y": 140,
+        "wires": [
+            [
+                "898c62ce.12af8"
+            ]
+        ]
+    },
+    {
+        "id": "66214482.62083c",
+        "type": "ui_chart",
+        "z": "ed14151e.813358",
+        "name": "last detection",
+        "group": "601660c.cd104a",
+        "order": 6,
+        "width": "0",
+        "height": "0",
+        "label": "Last fire detected (minutes)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 680,
+        "y": 140,
+        "wires": [
+            [
+                "8b57ffe.417ee"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "8b57ffe.417ee",
+        "type": "persist in",
+        "z": "ed14151e.813358",
+        "name": "last-fire-detected",
+        "storageNode": "60b3c803.aa7258",
+        "x": 950,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "9d39f0e8.1ee1f",
+        "type": "persist out",
+        "z": "ed14151e.813358",
+        "name": "last-fire-detected",
+        "storageNode": "60b3c803.aa7258",
+        "x": 690,
+        "y": 180,
+        "wires": [
+            [
+                "66214482.62083c"
+            ]
+        ]
+    },
+    {
+        "id": "926d060f.ee8768",
+        "type": "ui_text",
+        "z": "ed14151e.813358",
+        "group": "601660c.cd104a",
+        "order": 14,
+        "width": 0,
+        "height": 0,
+        "name": "last detection",
+        "label": "Last fire detected",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 680,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "898c62ce.12af8",
+        "type": "function",
+        "z": "ed14151e.813358",
+        "name": "when",
+        "func": "const when = msg.payload.when;\nconst since = context.global.moment.utc(when).fromNow();\nmsg.payload = since;\nconst fromNowMin = {};\nconst duration = context.global.moment.duration((new Date()) - when);\nfromNowMin.payload = (duration.days() * 24 + 60) + (duration.hours() * 60) + duration.minutes(); \nreturn [msg, fromNowMin];\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            [
+                "926d060f.ee8768"
+            ],
+            [
+                "66214482.62083c"
+            ]
+        ]
+    },
+    {
+        "id": "5972e93c.a3d3d8",
+        "type": "debug",
+        "z": "ed14151e.813358",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 670,
+        "y": 60,
+        "wires": []
     }
 ]

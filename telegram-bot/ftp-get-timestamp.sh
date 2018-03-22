@@ -95,19 +95,20 @@ do
     fi
 done
 
+FILES=""
+
 if [[ $MDIRTY ]]
 then
-    echo -n "ping" | nc 127.0.0.1 40001 -q 0
+    FILES=$DEST/modis.txt
 fi
 
 if [[ $VDIRTY ]]
 then
-    echo -n "ping" | nc 127.0.0.1 40002 -q 0
+    FILES="${FILES} ${DEST}/viir.txt"
 fi
 
-exit 0
+if [[ $DEBUG -eq 1 ]] ; then echo "Files to import $FILES"; fi
 
-#496956/20:32/MODIS_C6_Global_MCD14DL_NRT_2017310.txt
-#modis|496956|20:32|2017|310
-#2808549/20:30/VIIRS_I_Global_VNP14IMGTDL_NRT_2017310.txt
-#viirs|2808549|20:30|2017|310
+(cd ../fires-csv-mongo-import/ && node fires-csv-mongo-import.js $FILES)
+
+exit 0
