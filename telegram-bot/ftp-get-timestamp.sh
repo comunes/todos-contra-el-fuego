@@ -111,6 +111,6 @@ fi
 
 if [[ $DEBUG -eq 1 ]] ; then echo "Files to import $FILES"; fi
 
-(cd $DIR/../fires-csv-mongo-import/ && node fires-csv-mongo-import.js $FILES)
+(cd $DIR/../fires-csv-mongo-import/ && /usr/local/bin/node fires-csv-mongo-import.js $FILES)
 
 exit 0
