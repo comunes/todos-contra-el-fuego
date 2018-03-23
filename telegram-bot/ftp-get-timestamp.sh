@@ -2,6 +2,8 @@
 USER=$1
 PASS=$2
 DEST=$3
+# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 DEBUG=0
 
@@ -109,6 +111,6 @@ fi
 
 if [[ $DEBUG -eq 1 ]] ; then echo "Files to import $FILES"; fi
 
-(cd ../fires-csv-mongo-import/ && node fires-csv-mongo-import.js $FILES)
+(cd $DIR/../fires-csv-mongo-import/ && node fires-csv-mongo-import.js $FILES)
 
 exit 0
