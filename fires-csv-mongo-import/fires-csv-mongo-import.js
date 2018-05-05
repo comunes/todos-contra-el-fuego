@@ -217,7 +217,7 @@ mongoClient.connect(mongoUrl, {
     }
   };
 
-  siteSettings.updateOne({ name: 'last-fire-check' }, lastCheckSet, (seterr) => {
+  siteSettings.updateOne({ name: 'last-fire-check' }, lastCheckSet, { upsert: true }, (seterr) => {
     assert.equal(null, seterr);
     touch('check');
   });
