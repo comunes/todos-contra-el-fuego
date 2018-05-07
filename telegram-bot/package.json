@@ -11,6 +11,7 @@
     "jsonfile": "^4.0.0",
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.14",
+    "mongodb": "^2.2.34",
     "node-red-contrib-assert": "~1.2.1",
     "node-red-contrib-cache": "^1.0.3",
     "node-red-contrib-config": "^1.1.1",
