@@ -956,7 +956,7 @@
     {
         "id": "5126d9b8.d9a858",
         "type": "subflow",
-        "name": "updateOne",
+        "name": "updateOneNoUpset",
         "info": "",
         "in": [
             {
@@ -1743,6 +1743,12 @@
                 "pt": "global",
                 "to": "true",
                 "tot": "bool"
+            },
+            {
+                "p": "telegramBotToken",
+                "pt": "global",
+                "to": "457126364:AAH0v4zxZkXOCPSRkorv5tZtn9e588DnQBI",
+                "tot": "str"
             }
         ],
         "active": true,
@@ -1797,6 +1803,12 @@
                 "pt": "global",
                 "to": "true",
                 "tot": "bool"
+            },
+            {
+                "p": "telegramBotToken",
+                "pt": "global",
+                "to": "",
+                "tot": "str"
             }
         ],
         "active": false,
@@ -8771,50 +8783,6 @@
         "wires": []
     },
     {
-        "id": "80301d51.4db5e",
-        "type": "http in",
-        "z": "c1e7ebde.3e0b68",
-        "name": "/status",
-        "url": "/status",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 110,
-        "y": 60,
-        "wires": [
-            [
-                "419651ae.c4514"
-            ]
-        ]
-    },
-    {
-        "id": "6d735f28.32142",
-        "type": "http response",
-        "z": "c1e7ebde.3e0b68",
-        "name": "",
-        "statusCode": "",
-        "headers": {},
-        "x": 480,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "419651ae.c4514",
-        "type": "function",
-        "z": "c1e7ebde.3e0b68",
-        "name": "status",
-        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nlet statusCode;\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n\nif (ago === 0 || last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n\tstatusCode = 503;\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n\tstatusCode = 200;\n}\n\nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: when.fromNow()\n    };\nmsg.payload = JSON.stringify(status);\nmsg.statusCode = statusCode;\n// msg.payload = agos;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 280,
-        "y": 59,
-        "wires": [
-            [
-                "6d735f28.32142"
-            ]
-        ]
-    },
-    {
         "id": "b625046e.2f3668",
         "type": "comment",
         "z": "128790f6.dee0df",
@@ -11006,6 +10974,7 @@
         "id": "4b90978e.872578",
         "type": "subflow:b80c15d3.8f06f8",
         "z": "b08bc794.82abc8",
+        "name": "",
         "x": 424.51390075683594,
         "y": 37.52083778381348,
         "wires": [
@@ -11300,6 +11269,167 @@
         "complete": "true",
         "x": 352.5234375,
         "y": 296.453125,
+        "wires": []
+    },
+    {
+        "id": "b351bd17.42cab",
+        "type": "http in",
+        "z": "93cb4937.6fc068",
+        "name": "/status",
+        "url": "/status",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 626,
+        "y": 154,
+        "wires": [
+            [
+                "a31f736b.a6f78"
+            ]
+        ]
+    },
+    {
+        "id": "a31f736b.a6f78",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "status",
+        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nlet statusCode;\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n\nif (ago === 0 || last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n\tstatusCode = 503;\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n\tstatusCode = 200;\n}\n\nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: when.fromNow()\n    };\nmsg.payload = JSON.stringify(status);\nmsg.statusCode = statusCode;\n// msg.payload = agos;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 796,
+        "y": 153,
+        "wires": [
+            [
+                "afff27db.87df78"
+            ]
+        ]
+    },
+    {
+        "id": "811b950b.3ebf28",
+        "type": "http in",
+        "z": "93cb4937.6fc068",
+        "name": "/botstatus",
+        "url": "/botstatus",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 636,
+        "y": 202,
+        "wires": [
+            [
+                "381c113a.734ebe"
+            ]
+        ]
+    },
+    {
+        "id": "381c113a.734ebe",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "test bot",
+        "func": "const TelegramBot = context.global.telegrambotapi;\n// replace the value below with the Telegram token you receive from @BotFather\nconst token = global.get('telegramBotToken');\n\nconst bot = new TelegramBot(token, {polling: false});\n\nbot.getMe().then((result) => {\n    if (result.is_bot) {\n        node.status({fill:\"green\",shape:\"dot\", text: 'telegram bot ok'});\n\t    statusCode = 200;\n    } else {\n    \tnode.status({fill:\"red\",shape:\"dot\", text: 'telegram bot problems'});\n\t    statusCode = 503;\n    }\n    const status = { \n        status: result\n    };\n    msg.payload = JSON.stringify(status);\n    msg.statusCode = statusCode;\n    node.send(msg);\n});\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 805.5,
+        "y": 201,
+        "wires": [
+            [
+                "15b4f53.6c3070b"
+            ]
+        ]
+    },
+    {
+        "id": "eb7f372e.175c58",
+        "type": "subflow:b08bc794.82abc8",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 1016.5,
+        "y": 274,
+        "wires": [
+            [
+                "e056eaaa.908568"
+            ]
+        ]
+    },
+    {
+        "id": "63a0b98c.b6e0a8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "set bot status",
+        "func": "const bot = context.global.telegramBot;\nvar newMsg = {\n    query : {\n        // day: day,\n        name: `bot-${bot}-db-status`\n    },\n    payload: {\n        $set: { value: new Date(), type: 'date', isPublic: false, description: 'Db status check of bot' }\n    }\n};\nnewMsg.collection = \"siteSettings\";\nflow.set('dbstatusOriginalMsg', msg);\nreturn newMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 820,
+        "y": 275,
+        "wires": [
+            [
+                "eb7f372e.175c58"
+            ]
+        ]
+    },
+    {
+        "id": "e056eaaa.908568",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "db status",
+        "func": "let status;\nif (typeof msg.error !== 'undefined') {\n\tstatus = {fill:\"red\",shape:\"dot\", text: 'db connection problem'};\n\tstatusCode = 503;\n} else {\t\n\tstatus = {fill:\"green\",shape:\"dot\", text: 'ok'};\n\tstatusCode = 200;\n}\nnode.status(status);\nconst omsg = flow.get('dbstatusOriginalMsg');\nomsg.payload = JSON.stringify(status);\nomsg.statusCode = statusCode;\nreturn omsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1182,
+        "y": 274,
+        "wires": [
+            [
+                "44450ce9.495a04"
+            ]
+        ]
+    },
+    {
+        "id": "44450ce9.495a04",
+        "type": "http response",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1329,
+        "y": 274,
+        "wires": []
+    },
+    {
+        "id": "b5b5aa3c.c6fdd8",
+        "type": "http in",
+        "z": "93cb4937.6fc068",
+        "name": "/dbstatus",
+        "url": "/dbstatus",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 636,
+        "y": 274,
+        "wires": [
+            [
+                "63a0b98c.b6e0a8"
+            ]
+        ]
+    },
+    {
+        "id": "afff27db.87df78",
+        "type": "http response",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 996,
+        "y": 154,
+        "wires": []
+    },
+    {
+        "id": "15b4f53.6c3070b",
+        "type": "http response",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 995,
+        "y": 201,
         "wires": []
     }
 ]
