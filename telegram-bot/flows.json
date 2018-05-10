@@ -1747,7 +1747,7 @@
             {
                 "p": "telegramBotToken",
                 "pt": "global",
-                "to": "457126364:AAH0v4zxZkXOCPSRkorv5tZtn9e588DnQBI",
+                "to": "",
                 "tot": "str"
             }
         ],
@@ -11326,7 +11326,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "test bot",
-        "func": "const TelegramBot = context.global.telegrambotapi;\n// replace the value below with the Telegram token you receive from @BotFather\nconst token = global.get('telegramBotToken');\n\nconst bot = new TelegramBot(token, {polling: false});\n\nbot.getMe().then((result) => {\n    if (result.is_bot) {\n        node.status({fill:\"green\",shape:\"dot\", text: 'telegram bot ok'});\n\t    statusCode = 200;\n    } else {\n    \tnode.status({fill:\"red\",shape:\"dot\", text: 'telegram bot problems'});\n\t    statusCode = 503;\n    }\n    const status = { \n        status: result\n    };\n    msg.payload = JSON.stringify(status);\n    msg.statusCode = statusCode;\n    node.send(msg);\n});\n",
+        "func": "const TelegramBot = context.global.telegrambotapi;\n// https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md\n\nconst token = global.get('telegramBotToken');\n\nconst bot = new TelegramBot(token, {polling: false});\n\nbot.getMe().then((result) => {\n    if (result.is_bot) {\n        node.status({fill:\"green\",shape:\"dot\", text: 'telegram bot ok'});\n\t    statusCode = 200;\n    } else {\n    \tnode.status({fill:\"red\",shape:\"dot\", text: 'telegram bot problems'});\n\t    statusCode = 503;\n    }\n    const status = { \n        status: result\n    };\n    msg.payload = JSON.stringify(status);\n    msg.statusCode = statusCode;\n    node.send(msg);\n});\n",
         "outputs": 1,
         "noerr": 0,
         "x": 805.5,
