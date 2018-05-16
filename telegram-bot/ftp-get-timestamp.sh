@@ -5,7 +5,7 @@ DEST=$3
 # https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-DEBUG=0
+DEBUG=1
 
 # ZONES="Alaska Australia_NewZealand Canada Central_America Europe Northern_and_Central_Africa Russia_Asia SouthEast_Asia South_America South_Asia Southern_Africa USA_contiguous_and_Hawaii"
 ZONES="Global"
@@ -41,11 +41,20 @@ function ftp-get {
 MDIRTY=false
 VDIRTY=false
 
+# minute odd/even use nrt4 or nrt3 server
+if [[ $((`date '+%M'` & 1)) ]]
+then
+    SERVER=3
+else
+    SERVER=4
+fi
+
 for ZONE in $ZONES
 do
-    # TODO check if server up
-    modis="nrt4.modaps.eosdis.nasa.gov/FIRMS/c6/$ZONE/"
-    viirs="nrt4.modaps.eosdis.nasa.gov/FIRMS/viirs/$ZONE/"
+    # TODO check if server up with the output of
+    # nc -z -v -w5 nrt4.modaps.eosdis.nasa.gov 21
+    modis="nrt$SERVER.modaps.eosdis.nasa.gov/FIRMS/c6/$ZONE/"
+    viirs="nrt$SERVER.modaps.eosdis.nasa.gov/FIRMS/viirs/$ZONE/"
 
     modisftp=`ftp-timestamp $modis`
     if [[ $DEBUG -eq 1 ]] ; then echo $modisftp; fi
