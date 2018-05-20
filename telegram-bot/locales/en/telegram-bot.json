@@ -94,5 +94,11 @@
     "serviceAuth": "Hello human! Click on this link to authorize me: ",
     "fireDetected": "fire detected {{when}}",
     "fireDetectedAt": "fire detected on {{when}}",
-    "firelink": "[more information](https://{{server}}/fire/{{enc}})"
+    "firelink": "[more information](https://{{server}}/fire/{{enc}})",
+    "🌏 Estado actual": "🌏 Current status",
+    "firesInZone": "{{firesnum}} {{fires}} within a {{dist}} км radius.",
+    "serviceStatusExtra": "[More information](https://{{server}}/fires)",
+    "Ningún": "No",
+    "fuego": "fire",
+    "fuegos": "fires"
 }
