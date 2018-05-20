@@ -3530,7 +3530,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "current susc",
-        "func": "var newMsg = {};\nnewMsg.notification = msg;\nnewMasg.collection = \"subscriptions\";\nnewMsg.payload = {};\nreturn newMsg;",
+        "func": "var newMsg = {};\nnewMsg.notification = msg;\nnewMsg.collection = \"subscriptions\";\nnewMsg.payload = { telegramBot: global.get('telegramBot') };\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 510,
