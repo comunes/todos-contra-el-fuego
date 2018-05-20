@@ -97,5 +97,17 @@
   "fireDetectedAt":
   "fuego detectado el {{when}}",
   "firelink":
-  "[más información](https://{{server}}/fire/{{enc}})"
+  "[más información](https://{{server}}/fire/{{enc}})",
+  "🌏 Estado actual":
+  "🌏 Estado actual",
+  "firesInZone":
+  "{{firesnum}} {{fires}} a {{dist}} км a la redonda.",
+  "serviceStatusExtra":
+  "[Más información](https://{{server}}/fires)",
+  "Ningún":
+  "Ningún",
+  "fuego":
+  "fuego",
+  "fuegos":
+  "fuegos"
 }
