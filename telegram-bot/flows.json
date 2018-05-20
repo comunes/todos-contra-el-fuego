@@ -11470,23 +11470,21 @@
         "props": [
             {
                 "value": "ironPassword",
-                "type": "msg"
+                "type": "global"
             },
             {
                 "value": "internalApiToken",
-                "type": "msg"
+                "type": "global"
             },
             {
                 "value": "telegramBotToken",
-                "type": "msg"
+                "type": "global"
             }
         ],
         "x": 1340.5000381469727,
         "y": 163.00000381469727,
         "wires": [
-            [
-                "b287b42c.28c3e8"
-            ]
+            []
         ]
     },
     {
@@ -11506,20 +11504,6 @@
             [
                 "b6c6feb9.a8d5c"
             ]
-        ]
-    },
-    {
-        "id": "b287b42c.28c3e8",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "set other credentials",
-        "func": "global.set('internalApiToken', msg.internalApiToken);\nglobal.set('ironPassword', msg.ironPassword);\nglobal.set('telegramBotToken', msg.telegramBotToken);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1570.5000457763672,
-        "y": 165.33334827423096,
-        "wires": [
-            []
         ]
     },
     {
