@@ -84,3 +84,4 @@ ftp-read-fires.json
 last-fire-detected.json
 tracked.json
 users-in-time.json
+notifications-in-time.json
