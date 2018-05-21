@@ -1264,6 +1264,13 @@
         "interval": "60"
     },
     {
+        "id": "a733588b.3d2d68",
+        "type": "persist-store",
+        "z": "",
+        "filename": "notifications-in-time.json",
+        "interval": "60"
+    },
+    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -2103,12 +2110,12 @@
         "id": "a890056b.ebcff8",
         "type": "function",
         "z": "95e78a8b.50a428",
-        "name": "inc subs",
+        "name": "increment sendnotis",
         "func": "// var day = context.global.moment.utc().dayOfYear()\n\nvar newMsg = {\n    query : {\n        // day: day,\n        name: \"sendnotis\"\n    },\n    payload: {\n        $inc: { value: 1 }\n    }\n};\nnewMsg.collection = \"fstats\";\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1900,
-        "y": 60,
+        "x": 1932.000015258789,
+        "y": 144.99999809265137,
         "wires": [
             [
                 "a1d870da.64966"
@@ -5563,8 +5570,8 @@
         "id": "a8447ee4.5f9bc",
         "type": "subflow:465e67f.6ebf598",
         "z": "95e78a8b.50a428",
-        "x": 1920,
-        "y": 100,
+        "x": 1922.0000114440918,
+        "y": 79.99999809265137,
         "wires": []
     },
     {
@@ -8382,7 +8389,8 @@
         "y": 140,
         "wires": [
             [
-                "dba8bb0b.46db38"
+                "dba8bb0b.46db38",
+                "a890056b.ebcff8"
             ]
         ]
     },
@@ -9607,7 +9615,8 @@
                 "2cb7dc7e.180204",
                 "56638eac.27187",
                 "47d9b91c.d37ec8",
-                "997b33bf.c90ae"
+                "997b33bf.c90ae",
+                "c92ac6.bf322538"
             ]
         ]
     },
@@ -10488,17 +10497,6 @@
         ]
     },
     {
-        "id": "b92a3e78.51334",
-        "type": "subflow:62f56d4f.2eb0a4",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 768.01953125,
-        "y": 1948.25390625,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "6439ed03.3aab74",
         "type": "subflow:62f56d4f.2eb0a4",
         "z": "93cb4937.6fc068",
@@ -11005,8 +11003,8 @@
         "id": "a1d870da.64966",
         "type": "subflow:b08bc794.82abc8",
         "z": "95e78a8b.50a428",
-        "x": 2111.524425506592,
-        "y": 60.725704193115234,
+        "x": 2159.5244903564453,
+        "y": 145.72570610046387,
         "wires": [
             []
         ]
@@ -11549,5 +11547,135 @@
                 "afff27db.87df78"
             ]
         ]
+    },
+    {
+        "id": "732fc8d5.ed8ec8",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "notis to dash",
+        "group": "601660c.cd104a",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Notificaciones",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1222.0195770263672,
+        "y": 1948.7539892196655,
+        "wires": [
+            [
+                "9c443212.34b39"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "277bcee3.964aa2",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "notifications-in-time",
+        "storageNode": "a733588b.3d2d68",
+        "x": 1242.0195770263672,
+        "y": 1988.7539892196655,
+        "wires": [
+            [
+                "732fc8d5.ed8ec8"
+            ]
+        ]
+    },
+    {
+        "id": "9c443212.34b39",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "notifications-in-time",
+        "storageNode": "a733588b.3d2d68",
+        "x": 1422.0195770263672,
+        "y": 1948.7539892196655,
+        "wires": []
+    },
+    {
+        "id": "c92ac6.bf322538",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count notis",
+        "func": "var newMsg = {\n    payload : {\n        name: \"sendnotis\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nnewMsg.collection = \"fstats\";\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 571.01953125,
+        "y": 1960.75390625,
+        "wires": [
+            [
+                "53f31d1d.62d034"
+            ]
+        ]
+    },
+    {
+        "id": "53f31d1d.62d034",
+        "type": "subflow:3ca4f49b.662eec",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 771.0390625,
+        "y": 1962.0078864097595,
+        "wires": [
+            [
+                "84662490.a382d8"
+            ]
+        ]
+    },
+    {
+        "id": "84662490.a382d8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "valuepay",
+        "func": "const value = msg.payload[0].value;\nmsg.payload = value;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 912.5234375,
+        "y": 1961.546875,
+        "wires": [
+            [
+                "37f67d84.2f3ce2",
+                "732fc8d5.ed8ec8"
+            ]
+        ]
+    },
+    {
+        "id": "37f67d84.2f3ce2",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 18,
+        "width": 0,
+        "height": 0,
+        "name": "notif",
+        "label": "Notificaciones totales",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1053.01953125,
+        "y": 1967.75390625,
+        "wires": []
     }
 ]
