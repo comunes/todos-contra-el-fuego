@@ -1271,6 +1271,27 @@
         "interval": "60"
     },
     {
+        "id": "3ffd20f4.68ff7",
+        "type": "persist-store",
+        "z": "",
+        "filename": "subs-web-in-time.json",
+        "interval": "60"
+    },
+    {
+        "id": "3bf90146.90fffe",
+        "type": "persist-store",
+        "z": "",
+        "filename": "subs-bot-es-in-time.json",
+        "interval": "60"
+    },
+    {
+        "id": "db8c452.812cbb8",
+        "type": "persist-store",
+        "z": "",
+        "filename": "subs-bot-en-in-time.json",
+        "interval": "60"
+    },
+    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -1960,7 +1981,7 @@
         "z": "2b8628df.fdcca8",
         "name": "to dash",
         "group": "601660c.cd104a",
-        "order": 20,
+        "order": 28,
         "width": "0",
         "height": "0",
         "label": "Usuarios cercanos",
@@ -2036,7 +2057,7 @@
         "z": "3f0768a7.1fac78",
         "name": "count active",
         "group": "601660c.cd104a",
-        "order": 3,
+        "order": 7,
         "width": "0",
         "height": "0",
         "label": "Fuegos activos en el mundo (fuente NASA)",
@@ -4905,7 +4926,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 17,
+        "order": 24,
         "width": 0,
         "height": 0,
         "name": "sus",
@@ -4921,7 +4942,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 13,
+        "order": 16,
         "width": 0,
         "height": 0,
         "name": "subs real",
@@ -4953,7 +4974,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 18,
+        "order": 25,
         "width": 0,
         "height": 0,
         "name": "desus",
@@ -4969,7 +4990,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 19,
+        "order": 27,
         "width": 0,
         "height": 0,
         "name": "avisos",
@@ -5002,7 +5023,7 @@
         "z": "93cb4937.6fc068",
         "name": "daily alerts",
         "group": "601660c.cd104a",
-        "order": 8,
+        "order": 12,
         "width": "0",
         "height": "0",
         "label": "Avisos diarios",
@@ -5086,7 +5107,7 @@
         "z": "93cb4937.6fc068",
         "name": "subs to dash",
         "group": "601660c.cd104a",
-        "order": 2,
+        "order": 5,
         "width": "0",
         "height": "0",
         "label": "Suscripciones",
@@ -5375,7 +5396,7 @@
         "z": "c8522537.c6f908",
         "name": "count new",
         "group": "601660c.cd104a",
-        "order": 4,
+        "order": 8,
         "width": "0",
         "height": "0",
         "label": "Fuegos activos nuevos",
@@ -6411,8 +6432,8 @@
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 710,
-        "y": 2400,
+        "x": 746,
+        "y": 2716,
         "wires": [
             [
                 "5983db7f.7b6614"
@@ -6427,8 +6448,8 @@
         "func": "var t = msg.i18n;\nvar m = {}\nm.payload = {};\nm.payload.chatId = msg.chatId;\nm.payload.content = \"Lenguaje \" + msg.lang + \", sample: \" + t('Desuscribirme') + ', ' + t('kmdistancia', {km: 99});\nm.payload.type = \"message\";\nreturn m;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1060,
-        "y": 2420,
+        "x": 1096,
+        "y": 2736,
         "wires": [
             [
                 "eee020eb.36a75"
@@ -6439,8 +6460,8 @@
         "id": "20f4d6ba.631d1a",
         "type": "subflow:e81a68fa.695e38",
         "z": "93cb4937.6fc068",
-        "x": 1350,
-        "y": 2420,
+        "x": 1386,
+        "y": 2736,
         "wires": [
             []
         ]
@@ -6452,8 +6473,8 @@
         "name": "/mylang",
         "command": "/mylang",
         "bot": "f93d1a38.c43218",
-        "x": 80,
-        "y": 2400,
+        "x": 116,
+        "y": 2716,
         "wires": [
             [
                 "c9679475.577988"
@@ -6472,8 +6493,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 410,
-        "y": 2460,
+        "x": 446,
+        "y": 2776,
         "wires": [
             [
                 "c9679475.577988",
@@ -6490,8 +6511,8 @@
         "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 500,
-        "y": 2400,
+        "x": 536,
+        "y": 2716,
         "wires": [
             [
                 "71ddbc3a.d5e9a4"
@@ -6506,8 +6527,8 @@
         "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1220,
-        "y": 2420,
+        "x": 1256,
+        "y": 2736,
         "wires": [
             [
                 "20f4d6ba.631d1a"
@@ -6522,8 +6543,8 @@
         "func": "var c = context.get('counter2') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter2', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter2', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 900,
-        "y": 2420,
+        "x": 936,
+        "y": 2736,
         "wires": [
             [
                 "2d3ed690.563dfa"
@@ -8738,7 +8759,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 12,
+        "order": 17,
         "width": 0,
         "height": 0,
         "name": "usuarios",
@@ -8838,7 +8859,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 15,
+        "order": 22,
         "width": 0,
         "height": 0,
         "name": "comentarios",
@@ -8885,7 +8906,7 @@
         "z": "93cb4937.6fc068",
         "name": "comments to dash",
         "group": "601660c.cd104a",
-        "order": 10,
+        "order": 14,
         "width": "0",
         "height": "0",
         "label": "Comentarios",
@@ -8938,7 +8959,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 16,
+        "order": 23,
         "width": 0,
         "height": 0,
         "name": "com-anon",
@@ -8985,7 +9006,7 @@
         "z": "93cb4937.6fc068",
         "name": "comments-a to dash",
         "group": "601660c.cd104a",
-        "order": 11,
+        "order": 15,
         "width": "0",
         "height": "0",
         "label": "Comentarios anon",
@@ -9616,7 +9637,10 @@
                 "56638eac.27187",
                 "47d9b91c.d37ec8",
                 "997b33bf.c90ae",
-                "c92ac6.bf322538"
+                "c92ac6.bf322538",
+                "663a4e67.a4998",
+                "da2fa134.b9283",
+                "9ec62864.14e9e8"
             ]
         ]
     },
@@ -9774,7 +9798,7 @@
         "z": "274b3b4f.3ee674",
         "name": "disappeared fires",
         "group": "601660c.cd104a",
-        "order": 9,
+        "order": 13,
         "width": "0",
         "height": "0",
         "label": "Disappeared fires",
@@ -9851,7 +9875,7 @@
         "z": "cb92bddb.cd891",
         "name": "fires to notify",
         "group": "601660c.cd104a",
-        "order": 7,
+        "order": 11,
         "width": "0",
         "height": "0",
         "label": "Fires to notify",
@@ -9919,7 +9943,7 @@
         "z": "29f2a71d.f90dd8",
         "name": "ftp read fires",
         "group": "601660c.cd104a",
-        "order": 5,
+        "order": 9,
         "width": "0",
         "height": "0",
         "label": "Fires read from ftp",
@@ -10031,7 +10055,7 @@
         "z": "ed14151e.813358",
         "name": "last detection",
         "group": "601660c.cd104a",
-        "order": 6,
+        "order": 10,
         "width": "0",
         "height": "0",
         "label": "Last fire detected (minutes)",
@@ -10098,7 +10122,7 @@
         "type": "ui_text",
         "z": "ed14151e.813358",
         "group": "601660c.cd104a",
-        "order": 14,
+        "order": 21,
         "width": 0,
         "height": 0,
         "name": "last detection",
@@ -11554,7 +11578,7 @@
         "z": "93cb4937.6fc068",
         "name": "notis to dash",
         "group": "601660c.cd104a",
-        "order": 2,
+        "order": 6,
         "width": "0",
         "height": "0",
         "label": "Notificaciones",
@@ -11667,7 +11691,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 18,
+        "order": 26,
         "width": 0,
         "height": 0,
         "name": "notif",
@@ -11676,6 +11700,348 @@
         "layout": "row-spread",
         "x": 1053.01953125,
         "y": 1967.75390625,
+        "wires": []
+    },
+    {
+        "id": "663a4e67.a4998",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count subs web",
+        "func": "msg.payload = { type: 'web'};\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 569,
+        "y": 2409,
+        "wires": [
+            [
+                "ec16bf7a.17037"
+            ]
+        ]
+    },
+    {
+        "id": "ec16bf7a.17037",
+        "type": "subflow:62f56d4f.2eb0a4",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 759.0195693969727,
+        "y": 2407.2539205551147,
+        "wires": [
+            [
+                "2cc1de2f.918342",
+                "5a7fb1ad.a55d7"
+            ]
+        ]
+    },
+    {
+        "id": "2cc1de2f.918342",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 18,
+        "width": 0,
+        "height": 0,
+        "name": "Subs web",
+        "label": "Subs web",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 949,
+        "y": 2409,
+        "wires": []
+    },
+    {
+        "id": "9bd3a0c5.870ed",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "subs-web-in-time",
+        "storageNode": "3ffd20f4.68ff7",
+        "x": 1139,
+        "y": 2389,
+        "wires": [
+            [
+                "5a7fb1ad.a55d7"
+            ]
+        ]
+    },
+    {
+        "id": "5a7fb1ad.a55d7",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "subs web to dash",
+        "group": "601660c.cd104a",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Subs web",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1149,
+        "y": 2349,
+        "wires": [
+            [
+                "8af9a869.11f228"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "8af9a869.11f228",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "subs-web-in-time",
+        "storageNode": "3ffd20f4.68ff7",
+        "x": 1358,
+        "y": 2349,
+        "wires": []
+    },
+    {
+        "id": "da2fa134.b9283",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count subs bot-es",
+        "func": "msg.payload = { type: 'telegram', telegramBot: 'es'};\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 549,
+        "y": 2509,
+        "wires": [
+            [
+                "a0176033.ca4ee"
+            ]
+        ]
+    },
+    {
+        "id": "a0176033.ca4ee",
+        "type": "subflow:62f56d4f.2eb0a4",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 729.0195693969727,
+        "y": 2507.2539205551147,
+        "wires": [
+            [
+                "479982f9.b2dbdc",
+                "47b470ed.fa6fa"
+            ]
+        ]
+    },
+    {
+        "id": "479982f9.b2dbdc",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 19,
+        "width": 0,
+        "height": 0,
+        "name": "Subs bot-es",
+        "label": "Subs bot-es",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 929,
+        "y": 2509,
+        "wires": []
+    },
+    {
+        "id": "1a5dbd16.0a5bd3",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-es-in-time",
+        "storageNode": "3bf90146.90fffe",
+        "x": 1142,
+        "y": 2492,
+        "wires": [
+            [
+                "47b470ed.fa6fa"
+            ]
+        ]
+    },
+    {
+        "id": "47b470ed.fa6fa",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "subs bot-es to dash",
+        "group": "601660c.cd104a",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "label": "Subs bot-es",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1129,
+        "y": 2449,
+        "wires": [
+            [
+                "40b677dc.618c48"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "40b677dc.618c48",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-es-in-time",
+        "storageNode": "3bf90146.90fffe",
+        "x": 1328,
+        "y": 2449,
+        "wires": []
+    },
+    {
+        "id": "9ec62864.14e9e8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count subs bot-en",
+        "func": "msg.payload = { type: 'telegram', telegramBot: 'en'};\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 546,
+        "y": 2607,
+        "wires": [
+            [
+                "45f28698.f708d8"
+            ]
+        ]
+    },
+    {
+        "id": "45f28698.f708d8",
+        "type": "subflow:62f56d4f.2eb0a4",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 726.0195693969727,
+        "y": 2605.2539205551147,
+        "wires": [
+            [
+                "e6bfa686.800fe8",
+                "50287bb5.53b884"
+            ]
+        ]
+    },
+    {
+        "id": "e6bfa686.800fe8",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 20,
+        "width": 0,
+        "height": 0,
+        "name": "Subs bot-en",
+        "label": "Subs bot-en",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 926,
+        "y": 2607,
+        "wires": []
+    },
+    {
+        "id": "5d121298.370bcc",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-en-in-time",
+        "storageNode": "db8c452.812cbb8",
+        "x": 1139,
+        "y": 2590,
+        "wires": [
+            [
+                "50287bb5.53b884"
+            ]
+        ]
+    },
+    {
+        "id": "50287bb5.53b884",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "subs bot-en to dash",
+        "group": "601660c.cd104a",
+        "order": 4,
+        "width": "0",
+        "height": "0",
+        "label": "Subs bot-en",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1126,
+        "y": 2547,
+        "wires": [
+            [
+                "3ebb9775.3a6098"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "3ebb9775.3a6098",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-en-in-time",
+        "storageNode": "db8c452.812cbb8",
+        "x": 1325,
+        "y": 2547,
         "wires": []
     }
 ]
