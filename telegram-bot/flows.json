@@ -3612,7 +3612,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "news to send",
-        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Estrenamos página web: [https://fuegos.comunes.org](https://fuegos.comunes.org). Además de vía telegram ahora podemos recibir alertas de fuegos por correo y/o en nuestro navegador, visibilizar los fuegos actuales, las áreas cubiertas por nuestros usuari@s, etc\\r\\n\";\nnews.payload.content += \"➖ Además podemos aportar más [información sobre cada fuego](https://fuegos.comunes.org/fire/Fe26.2**b6781b869b766977b1fcec45ab7dc9900c71752964f3f0ede058c9554b6fbfbf*yWUEzDk3M25ScGlOAlPDjw*yDV4tUDHMDBI9Y4u4TRjsER8SI350M5DP6Hj_ZI9Jsnxwf4le_256oDRA-LuC7vFGaxbPBlPjC94OpNjYXYLhvCtSqDu0rDkER4GWAVVTZzsTiKaztzGm9itg4sJWGHR8mvvIYhRwhVNfz3m-pSuRzV-FYwRwcF0YTgyRUuinOtd9PHdkxXMxG_BDoKAh-zR6V308MaDHj2j2di3TmBUtqVSAZCMXzj7_WWO0NOCC1F_ZvW-67bbRXoWjNG13UmdPbDbEcWGBV89HA_fpjYdR-iAIw_2UqVHObfKMenIpiP4JNezK5E3hghIQxuA9jb498wjZkn9BC62W26y8KZcpFtceLj_1kD-X9woH3oyKTOyaqY-azfFHCT3q_-FDBBz1DiDiS5cyddfy2ggl5mVWiCkww6o_b0ZKMCYo3NeOLBcD3EQ9mLrmR63G6xMzHDW2nDWeHw9XgeZILSOolAw3VTd2hA11Kn54uN-CbciIeQlXk7beom2EvK6HJyzvWFZ6pmDX3iB2GbiPD4dDHK7v0sTF5ediaqMKu7cwssAXno**8573bcd9c4bdaf70223c3e0478ba0481994c2f6d3df40af72f7b3a492445b027*PNm7pYbNGNLTWuSe2VOFDeErqsbmn9XxongS1dxj7ko) en nuestra web, por ejemplo, como se accede al fuego (para facilitar la extinción o posterior investigación), posibles causas, etc\\r\\n\";\nnews.payload.content += \"➖ Hemos incorporado en las alertas la hora de detección del fuego\\r\\n\"\nnews.payload.content += \"➖ Además de muchas mejoras internas en nuestro bot y solución de pequeños errores\\r\\n\";\nnews.payload.content += \"Seguimos en pruebas, comentarios, bienvenidos...\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣* Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Con nuestra página web [https://fuegos.comunes.org](https://fuegos.comunes.org) y su versión inglesa [https://fires.comunes.org](https://fires.comunes.org) a pleno rendimiento, ya somos 200 usuari@s.\\r\\n\";\n// news.payload.content += \"➖ La versión inglesa de nuestro bot, [@AllAgainstTheFire_bot](https://t.me/AllAgainstTheFire_bot) tb está en marcha.\\r\\n\";\nnews.payload.content += \"➖ Hemos enviado 13.000 notificaciones de fuegos a nuestros usuari@s en todo este tiempo.\\r\\n\";\nnews.payload.content += \"➖ Aún así, tenemos registradas 2 millones de industrias contaminantes en todo el mundo para no notificaros de sus fuegos.\\r\\n\";\n// news.payload.content += \"➖ Para el público anglosajón, tenemos esta otra web:  y otro bot @AllAgainstTheFire_bot.\\r\\n\";\nnews.payload.content += \"➖ También nuestra cuenta de twitter [@TsContraElFuego](https://twitter.com/TsContraElFuego/) está haciendo un poco de ruido con estadísticas diarias de fuegos en nuestra península y en el resto de Europa. Así queremos dar visibilidad a la cantidad de fuegos que hay todos los días. Para muestra [un botón](https://twitter.com/TsContraElFuego/status/992135520460427265).\\r\\n\";\nnews.payload.content += \"➖ Además hemos hecho muchas mejoras a nuestra web y nuestro bot (por ej. puedes consultar en todo momento el estado de nuestro servicio).\\r\\n\";\nnews.payload.content += \"Seguimos! Comentarios, [traducciones](https://translate.comunes.org/projects/todos-contra-el-fuego/), difusión y colaboraciones bienvenidas!\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
         "outputs": 1,
         "noerr": 0,
         "x": 510,
@@ -3669,12 +3669,12 @@
         "id": "765837ba.bc31e8",
         "type": "function",
         "z": "128790f6.dee0df",
-        "name": "answer confirm",
+        "name": "answer confirm news",
         "func": "// Not translated right now\n// var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\nvar notification = global.get('notification');\n\nif (notification !== null) {\n    // node.log(\"Notification callback\");\n    msg.payload.options = show_alert;\n    \n    global.set('notification', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'news_send') {\n        return [notification, null];\n    } else if (msg.payload.content === 'news_no_send') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: 'Notificación cancelada',\n                chatId: msg.payload.chatId\n            }\n        };\n        return [null, newMsg];\n    }\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 300,
-        "y": 200,
+        "x": 293.00000762939453,
+        "y": 201.00000190734863,
         "wires": [
             [
                 "20aeace7.594e64"
@@ -4112,12 +4112,12 @@
         "id": "4964dee.a0c6e2",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "answer confirm",
+        "name": "answer confirm lang",
         "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar key = 'location-' + msg.payload.chatId;\nvar location = global.get(key);\nvar chatId = msg.payload.chatId;\nlocation.chatId = chatId;\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set(key, null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('📣 Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
         "outputs": "3",
         "noerr": 0,
-        "x": 480,
-        "y": 1480,
+        "x": 486,
+        "y": 1480.0000095367432,
         "wires": [
             [
                 "a1aac5f6.cf0228",
@@ -4193,8 +4193,8 @@
         "id": "b81751c6.f7b84",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 310,
-        "y": 1480,
+        "x": 291.99999618530273,
+        "y": 1483.0000095367432,
         "wires": [
             [
                 "4964dee.a0c6e2",
