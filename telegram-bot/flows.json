@@ -1540,7 +1540,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "near?",
-        "func": "msg.originalPayload = msg.payload;\n\nconst or = global.get('notifyWebUsers') ? \n    { $or: [ { telegramBot: global.get('telegramBot') }, { type: 'web' } ] } :\n    { telegramBot: global.get('telegramBot') };\n\nmsg.payload = {\n    $and: [\n        or,\n        { geo:\n            { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [ msg.lon, msg.lat]\n                },\n                $minDistance: 0,\n                $maxDistance: 1000000\n            }}\n        }\n    ]\n};\n\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "func": "msg.originalPayload = msg.payload;\n\nconst or = global.get('notifyWebUsers') ? \n    { $or: [ { telegramBot: global.get('telegramBot') }, { type: 'web' }, { type: 'mobile' } ] } :\n    { telegramBot: global.get('telegramBot') };\n\nmsg.payload = {\n    $and: [\n        or,\n        { geo:\n            { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [ msg.lon, msg.lat]\n                },\n                $minDistance: 0,\n                $maxDistance: 1000000\n            }}\n        }\n    ]\n};\n\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nmsg.collection = \"subscriptions\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 750,
@@ -1556,7 +1556,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "const Iron = context.global.iron;\n\nvar t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"userId: \" + msg.user._id + \" type \" + msg.payload.type + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    var when = msg.originalPayload.when;\n    \n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n\n    var password = global.get('ironPassword');\n\n    delete msg.originalPayload._id;\n    \n    msg.originalPayload.ourversion = \"1\";\n    \n    Iron.seal(msg.originalPayload, password, Iron.defaults).then(function(sealed) {\n        const link = t('firelink', { server: global.get('website'), enc: sealed, escapeInterpolation: false });\n        var caption = {\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"message\",\n              content: content,\n              options: { parse_mode: \"Markdown\" }\n            },\n            link,\n            sealed,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        var notification = {\n            // find if we send previously this notification\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"location\",\n              content: {\n                 longitude: msg.lon,\n                 latitude: msg.lat \n              }\n            },\n            // FIXME this shoudld be removed?\n            // caption: caption,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        // console.log(when);\n        \n        var newMsg = {\n            payload: {\n                userId: msg.user._id,\n                // chatId: msg.payload.chatId,\n                geo: { $near : {\n                    $geometry: { \n                        type: \"Point\",  \n                        coordinates: [\n                            msg.lon,\n                            msg.lat\n                        ] },\n                    $minDistance: 0,\n                    $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                    }\n                }\n            },\n            notification: notification,\n            caption: caption,\n            cacheKey: msg.lat + \",\" + msg.lon,\n            i18n: t,\n            user: msg.user,\n            notitype: msg.payload.type,\n            when: when,\n            originalPayload: msg.originalPayload,\n            lang: msg.lang\n        };\n        newMsg.collection = \"notifications\";\n        node.send(newMsg);\n\n    }, function(reason) {\n        node.error(reason);\n    });\n\n\n    \n\n    \n}\n\n",
+        "func": "const Iron = context.global.iron;\n\nvar t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"userId: \" + msg.user._id + \" type \" + msg.payload.type + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    var when = msg.originalPayload.when;\n    \n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n\n    var password = global.get('ironPassword');\n\n    delete msg.originalPayload._id;\n    \n    msg.originalPayload.ourversion = \"1\";\n    \n    Iron.seal(msg.originalPayload, password, Iron.defaults).then(function(sealed) {\n        const link = t('firelink', { server: global.get('website'), enc: sealed, escapeInterpolation: false });\n        var caption = {\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"message\",\n              content: content,\n              options: { parse_mode: \"Markdown\" }\n            },\n            link,\n            sealed,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        var notification = {\n            // find if we send previously this notification\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"location\",\n              content: {\n                 longitude: msg.lon,\n                 latitude: msg.lat \n              }\n            },\n            // FIXME this shoudld be removed?\n            // caption: caption,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        // console.log(when);\n        \n        var newMsg = {\n            payload: {\n                userId: msg.user._id,\n                // chatId: msg.payload.chatId,\n                geo: { $near : {\n                    $geometry: { \n                        type: \"Point\",  \n                        coordinates: [\n                            msg.lon,\n                            msg.lat\n                        ] },\n                    $minDistance: 0,\n                    $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                    }\n                }\n            },\n            notification: notification,\n            caption: caption,\n            cacheKey: msg.lat + \",\" + msg.lon,\n            i18n: t,\n            user: msg.user,\n            notitype: msg.payload.type,\n            subsId: msg.payload._id,\n            when: when,\n            originalPayload: msg.originalPayload,\n            lang: msg.lang\n        };\n        newMsg.collection = \"notifications\";\n        node.send(newMsg);\n\n    }, function(reason) {\n        node.error(reason);\n    });\n\n\n    \n\n    \n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 200,
@@ -8119,16 +8119,25 @@
                 "vt": "str"
             },
             {
+                "t": "eq",
+                "v": "mobile",
+                "vt": "str"
+            },
+            {
                 "t": "else"
             }
         ],
         "checkall": "true",
-        "outputs": 3,
+        "repair": false,
+        "outputs": 4,
         "x": 1040,
         "y": 100,
         "wires": [
             [
                 "f9083a41.b80318",
+                "acd49174.ede59"
+            ],
+            [
                 "acd49174.ede59"
             ],
             [
@@ -8141,7 +8150,8 @@
         "outputLabels": [
             "telegram",
             "web",
-            "otherwise"
+            "otherwise",
+            null
         ]
     },
     {
@@ -8403,7 +8413,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "insert noti",
-        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.sealed = msg.caption.sealed;\nsave.type = msg.notitype;\nsave.when = msg.when;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nconst insert = {};\ninsert.payload = [ save ];\ninsert.collection = \"notifications\";\nreturn insert;\n\n",
+        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.sealed = msg.caption.sealed;\nsave.type = msg.notitype;\nsave.when = msg.when;\nsave.subsId = msg.subsId;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nconst insert = {};\ninsert.payload = [ save ];\ninsert.collection = \"notifications\";\nreturn insert;\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1240,
