@@ -2148,7 +2148,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "all",
-        "func": "// empty payload == all\nvar newMsg = {\n    payload: [{\n    }]};\nreturn newMsg;",
+        "func": "// empty payload == all\nvar newMsg = {}\nnewMsg.payload =[{}, {}];\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 370,
@@ -11060,12 +11060,14 @@
         "service": "_ext_",
         "configNode": "d5559ee5.960e2",
         "name": "deleteMany",
-        "collection": " notifications",
+        "collection": "notifications",
         "operation": "deleteMany",
-        "x": 588.5139312744141,
-        "y": 81.43057632446289,
+        "x": 530,
+        "y": 80,
         "wires": [
-            []
+            [
+                "9f41ff98.6a94c"
+            ]
         ]
     },
     {
@@ -12052,6 +12054,20 @@
         "storageNode": "db8c452.812cbb8",
         "x": 1325,
         "y": 2547,
+        "wires": []
+    },
+    {
+        "id": "9f41ff98.6a94c",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "delNotis",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 690,
+        "y": 80,
         "wires": []
     }
 ]
