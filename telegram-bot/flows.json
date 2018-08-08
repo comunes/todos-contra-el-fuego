@@ -2684,7 +2684,7 @@
         "id": "596d56e2.54f5e8",
         "type": "delay",
         "z": "76bd701f.29d0f",
-        "name": "start drop",
+        "name": "start delay",
         "pauseType": "rate",
         "timeout": "1",
         "timeoutUnits": "seconds",
@@ -2694,8 +2694,8 @@
         "randomFirst": "1",
         "randomLast": "5",
         "randomUnits": "seconds",
-        "drop": true,
-        "x": 280,
+        "drop": false,
+        "x": 290,
         "y": 100,
         "wires": [
             [
@@ -5854,6 +5854,7 @@
         "id": "63abfabd.c35504",
         "type": "subflow:76bd701f.29d0f",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 850,
         "y": 1020,
         "wires": []
@@ -6200,7 +6201,7 @@
         "func": "flow.set('payload-assert', msg.payload);\n// flow.set('chatId-assert', msg.chatId);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 120,
+        "x": 140,
         "y": 100,
         "wires": [
             [
