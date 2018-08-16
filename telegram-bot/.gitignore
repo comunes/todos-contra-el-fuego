@@ -84,3 +84,7 @@ ftp-read-fires.json
 last-fire-detected.json
 tracked.json
 users-in-time.json
+notifications-in-time.json
+subs-web-in-time.json
+subs-bot-es-in-time.json
+subs-bot-en-in-time.json

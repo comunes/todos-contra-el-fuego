@@ -32,33 +32,34 @@ Create this mongo indexes:
 ```mongodb
 db.subscriptions.createIndex( { geo : "2dsphere" } );
 db.subscriptions.createIndex( { chatId: 1 });
-#
+
 db.notifications.createIndex( { geo : "2dsphere" } );
 db.notifications.createIndex( { chatId: 1 });
-#
+
 db.fstats.createIndex( { name: 1 } );
-#
+
 db.avisosfuego.createIndex( { chatId: 1 });
 db.avisosfuego.createIndex( { geo : "2dsphere" } );
-#
+db.avisosfuego.createIndex( { geo : "2dsphere" } );
+
 db.falsepositives.createIndex( { chatId: 1 });
 db.falsepositives.createIndex( { geo : "2dsphere" } );
-#
+
 db.users.createIndex( { telegramChatId: 1 } );
 db.users.createIndex( { lang: 1 } );
 db.users.createIndex( { updated: 1 } );
-#
+
 db.activefires.createIndex( { ourid: "2dsphere" } );
 db.activefires.createIndex( { when: 1 } );
 db.activefires.createIndex( { updatedAt: 1 } );
 db.activefires.createIndex( { createdAt: 1 } );
 db.activefires.createIndex( { ourid: 1, type: 1 } )
-#
+
 db.trackedfires.createIndex( { ourid : "2dsphere" } );
 db.trackedfires.createIndex( { "name": 1 }, { unique: true } );
-#
+
 db.trackedfireshistory.createIndex( { "ourid": 1 }, { unique: true } );
-#
+
 db.fires.createIndex( { ourid: "2dsphere" } );
 db.fires.createIndex( { when: 1 } );
 db.fires.createIndex( { updatedAt: 1 } );

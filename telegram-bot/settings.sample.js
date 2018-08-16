@@ -206,7 +206,8 @@ module.exports = {
         weather:require('openweather-apis'),
         beaufortScale:require('beaufort-scale'),
         objectid:require('objectid'),
-        iron:require('iron')
+        iron:require('iron'),
+        telegrambotapi:require('node-telegram-bot-api')
         // os:require('os'),
         // octalbonescript:require('octalbonescript'),
         // jfive:require("johnny-five"),

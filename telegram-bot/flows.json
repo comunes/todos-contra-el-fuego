@@ -1264,6 +1264,34 @@
         "interval": "60"
     },
     {
+        "id": "a733588b.3d2d68",
+        "type": "persist-store",
+        "z": "",
+        "filename": "notifications-in-time.json",
+        "interval": "60"
+    },
+    {
+        "id": "3ffd20f4.68ff7",
+        "type": "persist-store",
+        "z": "",
+        "filename": "subs-web-in-time.json",
+        "interval": "60"
+    },
+    {
+        "id": "3bf90146.90fffe",
+        "type": "persist-store",
+        "z": "",
+        "filename": "subs-bot-es-in-time.json",
+        "interval": "60"
+    },
+    {
+        "id": "db8c452.812cbb8",
+        "type": "persist-store",
+        "z": "",
+        "filename": "subs-bot-en-in-time.json",
+        "interval": "60"
+    },
+    {
         "id": "bdb6d01f.a399d",
         "type": "telegram command",
         "z": "93cb4937.6fc068",
@@ -1512,7 +1540,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "near?",
-        "func": "msg.originalPayload = msg.payload;\n\nconst or = global.get('notifyWebUsers') ? \n    { $or: [ { telegramBot: global.get('telegramBot') }, { type: 'web' } ] } :\n    { telegramBot: global.get('telegramBot') };\n\nmsg.payload = {\n    $and: [\n        or,\n        { geo:\n            { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [ msg.lon, msg.lat]\n                },\n                $minDistance: 0,\n                $maxDistance: 1000000\n            }}\n        }\n    ]\n};\n\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "func": "msg.originalPayload = msg.payload;\n\nconst or = global.get('notifyWebUsers') ? \n    { $or: [ { telegramBot: global.get('telegramBot') }, { type: 'web' }, { type: 'mobile' } ] } :\n    { telegramBot: global.get('telegramBot') };\n\nmsg.payload = {\n    $and: [\n        or,\n        { geo:\n            { $near : {\n                $geometry: { \n                    type: \"Point\",  \n                    coordinates: [ msg.lon, msg.lat]\n                },\n                $minDistance: 0,\n                $maxDistance: 1000000\n            }}\n        }\n    ]\n};\n\nif (msg.limitToChatId) {\n    msg.payload.chatId = msg.limitToChatId;\n}\nmsg.collection = \"subscriptions\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 750,
@@ -1528,7 +1556,7 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "calc distances",
-        "func": "const Iron = context.global.iron;\n\nvar t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"userId: \" + msg.user._id + \" type \" + msg.payload.type + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    var when = msg.originalPayload.when;\n    \n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n\n    var password = global.get('ironPassword');\n\n    delete msg.originalPayload._id;\n    \n    msg.originalPayload.ourversion = \"1\";\n    \n    Iron.seal(msg.originalPayload, password, Iron.defaults).then(function(sealed) {\n        const link = t('firelink', { server: global.get('website'), enc: sealed, escapeInterpolation: false });\n        var caption = {\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"message\",\n              content: content,\n              options: { parse_mode: \"Markdown\" }\n            },\n            link,\n            sealed,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        var notification = {\n            // find if we send previously this notification\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"location\",\n              content: {\n                 longitude: msg.lon,\n                 latitude: msg.lat \n              }\n            },\n            // FIXME this shoudld be removed?\n            // caption: caption,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        // console.log(when);\n        \n        var newMsg = {\n            payload: {\n                userId: msg.user._id,\n                // chatId: msg.payload.chatId,\n                geo: { $near : {\n                    $geometry: { \n                        type: \"Point\",  \n                        coordinates: [\n                            msg.lon,\n                            msg.lat\n                        ] },\n                    $minDistance: 0,\n                    $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                    }\n                }\n            },\n            notification: notification,\n            caption: caption,\n            cacheKey: msg.lat + \",\" + msg.lon,\n            i18n: t,\n            user: msg.user,\n            notitype: msg.payload.type,\n            when: when,\n            originalPayload: msg.originalPayload,\n            lang: msg.lang\n        };\n        newMsg.collection = \"notifications\";\n        node.send(newMsg);\n\n    }, function(reason) {\n        node.error(reason);\n    });\n\n\n    \n\n    \n}\n\n",
+        "func": "const Iron = context.global.iron;\n\nvar t = msg.i18n;\n\n// node.log(\"Enter chatId: \" + msg.payload.chatId);\n\n// https://www.npmjs.com/package/geolib\nvar dist = context.global.geolib.getDistance(\n    { latitude: msg.payload.location.lat, \n      longitude: msg.payload.location.lon\n    },\n    { latitude: msg.lat, \n      longitude: msg.lon\n    }\n); \n\n// node.log(\"end calc dist chatId: \" + msg.payload.chatId);\n\nvar maxDist =  msg.payload.distance;\n// node.log(\"userId: \" + msg.user._id + \" type \" + msg.payload.type + \" maxDist \" + maxDist + \" dist \" + dist/1000);\n\nif (dist/1000 <= maxDist) {\n    var km = Math.round(dist/1000 * 10) / 10;\n    var content;\n    var when = msg.originalPayload.when;\n    \n    if (msg.type === \"vecinal\") {\n        // kmvecinal : '🔥 Alerta de posible fuego a {{km}} км de distancia (fuente NASA)''\n        content = t('kmvecinal', {km: km});\n    } else if (msg.type === \"modis\" || msg.type === \"viirs\") {\n        // kmnasa : '🔥 Alerta vecinal de fuego a {{km}} км de distancia''\n        content = t('kmnasa', {km: km});\n    }\n\n    var password = global.get('ironPassword');\n\n    delete msg.originalPayload._id;\n    \n    msg.originalPayload.ourversion = \"1\";\n    \n    Iron.seal(msg.originalPayload, password, Iron.defaults).then(function(sealed) {\n        const link = t('firelink', { server: global.get('website'), enc: sealed, escapeInterpolation: false });\n        var caption = {\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"message\",\n              content: content,\n              options: { parse_mode: \"Markdown\" }\n            },\n            link,\n            sealed,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        var notification = {\n            // find if we send previously this notification\n            payload : {\n              chatId : msg.payload.chatId,\n              type : \"location\",\n              content: {\n                 longitude: msg.lon,\n                 latitude: msg.lat \n              }\n            },\n            // FIXME this shoudld be removed?\n            // caption: caption,\n            i18n: t,\n            lang: msg.lang\n        };\n        \n        // console.log(when);\n        \n        var newMsg = {\n            payload: {\n                userId: msg.user._id,\n                // chatId: msg.payload.chatId,\n                geo: { $near : {\n                    $geometry: { \n                        type: \"Point\",  \n                        coordinates: [\n                            msg.lon,\n                            msg.lat\n                        ] },\n                    $minDistance: 0,\n                    $maxDistance: 500 // Junto notificaciones en un radio de 0.5km \n                    }\n                }\n            },\n            notification: notification,\n            caption: caption,\n            cacheKey: msg.lat + \",\" + msg.lon,\n            i18n: t,\n            user: msg.user,\n            notitype: msg.payload.type,\n            subsId: msg.payload._id,\n            when: when,\n            originalPayload: msg.originalPayload,\n            lang: msg.lang\n        };\n        newMsg.collection = \"notifications\";\n        node.send(newMsg);\n\n    }, function(reason) {\n        node.error(reason);\n    });\n\n\n    \n\n    \n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 200,
@@ -1737,12 +1765,6 @@
                 "pt": "global",
                 "to": "true",
                 "tot": "bool"
-            },
-            {
-                "p": "telegramBotToken",
-                "pt": "global",
-                "to": "",
-                "tot": "str"
             }
         ],
         "active": true,
@@ -1791,12 +1813,6 @@
                 "pt": "global",
                 "to": "true",
                 "tot": "bool"
-            },
-            {
-                "p": "telegramBotToken",
-                "pt": "global",
-                "to": "",
-                "tot": "str"
             }
         ],
         "active": false,
@@ -1965,7 +1981,7 @@
         "z": "2b8628df.fdcca8",
         "name": "to dash",
         "group": "601660c.cd104a",
-        "order": 20,
+        "order": 28,
         "width": "0",
         "height": "0",
         "label": "Usuarios cercanos",
@@ -2041,7 +2057,7 @@
         "z": "3f0768a7.1fac78",
         "name": "count active",
         "group": "601660c.cd104a",
-        "order": 3,
+        "order": 7,
         "width": "0",
         "height": "0",
         "label": "Fuegos activos en el mundo (fuente NASA)",
@@ -2115,12 +2131,12 @@
         "id": "a890056b.ebcff8",
         "type": "function",
         "z": "95e78a8b.50a428",
-        "name": "inc subs",
+        "name": "increment sendnotis",
         "func": "// var day = context.global.moment.utc().dayOfYear()\n\nvar newMsg = {\n    query : {\n        // day: day,\n        name: \"sendnotis\"\n    },\n    payload: {\n        $inc: { value: 1 }\n    }\n};\nnewMsg.collection = \"fstats\";\n\nreturn newMsg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 1900,
-        "y": 60,
+        "x": 1932.000015258789,
+        "y": 144.99999809265137,
         "wires": [
             [
                 "a1d870da.64966"
@@ -2132,7 +2148,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "all",
-        "func": "// empty payload == all\nvar newMsg = {\n    payload: [{\n    }]};\nreturn newMsg;",
+        "func": "// empty payload == all\nvar newMsg = {}\nnewMsg.payload =[{}, {}];\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 370,
@@ -2668,7 +2684,7 @@
         "id": "596d56e2.54f5e8",
         "type": "delay",
         "z": "76bd701f.29d0f",
-        "name": "start drop",
+        "name": "start delay",
         "pauseType": "rate",
         "timeout": "1",
         "timeoutUnits": "seconds",
@@ -2678,8 +2694,8 @@
         "randomFirst": "1",
         "randomLast": "5",
         "randomUnits": "seconds",
-        "drop": true,
-        "x": 280,
+        "drop": false,
+        "x": 290,
         "y": 100,
         "wires": [
             [
@@ -3229,7 +3245,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "false positive?",
-        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 350\n          }\n       }\n   }\nquery.originalMessage = msg;\nquery.collection = \"falsePositives\";\nreturn query;",
+        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 500 // changed from 350\n          }\n       }\n   }\nquery.originalMessage = msg;\nquery.collection = \"falsePositives\";\nreturn query;",
         "outputs": 1,
         "noerr": 0,
         "x": 220,
@@ -3530,7 +3546,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "current susc",
-        "func": "var newMsg = {};\nnewMsg.notification = msg;\nnewMasg.collection = \"subscriptions\";\nnewMsg.payload = {};\nreturn newMsg;",
+        "func": "var newMsg = {};\nnewMsg.notification = msg;\nnewMsg.collection = \"subscriptions\";\nnewMsg.payload = { telegramBot: global.get('telegramBot') };\nreturn newMsg;",
         "outputs": 1,
         "noerr": 0,
         "x": 510,
@@ -3596,7 +3612,7 @@
         "type": "function",
         "z": "128790f6.dee0df",
         "name": "news to send",
-        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣 * Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Estrenamos página web: [https://fuegos.comunes.org](https://fuegos.comunes.org). Además de vía telegram ahora podemos recibir alertas de fuegos por correo y/o en nuestro navegador, visibilizar los fuegos actuales, las áreas cubiertas por nuestros usuari@s, etc\\r\\n\";\nnews.payload.content += \"➖ Además podemos aportar más [información sobre cada fuego](https://fuegos.comunes.org/fire/Fe26.2**b6781b869b766977b1fcec45ab7dc9900c71752964f3f0ede058c9554b6fbfbf*yWUEzDk3M25ScGlOAlPDjw*yDV4tUDHMDBI9Y4u4TRjsER8SI350M5DP6Hj_ZI9Jsnxwf4le_256oDRA-LuC7vFGaxbPBlPjC94OpNjYXYLhvCtSqDu0rDkER4GWAVVTZzsTiKaztzGm9itg4sJWGHR8mvvIYhRwhVNfz3m-pSuRzV-FYwRwcF0YTgyRUuinOtd9PHdkxXMxG_BDoKAh-zR6V308MaDHj2j2di3TmBUtqVSAZCMXzj7_WWO0NOCC1F_ZvW-67bbRXoWjNG13UmdPbDbEcWGBV89HA_fpjYdR-iAIw_2UqVHObfKMenIpiP4JNezK5E3hghIQxuA9jb498wjZkn9BC62W26y8KZcpFtceLj_1kD-X9woH3oyKTOyaqY-azfFHCT3q_-FDBBz1DiDiS5cyddfy2ggl5mVWiCkww6o_b0ZKMCYo3NeOLBcD3EQ9mLrmR63G6xMzHDW2nDWeHw9XgeZILSOolAw3VTd2hA11Kn54uN-CbciIeQlXk7beom2EvK6HJyzvWFZ6pmDX3iB2GbiPD4dDHK7v0sTF5ediaqMKu7cwssAXno**8573bcd9c4bdaf70223c3e0478ba0481994c2f6d3df40af72f7b3a492445b027*PNm7pYbNGNLTWuSe2VOFDeErqsbmn9XxongS1dxj7ko) en nuestra web, por ejemplo, como se accede al fuego (para facilitar la extinción o posterior investigación), posibles causas, etc\\r\\n\";\nnews.payload.content += \"➖ Hemos incorporado en las alertas la hora de detección del fuego\\r\\n\"\nnews.payload.content += \"➖ Además de muchas mejoras internas en nuestro bot y solución de pequeños errores\\r\\n\";\nnews.payload.content += \"Seguimos en pruebas, comentarios, bienvenidos...\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
+        "func": "var news = {};\nnews.payload = {};\nnews.payload.content  = \"📣* Novedades de @TodosContraElFuego_bot *\\r\\n\";\nnews.payload.content += \"\\r\\n\";\nnews.payload.content += \"➖ Con nuestra página web [https://fuegos.comunes.org](https://fuegos.comunes.org) y su versión inglesa [https://fires.comunes.org](https://fires.comunes.org) a pleno rendimiento, ya somos 200 usuari@s.\\r\\n\";\n// news.payload.content += \"➖ La versión inglesa de nuestro bot, [@AllAgainstTheFire_bot](https://t.me/AllAgainstTheFire_bot) tb está en marcha.\\r\\n\";\nnews.payload.content += \"➖ Hemos enviado 13.000 notificaciones de fuegos a nuestros usuari@s en todo este tiempo.\\r\\n\";\nnews.payload.content += \"➖ Aún así, tenemos registradas 2 millones de industrias contaminantes en todo el mundo para no notificaros de sus fuegos.\\r\\n\";\n// news.payload.content += \"➖ Para el público anglosajón, tenemos esta otra web:  y otro bot @AllAgainstTheFire_bot.\\r\\n\";\nnews.payload.content += \"➖ También nuestra cuenta de twitter [@TsContraElFuego](https://twitter.com/TsContraElFuego/) está haciendo un poco de ruido con estadísticas diarias de fuegos en nuestra península y en el resto de Europa. Así queremos dar visibilidad a la cantidad de fuegos que hay todos los días. Para muestra [un botón](https://twitter.com/TsContraElFuego/status/992135520460427265).\\r\\n\";\nnews.payload.content += \"➖ Además hemos hecho muchas mejoras a nuestra web y nuestro bot (por ej. puedes consultar en todo momento el estado de nuestro servicio).\\r\\n\";\nnews.payload.content += \"Seguimos! Comentarios, [traducciones](https://translate.comunes.org/projects/todos-contra-el-fuego/), difusión y colaboraciones bienvenidas!\\r\\n\";\n// this is me, for preview:\nnews.payload.chatId = 4885772;\nreturn news;",
         "outputs": 1,
         "noerr": 0,
         "x": 510,
@@ -3653,12 +3669,12 @@
         "id": "765837ba.bc31e8",
         "type": "function",
         "z": "128790f6.dee0df",
-        "name": "answer confirm",
+        "name": "answer confirm news",
         "func": "// Not translated right now\n// var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\nvar notification = global.get('notification');\n\nif (notification !== null) {\n    // node.log(\"Notification callback\");\n    msg.payload.options = show_alert;\n    \n    global.set('notification', null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'news_send') {\n        return [notification, null];\n    } else if (msg.payload.content === 'news_no_send') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: 'Notificación cancelada',\n                chatId: msg.payload.chatId\n            }\n        };\n        return [null, newMsg];\n    }\n}",
         "outputs": "2",
         "noerr": 0,
-        "x": 300,
-        "y": 200,
+        "x": 293.00000762939453,
+        "y": 201.00000190734863,
         "wires": [
             [
                 "20aeace7.594e64"
@@ -4096,12 +4112,12 @@
         "id": "4964dee.a0c6e2",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "answer confirm",
+        "name": "answer confirm lang",
         "func": "var t = msg.i18n;\n\nvar show_alert = false; // you can set this to true to open a dialog with the answer in the client.\n\nmsg.payload.options = show_alert;\nvar key = 'location-' + msg.payload.chatId;\nvar location = global.get(key);\nvar chatId = msg.payload.chatId;\nlocation.chatId = chatId;\n\nif (location !== null) {\n    // node.log(\"Location confirm callback\");\n    global.set(key, null);\n    // msg.payload.content contains the callback data from the keyboard.\n    if (msg.payload.content === 'notify_fire') {\n        // msg.payload.content = i.t('📣 Alerta recibida, ¡gracias!');\n        msg.payload.content = t('📣 Alerta recibida, ¡gracias!');\n        // node.log(location.payload.content);\n        return [msg, location, null];\n    } else if (msg.payload.content === 'no_notify_fire') {\n        var newMsg = {\n            payload: {\n                type: \"message\",\n                content: t('Aviso cancelado'),\n                chatId: chatId\n            },\n            i18n: t\n        };\n        return [null, null, newMsg];\n    }\n}",
         "outputs": "3",
         "noerr": 0,
-        "x": 480,
-        "y": 1480,
+        "x": 486,
+        "y": 1480.0000095367432,
         "wires": [
             [
                 "a1aac5f6.cf0228",
@@ -4177,8 +4193,8 @@
         "id": "b81751c6.f7b84",
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
-        "x": 310,
-        "y": 1480,
+        "x": 291.99999618530273,
+        "y": 1483.0000095367432,
         "wires": [
             [
                 "4964dee.a0c6e2",
@@ -4910,7 +4926,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 17,
+        "order": 24,
         "width": 0,
         "height": 0,
         "name": "sus",
@@ -4926,7 +4942,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 13,
+        "order": 16,
         "width": 0,
         "height": 0,
         "name": "subs real",
@@ -4958,7 +4974,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 18,
+        "order": 25,
         "width": 0,
         "height": 0,
         "name": "desus",
@@ -4974,7 +4990,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 19,
+        "order": 27,
         "width": 0,
         "height": 0,
         "name": "avisos",
@@ -5007,7 +5023,7 @@
         "z": "93cb4937.6fc068",
         "name": "daily alerts",
         "group": "601660c.cd104a",
-        "order": 8,
+        "order": 12,
         "width": "0",
         "height": "0",
         "label": "Avisos diarios",
@@ -5091,7 +5107,7 @@
         "z": "93cb4937.6fc068",
         "name": "subs to dash",
         "group": "601660c.cd104a",
-        "order": 2,
+        "order": 5,
         "width": "0",
         "height": "0",
         "label": "Suscripciones",
@@ -5380,7 +5396,7 @@
         "z": "c8522537.c6f908",
         "name": "count new",
         "group": "601660c.cd104a",
-        "order": 4,
+        "order": 8,
         "width": "0",
         "height": "0",
         "label": "Fuegos activos nuevos",
@@ -5575,8 +5591,8 @@
         "id": "a8447ee4.5f9bc",
         "type": "subflow:465e67f.6ebf598",
         "z": "95e78a8b.50a428",
-        "x": 1920,
-        "y": 100,
+        "x": 1922.0000114440918,
+        "y": 79.99999809265137,
         "wires": []
     },
     {
@@ -5838,6 +5854,7 @@
         "id": "63abfabd.c35504",
         "type": "subflow:76bd701f.29d0f",
         "z": "93cb4937.6fc068",
+        "name": "",
         "x": 850,
         "y": 1020,
         "wires": []
@@ -6184,7 +6201,7 @@
         "func": "flow.set('payload-assert', msg.payload);\n// flow.set('chatId-assert', msg.chatId);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 120,
+        "x": 140,
         "y": 100,
         "wires": [
             [
@@ -6416,8 +6433,8 @@
         "type": "subflow:4384af8e.a7409",
         "z": "93cb4937.6fc068",
         "name": "",
-        "x": 710,
-        "y": 2400,
+        "x": 746,
+        "y": 2716,
         "wires": [
             [
                 "5983db7f.7b6614"
@@ -6432,8 +6449,8 @@
         "func": "var t = msg.i18n;\nvar m = {}\nm.payload = {};\nm.payload.chatId = msg.chatId;\nm.payload.content = \"Lenguaje \" + msg.lang + \", sample: \" + t('Desuscribirme') + ', ' + t('kmdistancia', {km: 99});\nm.payload.type = \"message\";\nreturn m;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1060,
-        "y": 2420,
+        "x": 1096,
+        "y": 2736,
         "wires": [
             [
                 "eee020eb.36a75"
@@ -6444,8 +6461,8 @@
         "id": "20f4d6ba.631d1a",
         "type": "subflow:e81a68fa.695e38",
         "z": "93cb4937.6fc068",
-        "x": 1350,
-        "y": 2420,
+        "x": 1386,
+        "y": 2736,
         "wires": [
             []
         ]
@@ -6457,8 +6474,8 @@
         "name": "/mylang",
         "command": "/mylang",
         "bot": "f93d1a38.c43218",
-        "x": 80,
-        "y": 2400,
+        "x": 116,
+        "y": 2716,
         "wires": [
             [
                 "c9679475.577988"
@@ -6477,8 +6494,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 410,
-        "y": 2460,
+        "x": 446,
+        "y": 2776,
         "wires": [
             [
                 "c9679475.577988",
@@ -6495,8 +6512,8 @@
         "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 500,
-        "y": 2400,
+        "x": 536,
+        "y": 2716,
         "wires": [
             [
                 "71ddbc3a.d5e9a4"
@@ -6511,8 +6528,8 @@
         "func": "var c = context.get('counter') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 1220,
-        "y": 2420,
+        "x": 1256,
+        "y": 2736,
         "wires": [
             [
                 "20f4d6ba.631d1a"
@@ -6527,8 +6544,8 @@
         "func": "var c = context.get('counter2') || false;\n\nvar update = function (c) {\n    node.status({fill:\"green\",shape:\"dot\",text:c});\n}\n\nif (msg.payload.counter) {\n    c = 0;\n    context.set('counter2', c);\n    update(c);\n} else {\n    c += 1;\n    context.set('counter2', c);\n    update(c);\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 900,
-        "y": 2420,
+        "x": 936,
+        "y": 2736,
         "wires": [
             [
                 "2d3ed690.563dfa"
@@ -7253,7 +7270,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "send status",
-        "func": "var t = msg.i18n;\nvar count = msg.count;\nvar last = msg.lastCheck;\n\nlet firesInZone = {};\n\nif (msg.payload) {\n    try {\n        firesInZone = JSON.parse(msg.payload);\n    } catch (e) {\n        // do nothing\n    }\n}\n\nvar real = firesInZone.real ? firesInZone.real : 0;\n\nif (msg.lang === 'ast') {\n    msg.lang = 'es';\n} \ncontext.global.moment.locale(msg.lang);\n\nvar since = context.global.moment(last).fromNow();\n\nvar status = {};\nstatus.payload = {\n    chatId: msg.chatId,\n    type: \"message\",\n    content: t('serviceStatus', {count: count, since: since}) + \" \"  +\n    ((firesInZone.real >= 0) ? \n        t('firesInZone', { firesnum: real > 0 ? real : 'Ningún', fires: real > 1 ? t('fuegos') : t('fuego'), dist: msg.dist }) + ' ': '' ) +\n    t('serviceStatusExtra', { server: global.get('website') })\n};\n\nstatus.payload.options = {};\nstatus.payload.options.parse_mode = \"Markdown\";\nstatus.payload.options.disable_web_page_preview = true; \n\nreturn status;",
+        "func": "var t = msg.i18n;\nvar count = msg.count;\nvar last = msg.lastCheck;\n\nlet firesInZone = {};\n\nif (msg.payload) {\n    try {\n        firesInZone = JSON.parse(msg.payload);\n    } catch (e) {\n        // do nothing\n    }\n}\n\nvar real = firesInZone.real ? firesInZone.real : 0;\n\nif (msg.lang === 'ast') {\n    msg.lang = 'es';\n} \ncontext.global.moment.locale(msg.lang);\n\nvar since = context.global.moment(last).fromNow();\n\nvar status = {};\nstatus.payload = {\n    chatId: msg.chatId,\n    type: \"message\",\n    content: t('serviceStatus', {count: count, since: since}) + \" \"  +\n    ((firesInZone.real >= 0) ? \n        t('firesInZone', { firesnum: real > 0 ? real : t('Ningún'), fires: real > 1 ? t('fuegos') : t('fuego'), dist: msg.dist }) + ' ': '' ) +\n    t('serviceStatusExtra', { server: global.get('website') })\n};\n\nstatus.payload.options = {};\nstatus.payload.options.parse_mode = \"Markdown\";\nstatus.payload.options.disable_web_page_preview = true; \n\nreturn status;",
         "outputs": 1,
         "noerr": 0,
         "x": 2343.0000381469727,
@@ -8103,16 +8120,25 @@
                 "vt": "str"
             },
             {
+                "t": "eq",
+                "v": "mobile",
+                "vt": "str"
+            },
+            {
                 "t": "else"
             }
         ],
         "checkall": "true",
-        "outputs": 3,
+        "repair": false,
+        "outputs": 4,
         "x": 1040,
         "y": 100,
         "wires": [
             [
                 "f9083a41.b80318",
+                "acd49174.ede59"
+            ],
+            [
                 "acd49174.ede59"
             ],
             [
@@ -8125,7 +8151,8 @@
         "outputLabels": [
             "telegram",
             "web",
-            "otherwise"
+            "otherwise",
+            null
         ]
     },
     {
@@ -8387,14 +8414,15 @@
         "type": "function",
         "z": "95e78a8b.50a428",
         "name": "insert noti",
-        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.sealed = msg.caption.sealed;\nsave.type = msg.notitype;\nsave.when = msg.when;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nconst insert = {};\ninsert.payload = [ save ];\ninsert.collection = \"notifications\";\nreturn insert;\n\n",
+        "func": "var noti = msg.notification;\nvar save = {};\nsave.userId = msg.user._id;\nsave.content = msg.caption.payload.content;\nsave.sealed = msg.caption.sealed;\nsave.type = msg.notitype;\nsave.when = msg.when;\nsave.subsId = msg.subsId;\nsave.geo = {\n            type: \"Point\",\n            coordinates: [ \n                noti.payload.content.longitude,\n                noti.payload.content.latitude\n            ]\n        };\nsave.createdAt = new Date();\nconst insert = {};\ninsert.payload = [ save ];\ninsert.collection = \"notifications\";\nreturn insert;\n\n",
         "outputs": 1,
         "noerr": 0,
         "x": 1240,
         "y": 140,
         "wires": [
             [
-                "dba8bb0b.46db38"
+                "dba8bb0b.46db38",
+                "a890056b.ebcff8"
             ]
         ]
     },
@@ -8742,7 +8770,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 12,
+        "order": 17,
         "width": 0,
         "height": 0,
         "name": "usuarios",
@@ -8842,7 +8870,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 15,
+        "order": 22,
         "width": 0,
         "height": 0,
         "name": "comentarios",
@@ -8889,7 +8917,7 @@
         "z": "93cb4937.6fc068",
         "name": "comments to dash",
         "group": "601660c.cd104a",
-        "order": 10,
+        "order": 14,
         "width": "0",
         "height": "0",
         "label": "Comentarios",
@@ -8942,7 +8970,7 @@
         "type": "ui_text",
         "z": "93cb4937.6fc068",
         "group": "601660c.cd104a",
-        "order": 16,
+        "order": 23,
         "width": 0,
         "height": 0,
         "name": "com-anon",
@@ -8989,7 +9017,7 @@
         "z": "93cb4937.6fc068",
         "name": "comments-a to dash",
         "group": "601660c.cd104a",
-        "order": 11,
+        "order": 15,
         "width": "0",
         "height": "0",
         "label": "Comentarios anon",
@@ -9042,7 +9070,7 @@
         "type": "function",
         "z": "2b8628df.fdcca8",
         "name": "industry?",
-        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 350\n          }\n       }\n   }\nquery.originalMessage = msg;\nquery.collection = \"industries\";\nreturn query;",
+        "func": "var query = {}\nquery.payload = {\n    geo:\n       { $near : {\n            $geometry: { \n                type: \"Point\",  \n                coordinates: [ msg.lon, msg.lat]\n            },\n            $minDistance: 0,\n            $maxDistance: 500 // changed from 350\n          }\n       }\n   }\nquery.originalMessage = msg;\nquery.collection = \"industries\";\nreturn query;",
         "outputs": 1,
         "noerr": 0,
         "x": 200,
@@ -9619,7 +9647,11 @@
                 "2cb7dc7e.180204",
                 "56638eac.27187",
                 "47d9b91c.d37ec8",
-                "997b33bf.c90ae"
+                "997b33bf.c90ae",
+                "c92ac6.bf322538",
+                "663a4e67.a4998",
+                "da2fa134.b9283",
+                "9ec62864.14e9e8"
             ]
         ]
     },
@@ -9777,7 +9809,7 @@
         "z": "274b3b4f.3ee674",
         "name": "disappeared fires",
         "group": "601660c.cd104a",
-        "order": 9,
+        "order": 13,
         "width": "0",
         "height": "0",
         "label": "Disappeared fires",
@@ -9854,7 +9886,7 @@
         "z": "cb92bddb.cd891",
         "name": "fires to notify",
         "group": "601660c.cd104a",
-        "order": 7,
+        "order": 11,
         "width": "0",
         "height": "0",
         "label": "Fires to notify",
@@ -9922,7 +9954,7 @@
         "z": "29f2a71d.f90dd8",
         "name": "ftp read fires",
         "group": "601660c.cd104a",
-        "order": 5,
+        "order": 9,
         "width": "0",
         "height": "0",
         "label": "Fires read from ftp",
@@ -10034,7 +10066,7 @@
         "z": "ed14151e.813358",
         "name": "last detection",
         "group": "601660c.cd104a",
-        "order": 6,
+        "order": 10,
         "width": "0",
         "height": "0",
         "label": "Last fire detected (minutes)",
@@ -10101,7 +10133,7 @@
         "type": "ui_text",
         "z": "ed14151e.813358",
         "group": "601660c.cd104a",
-        "order": 14,
+        "order": 21,
         "width": 0,
         "height": 0,
         "name": "last detection",
@@ -10497,17 +10529,6 @@
             [
                 "61f539b5.950d08"
             ]
-        ]
-    },
-    {
-        "id": "b92a3e78.51334",
-        "type": "subflow:62f56d4f.2eb0a4",
-        "z": "93cb4937.6fc068",
-        "name": "",
-        "x": 768.01953125,
-        "y": 1948.25390625,
-        "wires": [
-            []
         ]
     },
     {
@@ -11017,8 +11038,8 @@
         "id": "a1d870da.64966",
         "type": "subflow:b08bc794.82abc8",
         "z": "95e78a8b.50a428",
-        "x": 2111.524425506592,
-        "y": 60.725704193115234,
+        "x": 2159.5244903564453,
+        "y": 145.72570610046387,
         "wires": [
             []
         ]
@@ -11040,12 +11061,14 @@
         "service": "_ext_",
         "configNode": "d5559ee5.960e2",
         "name": "deleteMany",
-        "collection": " notifications",
+        "collection": "notifications",
         "operation": "deleteMany",
-        "x": 588.5139312744141,
-        "y": 81.43057632446289,
+        "x": 530,
+        "y": 80,
         "wires": [
-            []
+            [
+                "9f41ff98.6a94c"
+            ]
         ]
     },
     {
@@ -11214,23 +11237,7 @@
         "y": 154,
         "wires": [
             [
-                "a31f736b.a6f78"
-            ]
-        ]
-    },
-    {
-        "id": "a31f736b.a6f78",
-        "type": "function",
-        "z": "93cb4937.6fc068",
-        "name": "status",
-        "func": "const when = context.global.moment(global.get('last-fire-check'));\nconst last = context.global.moment(global.get('last-fire-check'))\nconst now = context.global.moment(new Date());\n\ncontext.global.moment.locale('es');\n\nlet statusCode;\n\nconst ago = now.diff(when, 'minutes');\nconst agos = now.diff(when, 'seconds');\n\nif (ago === 0 || last.add(30, 'minutes').isBefore(now)) {\n\t// One hour with the semaphore! Releas...\n\tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n\tstatusCode = 503;\n} else {\t\n\tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n\tstatusCode = 200;\n}\n\nconst status = { \n    ago,\n    lastCheck: when.format('LLLL'),\n    now: now.format('LLLL'),\n    fromNow: when.fromNow()\n    };\nmsg.payload = JSON.stringify(status);\nmsg.statusCode = statusCode;\n// msg.payload = agos;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 796,
-        "y": 153,
-        "wires": [
-            [
-                "afff27db.87df78"
+                "76d99e49.71e2f"
             ]
         ]
     },
@@ -11256,7 +11263,7 @@
         "type": "function",
         "z": "93cb4937.6fc068",
         "name": "test bot",
-        "func": "const TelegramBot = context.global.telegrambotapi;\n// https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md\n\nconst token = global.get('telegramBotToken');\n\nconst bot = new TelegramBot(token, {polling: false});\n\nbot.getMe().then((result) => {\n    if (result.is_bot) {\n        node.status({fill:\"green\",shape:\"dot\", text: 'telegram bot ok'});\n\t    statusCode = 200;\n    } else {\n    \tnode.status({fill:\"red\",shape:\"dot\", text: 'telegram bot problems'});\n\t    statusCode = 503;\n    }\n    const status = { \n        status: result\n    };\n    msg.payload = JSON.stringify(status);\n    msg.statusCode = statusCode;\n    node.send(msg);\n});\n",
+        "func": "const TelegramBot = context.global.telegrambotapi;\n// https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md\n\nconst token = global.get('telegramBotToken');\n\nconst bot = new TelegramBot(token, {polling: false});\n\nif (!global.get('telegramBotToken')) {\n    node.status({fill:\"red\",shape:\"dot\", text: 'telegram bot missing token'});\n    msg.payload = JSON.stringify({status: 'missing token'});\n    msg.statusCode = 503;\n    node.send(msg);\n} else {\n    bot.getMe().then((result) => {\n        if (result.is_bot && global.get('internalApiToken') && global.get('ironPassword')) {\n            node.status({fill:\"green\",shape:\"dot\", text: 'telegram bot ok'});\n    \t    statusCode = 200;\n        } else {\n        \tnode.status({fill:\"red\",shape:\"dot\", text: 'telegram bot problems'});\n    \t    statusCode = 503;\n        }\n        const status = { \n            status: result\n        };\n        msg.payload = JSON.stringify(status);\n        msg.statusCode = statusCode;\n        node.send(msg);\n    });\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 805.5,
@@ -11347,8 +11354,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 996,
-        "y": 154,
+        "x": 1346.0000381469727,
+        "y": 120.00000381469727,
         "wires": []
     },
     {
@@ -11498,19 +11505,21 @@
         "props": [
             {
                 "value": "ironPassword",
-                "type": "msg"
+                "type": "global"
             },
             {
                 "value": "internalApiToken",
-                "type": "msg"
+                "type": "global"
+            },
+            {
+                "value": "telegramBotToken",
+                "type": "global"
             }
         ],
-        "x": 1350.5000381469727,
+        "x": 1340.5000381469727,
         "y": 163.00000381469727,
         "wires": [
-            [
-                "b287b42c.28c3e8"
-            ]
+            []
         ]
     },
     {
@@ -11533,17 +11542,533 @@
         ]
     },
     {
-        "id": "b287b42c.28c3e8",
+        "id": "76d99e49.71e2f",
         "type": "function",
         "z": "93cb4937.6fc068",
-        "name": "set other credentials",
-        "func": "global.set('internalApiToken', msg.internalApiToken);\nglobal.set('ironPassword', msg.ironPassword);\nreturn msg;",
+        "name": "last check?",
+        "func": "const query = {};\nquery.payload = { name: 'last-fire-check' };\nquery.collection = 'siteSettings';\nquery.i18n = msg.i18n;\nquery.chatId = msg.payload.chatId;\nflow.set('statusOriginalMsg', msg);\nreturn query;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1570.5000457763672,
-        "y": 165.33334827423096,
+        "x": 828,
+        "y": 116,
         "wires": [
+            [
+                "134a27e8.418928"
+            ]
+        ]
+    },
+    {
+        "id": "134a27e8.418928",
+        "type": "subflow:3ca4f49b.662eec",
+        "z": "93cb4937.6fc068",
+        "x": 975.496223449707,
+        "y": 116.33616638183594,
+        "wires": [
+            [
+                "1c5808f8.7a1f07"
+            ]
+        ]
+    },
+    {
+        "id": "1c5808f8.7a1f07",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "last check result",
+        "func": "if (msg.payload && msg.payload.length === 1) {\n    const when = context.global.moment(msg.payload[0].value);\n    const last = context.global.moment(msg.payload[0].value);\n    const now = context.global.moment(new Date());\n    \n    const result = flow.get('statusOriginalMsg');\n    \n    context.global.moment.locale('es');\n    \n    let statusCode;\n    \n    const ago = now.diff(when, 'minutes');\n    const agos = now.diff(when, 'seconds');\n    \n    if (ago === 0 || last.add(30, 'minutes').isBefore(now)) {\n    \t// One hour with the semaphore! Releas...\n    \tnode.status({fill:\"red\",shape:\"dot\", text: 'not monitoring new fires'});\n    \tstatusCode = 503;\n    } else {\t\n    \tnode.status({fill:\"green\",shape:\"dot\", text: 'monitoring new fires'});\n    \tstatusCode = 200;\n    }\n    \n    const status = { \n        ago,\n        lastCheck: when.format('LLLL'),\n        now: now.format('LLLL'),\n        fromNow: when.fromNow()\n    };\n    result.payload = JSON.stringify(status);\n    result.statusCode = statusCode;\n   // msg.payload = agos;\n   return result;    \n} else {\n    node.error('Error getting siteSettings last-check value');\n}\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1157.5193939208984,
+        "y": 117.12540054321289,
+        "wires": [
+            [
+                "afff27db.87df78"
+            ]
+        ]
+    },
+    {
+        "id": "732fc8d5.ed8ec8",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "notis to dash",
+        "group": "601660c.cd104a",
+        "order": 6,
+        "width": "0",
+        "height": "0",
+        "label": "Notificaciones",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1222.0195770263672,
+        "y": 1948.7539892196655,
+        "wires": [
+            [
+                "9c443212.34b39"
+            ],
             []
         ]
+    },
+    {
+        "id": "277bcee3.964aa2",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "notifications-in-time",
+        "storageNode": "a733588b.3d2d68",
+        "x": 1242.0195770263672,
+        "y": 1988.7539892196655,
+        "wires": [
+            [
+                "732fc8d5.ed8ec8"
+            ]
+        ]
+    },
+    {
+        "id": "9c443212.34b39",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "notifications-in-time",
+        "storageNode": "a733588b.3d2d68",
+        "x": 1422.0195770263672,
+        "y": 1948.7539892196655,
+        "wires": []
+    },
+    {
+        "id": "c92ac6.bf322538",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count notis",
+        "func": "var newMsg = {\n    payload : {\n        name: \"sendnotis\"\n    },\n    projection: { \n        value: \n        1\n        \n    }\n};\nnewMsg.collection = \"fstats\";\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 571.01953125,
+        "y": 1960.75390625,
+        "wires": [
+            [
+                "53f31d1d.62d034"
+            ]
+        ]
+    },
+    {
+        "id": "53f31d1d.62d034",
+        "type": "subflow:3ca4f49b.662eec",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 771.0390625,
+        "y": 1962.0078864097595,
+        "wires": [
+            [
+                "84662490.a382d8"
+            ]
+        ]
+    },
+    {
+        "id": "84662490.a382d8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "valuepay",
+        "func": "const value = msg.payload[0].value;\nmsg.payload = value;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 912.5234375,
+        "y": 1961.546875,
+        "wires": [
+            [
+                "37f67d84.2f3ce2",
+                "732fc8d5.ed8ec8"
+            ]
+        ]
+    },
+    {
+        "id": "37f67d84.2f3ce2",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 26,
+        "width": 0,
+        "height": 0,
+        "name": "notif",
+        "label": "Notificaciones totales",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1053.01953125,
+        "y": 1967.75390625,
+        "wires": []
+    },
+    {
+        "id": "663a4e67.a4998",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count subs web",
+        "func": "msg.payload = { type: 'web'};\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 569,
+        "y": 2409,
+        "wires": [
+            [
+                "ec16bf7a.17037"
+            ]
+        ]
+    },
+    {
+        "id": "ec16bf7a.17037",
+        "type": "subflow:62f56d4f.2eb0a4",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 759.0195693969727,
+        "y": 2407.2539205551147,
+        "wires": [
+            [
+                "2cc1de2f.918342",
+                "5a7fb1ad.a55d7"
+            ]
+        ]
+    },
+    {
+        "id": "2cc1de2f.918342",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 18,
+        "width": 0,
+        "height": 0,
+        "name": "Subs web",
+        "label": "Subs web",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 949,
+        "y": 2409,
+        "wires": []
+    },
+    {
+        "id": "9bd3a0c5.870ed",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "subs-web-in-time",
+        "storageNode": "3ffd20f4.68ff7",
+        "x": 1139,
+        "y": 2389,
+        "wires": [
+            [
+                "5a7fb1ad.a55d7"
+            ]
+        ]
+    },
+    {
+        "id": "5a7fb1ad.a55d7",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "subs web to dash",
+        "group": "601660c.cd104a",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Subs web",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1149,
+        "y": 2349,
+        "wires": [
+            [
+                "8af9a869.11f228"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "8af9a869.11f228",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "subs-web-in-time",
+        "storageNode": "3ffd20f4.68ff7",
+        "x": 1358,
+        "y": 2349,
+        "wires": []
+    },
+    {
+        "id": "da2fa134.b9283",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count subs bot-es",
+        "func": "msg.payload = { type: 'telegram', telegramBot: 'es'};\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 549,
+        "y": 2509,
+        "wires": [
+            [
+                "a0176033.ca4ee"
+            ]
+        ]
+    },
+    {
+        "id": "a0176033.ca4ee",
+        "type": "subflow:62f56d4f.2eb0a4",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 729.0195693969727,
+        "y": 2507.2539205551147,
+        "wires": [
+            [
+                "479982f9.b2dbdc",
+                "47b470ed.fa6fa"
+            ]
+        ]
+    },
+    {
+        "id": "479982f9.b2dbdc",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 19,
+        "width": 0,
+        "height": 0,
+        "name": "Subs bot-es",
+        "label": "Subs bot-es",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 929,
+        "y": 2509,
+        "wires": []
+    },
+    {
+        "id": "1a5dbd16.0a5bd3",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-es-in-time",
+        "storageNode": "3bf90146.90fffe",
+        "x": 1142,
+        "y": 2492,
+        "wires": [
+            [
+                "47b470ed.fa6fa"
+            ]
+        ]
+    },
+    {
+        "id": "47b470ed.fa6fa",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "subs bot-es to dash",
+        "group": "601660c.cd104a",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "label": "Subs bot-es",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1129,
+        "y": 2449,
+        "wires": [
+            [
+                "40b677dc.618c48"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "40b677dc.618c48",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-es-in-time",
+        "storageNode": "3bf90146.90fffe",
+        "x": 1328,
+        "y": 2449,
+        "wires": []
+    },
+    {
+        "id": "9ec62864.14e9e8",
+        "type": "function",
+        "z": "93cb4937.6fc068",
+        "name": "count subs bot-en",
+        "func": "msg.payload = { type: 'telegram', telegramBot: 'en'};\nmsg.collection = \"subscriptions\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 546,
+        "y": 2607,
+        "wires": [
+            [
+                "45f28698.f708d8"
+            ]
+        ]
+    },
+    {
+        "id": "45f28698.f708d8",
+        "type": "subflow:62f56d4f.2eb0a4",
+        "z": "93cb4937.6fc068",
+        "name": "",
+        "x": 726.0195693969727,
+        "y": 2605.2539205551147,
+        "wires": [
+            [
+                "e6bfa686.800fe8",
+                "50287bb5.53b884"
+            ]
+        ]
+    },
+    {
+        "id": "e6bfa686.800fe8",
+        "type": "ui_text",
+        "z": "93cb4937.6fc068",
+        "group": "601660c.cd104a",
+        "order": 20,
+        "width": 0,
+        "height": 0,
+        "name": "Subs bot-en",
+        "label": "Subs bot-en",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 926,
+        "y": 2607,
+        "wires": []
+    },
+    {
+        "id": "5d121298.370bcc",
+        "type": "persist out",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-en-in-time",
+        "storageNode": "db8c452.812cbb8",
+        "x": 1139,
+        "y": 2590,
+        "wires": [
+            [
+                "50287bb5.53b884"
+            ]
+        ]
+    },
+    {
+        "id": "50287bb5.53b884",
+        "type": "ui_chart",
+        "z": "93cb4937.6fc068",
+        "name": "subs bot-en to dash",
+        "group": "601660c.cd104a",
+        "order": 4,
+        "width": "0",
+        "height": "0",
+        "label": "Subs bot-en",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "8",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "604800",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 1126,
+        "y": 2547,
+        "wires": [
+            [
+                "3ebb9775.3a6098"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "3ebb9775.3a6098",
+        "type": "persist in",
+        "z": "93cb4937.6fc068",
+        "name": "subs-bot-en-in-time",
+        "storageNode": "db8c452.812cbb8",
+        "x": 1325,
+        "y": 2547,
+        "wires": []
+    },
+    {
+        "id": "9f41ff98.6a94c",
+        "type": "debug",
+        "z": "93cb4937.6fc068",
+        "name": "delNotis",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 690,
+        "y": 80,
+        "wires": []
     }
 ]
