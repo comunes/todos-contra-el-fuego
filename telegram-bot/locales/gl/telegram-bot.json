@@ -89,5 +89,16 @@
     "sur": "sur",
     "suroeste": "suroeste",
     "oeste": "oeste",
-    "noroeste": "noroeste"
+    "noroeste": "noroeste",
+    "serviceStatus": "Hai {{count}} lumes activos no mundo (datos actualizados {{since}}).",
+    "serviceAuth": "Ola, humana! Preme este enlace para autorizarme: ",
+    "fireDetected": "lume detectado {{when}}",
+    "fireDetectedAt": "lume detectado o  {{when}}",
+    "firelink": "[máis información](https://{{server}}/fire/{{enc}})",
+    "🌏 Estado actual": "🌏 Estado actual",
+    "firesInZone": "{{firesnum}} {{fires}} a {{dist}} км darredor.",
+    "serviceStatusExtra": "[Máis información](https://{{server}}/fires)",
+    "Ningún": "Ningún",
+    "fuego": "lume",
+    "fuegos": "lumes"
 }
