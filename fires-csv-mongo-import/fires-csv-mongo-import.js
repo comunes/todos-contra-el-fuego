@@ -7,7 +7,6 @@ const mongoClient = require('mongodb').MongoClient;
 const csv = require('csvtojson');
 const settings = require('./settings.json');
 
-const insert = false; // use 'update' or 'insert' (deprecated remove in the future)
 const {
   inotifyDir, dbname, workers, mongoUrl
 } = settings; // '/var/tmp/nasa-data/';
@@ -54,7 +53,7 @@ mongoClient.connect(mongoUrl, {
   const siteSettings = db.collection('siteSettings');
 
   const bulk = () => {
-    console.log(`Trying to ${insert ? 'insert' : 'update'} ${updates.length} fires`);
+    console.log(`Trying to update ${updates.length} fires`);
     saveStats('ftp-read-fires-stats', updates.length);
     try {
       if (updates.length === 0) { console.error('No data read'); process.exit(1); } else {
@@ -67,44 +66,41 @@ mongoClient.connect(mongoUrl, {
             assert.equal(null, cerr);
             saveStats('total-fires-stats', count);
             console.log(`Total fires: ${count}`);
-            if (!insert) {
-              activeFires.deleteMany({ updatedAt: { $ne: now } }, { w: 1 }, (rerr, r) => {
-                assert.equal(null, rerr);
-                const disappeared = r.result.n;
-                console.log(`Deleted ${disappeared} old fires`);
-                saveStats('disappeared-fires-stats', disappeared);
-                siteSettings.findOne({ name: 'subs-private-union' }, {}, (serr, fr) => {
-                  assert.equal(null, serr);
-                  assert.notEqual(null, fr);
-                  assert.notEqual(null, fr.value);
-                  const union = JSON.parse(fr.value);
-                  assert.notEqual(null, union);
-                  activeFires.count({
-                    ourid: {
-                      $geoWithin: {
-                        $geometry: union.geometry
-                      }
+            activeFires.deleteMany({ updatedAt: { $ne: now } }, { w: 1 }, (rerr, r) => {
+              assert.equal(null, rerr);
+              const disappeared = r.result.n;
+              console.log(`Deleted ${disappeared} old fires`);
+              saveStats('disappeared-fires-stats', disappeared);
+              // TODO group
+              siteSettings.findOne({ name: 'subs-private-union' }, {}, (serr, fr) => {
+                assert.equal(null, serr);
+                assert.notEqual(null, fr);
+                assert.notEqual(null, fr.value);
+                const union = JSON.parse(fr.value);
+                assert.notEqual(null, union);
+                activeFires.count({
+                  ourid: {
+                    $geoWithin: {
+                      $geometry: union.geometry
                     }
-                  }, (cterr, countt) => {
-                    assert.equal(null, cterr);
-                    console.log(`${countt} fires to notify`);
-                    saveStats('fires-to-notif-stats', countt);
-                    activeFires.count({ createdAt: now }, (terr, countn) => {
-                      assert.equal(null, terr);
-                      console.log(`${countn} new active fires`);
-                      saveStats('new-fires-stats', countn);
-                      if (countt > 0) {
-                        touch('new');
-                      }
-                      touch('end');
-                      client.close();
-                    });
+                  }
+                }, (cterr, countt) => {
+                  assert.equal(null, cterr);
+                  console.log(`${countt} fires to notify`);
+                  saveStats('fires-to-notif-stats', countt);
+                  activeFires.count({ createdAt: now }, (terr, countn) => {
+                    assert.equal(null, terr);
+                    console.log(`${countn} new active fires`);
+                    saveStats('new-fires-stats', countn);
+                    if (countt > 0) {
+                      touch('new');
+                    }
+                    touch('end');
+                    client.close();
                   });
                 });
               });
-            } else {
-              client.close();
-            }
+            });
           });
         });
       }
@@ -172,17 +168,13 @@ mongoClient.connect(mongoUrl, {
         // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite
         // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }
 
-        if (insert) {
-          fire.createdAt = now;
-          updates.push({ insertOne: { document: fire } });
-        } else {
-          const up = {
-            $set: fire,
-            $setOnInsert: { createdAt: now }
-          };
+        const up = {
+          $set: fire,
+          $setOnInsert: { createdAt: now }
+        };
 
-          updates.push({ updateOne: { filter: { ourid, type }, update: up, upsert: true } });
-        }
+        updates.push({ updateOne: { filter: { ourid, type }, update: up, upsert: true } });
+
       } else {
         // console.log(JSON.stringify(el));
       }
@@ -195,15 +187,7 @@ mongoClient.connect(mongoUrl, {
     fileCount += 1;
     console.log(`${fileCount} of ${totalFiles - 2}`);
     if (fileCount === totalFiles - 2) {
-      if (insert) {
-        console.log('Deleting old fires to insert actives');
-        activeFires.deleteMany({}, { w: 1 }, (rerr) => { // r
-          assert.equal(null, rerr);
-          bulk();
-        });
-      } else {
-        bulk();
-      }
+      bulk();
     }
   };
 
