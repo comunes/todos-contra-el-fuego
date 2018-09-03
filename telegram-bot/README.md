@@ -149,6 +149,7 @@ docker run -it --restart=always -p 1880:1880 -p 40001:40001 -p 40002:40002  -v /
 Thanks indeed to:
 - Lui for Galician and Portuguese translation
 - Jose González Besteiro for Galician and English translation
+- Lupe Bao Reixa for Galician translation
 - Enol P at softastur.org for Asturian translation
 
 Original idea and development by [@vjrj](https://github.com/vjrj)
