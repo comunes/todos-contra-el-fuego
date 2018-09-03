@@ -1012,6 +1012,35 @@
         ]
     },
     {
+        "id": "fa9bd6eb.20cb08",
+        "type": "subflow",
+        "name": "raven",
+        "info": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "322a91c9.4d3ece"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 312.7272529602051,
+                "y": 32.72727584838867,
+                "wires": [
+                    {
+                        "id": "322a91c9.4d3ece",
+                        "port": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "id": "f93d1a38.c43218",
         "type": "telegram bot",
         "z": "",
@@ -5333,12 +5362,12 @@
         "id": "5031ecc8.ccb184",
         "type": "debug",
         "z": "93cb4937.6fc068",
-        "name": "catch error ----------------------",
+        "name": "catch error --------",
         "active": true,
         "console": "true",
         "complete": "true",
-        "x": 330,
-        "y": 160,
+        "x": 437.27273178100586,
+        "y": 159.0909023284912,
         "wires": []
     },
     {
@@ -5351,7 +5380,7 @@
         "y": 160,
         "wires": [
             [
-                "5031ecc8.ccb184"
+                "467c6a5d.0b0174"
             ]
         ]
     },
@@ -6674,7 +6703,7 @@
         "y": 140,
         "wires": [
             [
-                "1a8f241d.48463c"
+                "f7dc6842.5c42e8"
             ]
         ]
     },
@@ -6686,8 +6715,8 @@
         "active": true,
         "console": "true",
         "complete": "true",
-        "x": 350,
-        "y": 140,
+        "x": 604.5454292297363,
+        "y": 141.8181858062744,
         "wires": []
     },
     {
@@ -8129,7 +8158,6 @@
             }
         ],
         "checkall": "true",
-        "repair": false,
         "outputs": 4,
         "x": 1040,
         "y": 100,
@@ -11514,6 +11542,10 @@
             {
                 "value": "telegramBotToken",
                 "type": "global"
+            },
+            {
+                "value": "sentryDSN",
+                "type": "global"
             }
         ],
         "x": 1340.5000381469727,
@@ -12063,12 +12095,50 @@
         "z": "93cb4937.6fc068",
         "name": "delNotis",
         "active": false,
-        "tosidebar": true,
         "console": false,
-        "tostatus": false,
         "complete": "true",
         "x": 690,
         "y": 80,
         "wires": []
+    },
+    {
+        "id": "322a91c9.4d3ece",
+        "type": "function",
+        "z": "fa9bd6eb.20cb08",
+        "name": "raven",
+        "func": "const Raven = context.global.raven;\n\nRaven.config(global.get('sentryDSN')).install(function (err, initialErr, eventId) {\n    node.error(err);\n});\n\nRaven.captureException(msg.error, function (sendErr, eventId) {\n    if (sendErr) {\n      node.error('Failed to send captured exception to Sentry');\n    } else {\n      node.log('Captured exception and send to Sentry successfully');\n    }\n});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 168.40910720825195,
+        "y": 28.45456027984619,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "467c6a5d.0b0174",
+        "type": "subflow:fa9bd6eb.20cb08",
+        "z": "93cb4937.6fc068",
+        "name": "raven",
+        "x": 244.77273178100586,
+        "y": 160.2727689743042,
+        "wires": [
+            [
+                "5031ecc8.ccb184"
+            ]
+        ]
+    },
+    {
+        "id": "f7dc6842.5c42e8",
+        "type": "subflow:fa9bd6eb.20cb08",
+        "z": "c1e7ebde.3e0b68",
+        "name": "raven",
+        "x": 329.1086769104004,
+        "y": 141.82174491882324,
+        "wires": [
+            [
+                "1a8f241d.48463c"
+            ]
+        ]
     }
 ]

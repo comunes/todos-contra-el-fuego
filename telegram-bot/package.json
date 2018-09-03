@@ -33,6 +33,7 @@
     "node-telegram-bot-api": "^0.29.0",
     "npm": "^6.0.1",
     "objectid": "^3.2.1",
-    "openweather-apis": "^3.3.5"
+    "openweather-apis": "^3.3.5",
+    "raven": "^2.6.3"
   }
 }
