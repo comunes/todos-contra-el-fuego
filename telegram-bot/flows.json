@@ -12106,7 +12106,7 @@
         "type": "function",
         "z": "fa9bd6eb.20cb08",
         "name": "raven",
-        "func": "const Raven = context.global.raven;\n\nRaven.config(global.get('sentryDSN')).install(function (err, initialErr, eventId) {\n    node.error(err);\n});\n\nRaven.captureException(msg.error, function (sendErr, eventId) {\n    if (sendErr) {\n      node.error('Failed to send captured exception to Sentry');\n    } else {\n      node.log('Captured exception and send to Sentry successfully');\n    }\n});\n\nreturn msg;",
+        "func": "const Raven = context.global.raven;\n\nRaven.config(global.get('sentryDSN')).install(function (err, initialErr, eventId) {\n    node.error(err);\n});\n\nRaven.captureMessage(`${msg.error.message} (${msg.error.source.name}, ${msg.error.source.type})`, { level: 'error'}, function (sendErr, eventId) {\n    if (sendErr) {\n      node.error('Failed to send captured exception to Sentry');\n      node.error(sendErr);\n    } else {\n      // node.log('Captured exception and send to Sentry successfully');\n    }\n});\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 168.40910720825195,
