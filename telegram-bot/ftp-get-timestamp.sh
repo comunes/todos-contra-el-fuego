@@ -7,6 +7,24 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 DEBUG=0
 
+# https://stackoverflow.com/questions/1715137/what-is-the-best-way-to-ensure-only-one-instance-of-a-bash-script-is-running
+currsh=$0
+currpid=$$
+runpid=$(pgrep -of $currsh)
+if [[ ! $runpid == $currpid ]]
+then
+  if [[ $DEBUG -eq 1 ]] ; then echo "At least one of \"$currsh\" is running !!!"; fi
+  secondsRunning=`date +%s --date="now - $( stat -c%X /proc/$runpid ) seconds"`
+  if [[ secondsRunning -gt 1200 ]] # wait 20 mins
+  then
+      if [[ $DEBUG -eq 1 ]] ; then echo "Killing previous $currsh process"; fi
+      kill -9 $runpid
+  else
+      # Wait til some timeout
+      exit 0
+  fi
+fi
+
 # ZONES="Alaska Australia_NewZealand Canada Central_America Europe Northern_and_Central_Africa Russia_Asia SouthEast_Asia South_America South_Asia Southern_Africa USA_contiguous_and_Hawaii"
 ZONES="Global"
 #ZONES="Central_America Europe South_America"
