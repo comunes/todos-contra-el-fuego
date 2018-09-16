@@ -10,8 +10,9 @@ DEBUG=0
 # https://stackoverflow.com/questions/1715137/what-is-the-best-way-to-ensure-only-one-instance-of-a-bash-script-is-running
 currsh=$0
 currpid=$$
+countpid=$(lsof -t $currsh| wc -l)
 runpid=$(pgrep -of $currsh)
-if [[ ! $runpid == $currpid ]]
+if [[ countpid -gt 1 && ! $runpid == $currpid ]]
 then
   if [[ $DEBUG -eq 1 ]] ; then echo "At least one of \"$currsh\" is running !!!"; fi
   secondsRunning=`date +%s --date="now - $( stat -c%X /proc/$runpid ) seconds"`
