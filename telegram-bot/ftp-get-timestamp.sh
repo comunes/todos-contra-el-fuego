@@ -44,7 +44,6 @@ EOF
     if [[ $? != 0 ]]; then
         echo "Error getting ftp timestamp"
     fi
-
 }
 
 function ftp-get {
@@ -60,13 +59,25 @@ function ftp-get {
 MDIRTY=false
 VDIRTY=false
 
-# minute odd/even use nrt4 or nrt3 server
-if [[ $((`date '+%M'` & 1)) ]]
+LASTSERVERF=$DEST/lastserver.txt
+
+if [[ -f $LASTSERVERF ]]
 then
-    SERVER=3
+    LASTSERVER=$(cat $LASTSERVERF)
+    if [[ $LASTSERVER = 3 ]]
+    then
+        NEXTSERVER=4
+    else
+        NEXTSERVER=3
+    fi
 else
-    SERVER=4
+    # First run
+    NEXTSERVER=3
 fi
+echo $NEXTSERVER > $LASTSERVERF
+
+SERVER=$NEXTSERVER
+echo $SERVER
 
 for ZONE in $ZONES
 do
