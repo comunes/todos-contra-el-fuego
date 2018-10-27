@@ -6,13 +6,35 @@ const fs = require('fs');
 const mongoClient = require('mongodb').MongoClient;
 const csv = require('csvtojson');
 const settings = require('./settings.json');
+const Sentry = require('@sentry/node');
 
 const {
-  inotifyDir, dbname, workers, mongoUrl
+  inotifyDir, dbname, workers, mongoUrl, sentryDSN
 } = settings; // '/var/tmp/nasa-data/';
+
+const hasSentry = typeof sentryDNS !== 'undefined' && sentryDSN.length > 0;
+if (hasSentry) {
+  Sentry.init({ dsn: sentryDSN });
+}
 
 if (!fs.existsSync(inotifyDir)) {
   fs.mkdirSync(inotifyDir);
+}
+
+const logError = (err) => {
+  if (hasSentry) {
+    Sentry.captureException(err);
+  } else {
+    console.error(err);
+  }
+}
+
+const logInfo = (msg) => {
+  if (hasSentry) {
+    Sentry.captureMessage(msg);
+  } else {
+    console.info(msg);
+  }
 }
 
 const touch = (file) => {
@@ -41,6 +63,7 @@ let fileCount = 0;
 // https://stackoverflow.com/questions/39785036/reliably-reconnect-to-mongodb
 // TODO url
 mongoClient.connect(mongoUrl, {
+  useNewUrlParser: true,
   // retry to connect for 60 times
   reconnectTries: 60,
   // wait 1 second before retrying
@@ -56,13 +79,17 @@ mongoClient.connect(mongoUrl, {
     console.log(`Trying to update ${updates.length} fires`);
     saveStats('ftp-read-fires-stats', updates.length);
     try {
-      if (updates.length === 0) { console.error('No data read'); process.exit(1); } else {
+      if (updates.length === 0) {
+        logInfo('No data read from NASA cvs');
+        process.exit(1);
+      } else {
         activeFires.bulkWrite(updates, { w: 1, ordered: 0, wtimeout: 120000 }, (errw) => { // ,r
           if (errw) {
-            console.error(JSON.stringify(errw));
+            // console.error(JSON.stringify(errw));
+            logError(errow);
           }
           assert.equal(null, errw);
-          activeFires.count((cerr, count) => {
+          activeFires.countDocuments((cerr, count) => {
             assert.equal(null, cerr);
             saveStats('total-fires-stats', count);
             console.log(`Total fires: ${count}`);
@@ -78,7 +105,7 @@ mongoClient.connect(mongoUrl, {
                 assert.notEqual(null, fr.value);
                 const union = JSON.parse(fr.value);
                 assert.notEqual(null, union);
-                activeFires.count({
+                activeFires.countDocuments({
                   ourid: {
                     $geoWithin: {
                       $geometry: union.geometry
@@ -88,7 +115,7 @@ mongoClient.connect(mongoUrl, {
                   assert.equal(null, cterr);
                   console.log(`${countt} fires to notify`);
                   saveStats('fires-to-notif-stats', countt);
-                  activeFires.count({ createdAt: now }, (terr, countn) => {
+                  activeFires.countDocuments({ createdAt: now }, (terr, countn) => {
                     assert.equal(null, terr);
                     console.log(`${countn} new active fires`);
                     saveStats('new-fires-stats', countn);
@@ -105,7 +132,7 @@ mongoClient.connect(mongoUrl, {
         });
       }
     } catch (e) {
-      console.error(e);
+      logError(e);
     }
   };
 
@@ -179,7 +206,7 @@ mongoClient.connect(mongoUrl, {
         // console.log(JSON.stringify(el));
       }
     } catch (e) {
-      console.error(e);
+      logError(e);
     }
   };
 
@@ -237,7 +264,7 @@ mongoClient.connect(mongoUrl, {
         onRow(row, type);
       })
       .on('done', (error) => {
-        if (error) { console.error(error); } else { onEnd(); }
+        if (error) { logError(e); } else { onEnd(); }
       });
   }
 });

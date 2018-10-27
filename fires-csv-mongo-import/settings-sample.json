@@ -2,5 +2,6 @@
   "mongoUrl": "mongodb://localhost:27017",
   "dbname": "fuegos",
   "workers": 2,
+  "sentryDSN": "",
   "inotifyDir": "/var/tmp/nasa-data/"
 }
