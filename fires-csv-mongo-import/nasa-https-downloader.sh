@@ -9,6 +9,9 @@ DEST=$3
 
 DEBUG=0
 
+# https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # https://stackoverflow.com/questions/1715137/what-is-the-best-way-to-ensure-only-one-instance-of-a-bash-script-is-running
 currsh=$0
 currpid=$$
@@ -148,7 +151,7 @@ down $server_url $viirs_path $KEY $DEST $SERVER "VIIRS" "${DEST}/${viirs_path}" 
 if [[ -n $FILES ]]
 then
     if [[ $DEBUG ]] ; then echo "Files to import $FILES"; fi
-    /usr/local/bin/node fires-csv-mongo-import.js $FILES
+    (cd $DIR; /usr/local/bin/node $DIR/fires-csv-mongo-import.js $FILES)
 else
     if [[ $DEBUG ]] ; then echo "No files to import"; fi
 fi
