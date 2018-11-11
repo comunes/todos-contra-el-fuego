@@ -1,4 +1,7 @@
 #!/bin/bash
+# Migration from ftp to https
+# https://ladsweb.modaps.eosdis.nasa.gov/alerts-and-issues/?id=24255
+# https://nrt4.modaps.eosdis.nasa.gov/help/downloads
 
 KEY=$1
 export SENTRY_DSN=$2
