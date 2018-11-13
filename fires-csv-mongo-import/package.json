@@ -1,11 +1,54 @@
 {
   "dependencies": {
     "@sentry/node": "^4.2.3",
+    "@turf/centroid": "^6.0.2",
     "assert": "^1.4.1",
     "csv-write-stream": "^2.0.0",
     "csvtojson": "^1.1.12",
+    "eslint": "^5.8.0",
     "fs": "0.0.1-security",
+    "map-common-utils": "^0.5.0",
     "moment-timezone": "^0.5.21",
     "mongodb": "^3.1.6"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 2017,
+      "ecmaFeatures": {}
+    },
+    "plugins": [],
+    "extends": [],
+    "env": {
+      "browser": true
+    },
+    "globals": {
+      "expect": false
+    },
+    "rules": {
+      "import/no-unresolved": 0,
+      "import/no-extraneous-dependencies": 0,
+      "import/extensions": 0,
+      "max-len": 0,
+      "no-alert": 0,
+      "no-console": 0,
+      "no-restricted-globals": 0,
+      "no-return-assign": [
+        "error",
+        "except-parens"
+      ],
+      "comma-dangle": [
+        "error",
+        "never"
+      ],
+      "no-underscore-dangle": [
+        "error",
+        {
+          "allow": [
+            "_id"
+          ]
+        }
+      ],
+      "class-methods-use-this": 0
+    }
   }
 }

@@ -2,50 +2,14 @@
 
 const moment = require('moment-timezone');
 const assert = require('assert');
-const fs = require('fs');
 const mongoClient = require('mongodb').MongoClient;
 const csv = require('csvtojson');
-const settings = require('./settings.json');
-const Sentry = require('@sentry/node');
+const calcUnion = require('map-common-utils').calcUnion;
 
-const {
-  inotifyDir, dbname, workers, mongoUrl, sentryDSN
-} = settings; // '/var/tmp/nasa-data/';
-
-const hasSentry = typeof sentryDNS !== 'undefined' && sentryDSN.length > 0;
-if (hasSentry) {
-  Sentry.init({ dsn: sentryDSN });
-}
-
-if (!fs.existsSync(inotifyDir)) {
-  fs.mkdirSync(inotifyDir);
-}
-
-const logError = (err) => {
-  if (hasSentry) {
-    Sentry.captureException(err);
-  } else {
-    console.error(err);
-  }
-}
-
-const logInfo = (msg) => {
-  if (hasSentry) {
-    Sentry.captureMessage(msg);
-  } else {
-    console.info(msg);
-  }
-}
-
-const touch = (file) => {
-  fs.closeSync(fs.openSync(`${inotifyDir}${file}`, 'w'));
-};
-
-const saveStats = (file, value) => {
-  fs.writeFile(`${inotifyDir}${file}`, value, (err) => {
-    assert.equal(null, err);
-  });
-};
+// FIXME union of none
+const centroid = require('@turf/centroid').default;
+const { logInfo, logError, touch, saveStats } = require('./utils.js');
+const { dbname, workers, mongoUrl, sentryDSN, debug } = require('./settings.json');
 
 if (process.argv.length < 3) {
   console.error('You must specify a file or files');
@@ -54,6 +18,7 @@ if (process.argv.length < 3) {
 
 const now = new Date();
 const updates = [];
+const unionInsert = [];
 
 const totalFiles = process.argv.length;
 let fileCount = 0;
@@ -62,6 +27,7 @@ let fileCount = 0;
 
 // https://stackoverflow.com/questions/39785036/reliably-reconnect-to-mongodb
 // TODO url
+
 mongoClient.connect(mongoUrl, {
   useNewUrlParser: true,
   // retry to connect for 60 times
@@ -70,60 +36,166 @@ mongoClient.connect(mongoUrl, {
   reconnectInterval: 1000
 }, (err, client) => {
   assert.equal(null, err);
-  console.log('Connected successfully to server');
+  logInfo('Connected successfully to server');
   const db = client.db(dbname);
   const activeFires = db.collection('activefires');
   const siteSettings = db.collection('siteSettings');
+  const activeFiresUnion = db.collection('activefiresunion');
+
+  const activeFiresUnionUpdate = (findUnionQuery, onEnd) => {
+    // console.time("Active fire to notify union");
+    logInfo("Starting active fire union");
+    const fires = activeFires.find(findUnionQuery).toArray((err, result) => {
+      if (err) logError(result);
+
+      const hasResults = result.length > 0;
+
+      if (hasResults) {
+      const remap = result.map((doc) => {
+        const isNASA = doc.type === 'modis' || doc.type === 'viirs';
+        const pixelSize = doc.type === 'viirs' ? 0.375 : 1; // viirs has 375m pixel size, modis 1000m
+        // default 1 km for neighbor alerts
+        return {
+          location: { lat: doc.lat, lon: doc.lon },
+          distance: isNASA ? doc.scan * pixelSize : 1,
+          distanceY: isNASA ? doc.track * pixelSize : 1
+        };
+      });
+
+      logInfo("End active fire remap");
+      const unionMultiPolygon = calcUnion(remap, (sub) => { return sub; }, false); // without nouse and with squares (like pixels)
+      const firesUnionCount = unionMultiPolygon.geometry.coordinates.length;
+      logInfo("End active fire union");
+      logInfo(`Fires unified: ${firesUnionCount}`);
+      // logInfo(JSON.stringify(unionMultiPolygon));
+      unionMultiPolygon.geometry.coordinates.forEach((coords) => {
+        // FIXME this to fire group
+        // centroid ?
+        const shape = {"type": "Polygon", "coordinates": coords};
+        const centerid = centroid(shape).geometry;
+        // logInfo(JSON.stringify(shape));
+        // logInfo(JSON.stringify(centerid));
+        const fireUnion = {
+          centerid,
+          shape,
+          history: [],
+          // when
+          createdAt: now,
+          updatedAt: now
+        };
+        // TODO here we can search for previous fires and add then to history (before delete old fires)
+        unionInsert.push(fireUnion);
+      });
+
+      }
+      // logInfo(unionInsert);
+      activeFiresUnion.deleteMany({ createdAt: { $ne: now } }, { w: 1 }, (err, r) => {
+        if (err) logError(err);
+        assert.equal(null, err, 'Error deleting previous activeFiresUnion');
+        const disappeared = r.result.n;
+        logInfo(`Deleted ${disappeared} old union fires`);
+        activeFiresUnion.insertMany(unionInsert, { w: 1 }, (err, result) => {
+          if (err) logError(err);
+          assert.equal(null, err, 'Error inserting new activeFiresUnion');
+          // console.timeEnd("Active fire to notify union");
+          logInfo(`${result.insertedCount} new active union fires`);
+          // Delete foreign keys in activefires
+          activeFires.updateMany({}, { $set: { fireUnion: null } }, (err, result) => {
+            if (err) logError(err);
+            assert.equal(null, err, 'Error updating activeFires');
+            // fireUnion
+            // Set foreign key in activeFires
+            activeFiresUnion.find({}, {}, async (err, result) => {
+              if (err) logError(err);
+              assert.equal(null, err, 'Error in find activeFiresUnion');
+              let fireUnionCount = await result.count();
+              while(await result.hasNext()) {
+                const funion = await result.next();
+                const more = await result.hasNext();
+                const firesOfUnionQuery = {
+                  ourid: {
+                    $geoWithin: {
+                      $geometry: funion.shape
+                    }
+                  }
+                };
+                await activeFires.updateMany(firesOfUnionQuery, { $set: { fireUnion: funion._id } }, async (err, uaf2r) => {
+                  if (err) logError(err);
+                  assert.equal(null, err, 'Error updating active fire with unions');
+                  // logInfo(uaf2r.result);
+
+                  // find when started the fire
+                  await activeFires.findOne(firesOfUnionQuery,
+                                      { projection: { when: 1 }, sort: { when: 1 }, limit: 1 },
+                                      async (err, result) => {
+                                        if (err) logError(err);
+                                        assert.equal(null, err);
+                                        await activeFiresUnion.updateOne({_id: funion._id}, {$set: { when: result.when }},
+                                           async (err, result) => {
+                                             assert.equal(null, err);
+                                             // logInfo('Updating when');
+                                             fireUnionCount -= 1;
+                                             if (fireUnionCount === 0) onEnd();
+                                           });
+                                      });
+                });
+              }
+            });
+          });
+        });
+      });
+    });
+  };
 
   const bulk = () => {
-    console.log(`Trying to update ${updates.length} fires`);
+    logInfo(`Trying to update ${updates.length} fires`);
     saveStats('ftp-read-fires-stats', updates.length);
     try {
       if (updates.length === 0) {
         logInfo('No data read from NASA cvs');
         process.exit(1);
       } else {
-        activeFires.bulkWrite(updates, { w: 1, ordered: 0, wtimeout: 120000 }, (errw) => { // ,r
-          if (errw) {
-            // console.error(JSON.stringify(errw));
-            logError(errow);
-          }
-          assert.equal(null, errw);
-          activeFires.countDocuments((cerr, count) => {
-            assert.equal(null, cerr);
+        activeFires.bulkWrite(updates, { w: 1, ordered: 0, wtimeout: 120000 }, (err) => {
+          if (err) logError(err);
+          assert.equal(null, err);
+          activeFires.countDocuments((err, count) => {
+            assert.equal(null, err);
             saveStats('total-fires-stats', count);
-            console.log(`Total fires: ${count}`);
-            activeFires.deleteMany({ updatedAt: { $ne: now } }, { w: 1 }, (rerr, r) => {
-              assert.equal(null, rerr);
-              const disappeared = r.result.n;
-              console.log(`Deleted ${disappeared} old fires`);
+            logInfo(`Total fires: ${count}`);
+            activeFires.deleteMany({ updatedAt: { $ne: now } }, { w: 1 }, (err, result) => {
+              assert.equal(null, err);
+              const disappeared = result.result.n;
+              logInfo(`Deleted ${disappeared} old fires`);
               saveStats('disappeared-fires-stats', disappeared);
               // TODO group
-              siteSettings.findOne({ name: 'subs-private-union' }, {}, (serr, fr) => {
-                assert.equal(null, serr);
-                assert.notEqual(null, fr);
-                assert.notEqual(null, fr.value);
-                const union = JSON.parse(fr.value);
+              siteSettings.findOne({ name: 'subs-private-union' }, {}, (err, result) => {
+                assert.equal(null, err);
+                assert.notEqual(null, result, 'Missing subs private union in DB');
+                assert.notEqual(null, result.value, 'Wrong subs private union in DB');
+                const union = JSON.parse(result.value);
                 assert.notEqual(null, union);
-                activeFires.countDocuments({
+                const findUnionQuery = {
                   ourid: {
                     $geoWithin: {
                       $geometry: union.geometry
                     }
                   }
-                }, (cterr, countt) => {
-                  assert.equal(null, cterr);
-                  console.log(`${countt} fires to notify`);
-                  saveStats('fires-to-notif-stats', countt);
-                  activeFires.countDocuments({ createdAt: now }, (terr, countn) => {
-                    assert.equal(null, terr);
-                    console.log(`${countn} new active fires`);
+                };
+                activeFires.countDocuments(findUnionQuery, (err, count) => {
+                  assert.equal(null, err);
+                  logInfo(`${count} fires to notify`);
+                  saveStats('fires-to-notif-stats', count);
+                  activeFires.countDocuments({ createdAt: now }, (err, countn) => {
+                    assert.equal(null, err);
+                    logInfo(`${countn} new active fires`);
                     saveStats('new-fires-stats', countn);
-                    if (countt > 0) {
+                    if (count > 0) {
                       touch('new');
                     }
-                    touch('end');
-                    client.close();
+                    activeFiresUnionUpdate(findUnionQuery, () => {
+                      touch('end');
+                      client.close();
+                    });
                   });
                 });
               });
@@ -136,7 +208,7 @@ mongoClient.connect(mongoUrl, {
     }
   };
 
-  const onRow = (el, type) => {
+  const onCsvRow = (el, type) => {
     try {
       const lat = Number(el.latitude);
       const lon = Number(el.longitude);
@@ -145,7 +217,7 @@ mongoClient.connect(mongoUrl, {
       if (lat && lon && typeof lat === 'number' && typeof lon === 'number') {
         const ourid = { type: 'Point', coordinates: [lon, lat] };
 
-        const setcommon = {
+        const setCommon = {
           ourid,
           lat,
           lon,
@@ -163,20 +235,20 @@ mongoClient.connect(mongoUrl, {
           daynight: el.daynight
         };
 
-        let setdiff;
+        let setDiff;
         if (type === 'modis') {
-          setdiff = {
+          setDiff = {
             brightness: el.brightness,
             bright_t31: el.bright_t31
           };
         } else { // viirs
-          setdiff = {
+          setDiff = {
             bright_ti4: el.bright_ti4,
             bright_ti5: el.bright_ti5
           };
         }
 
-        const fire = Object.assign(setcommon, setdiff);
+        const fire = Object.assign(setCommon, setDiff);
 
         if (el.brightness) {
           fire.type = 'modis';
@@ -190,7 +262,7 @@ mongoClient.connect(mongoUrl, {
 
         fire.when = when.toDate();
 
-        // console.log(fire);
+        // logInfo(fire);
 
         // http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#bulkWrite
         // { updateOne: { filter: {a:2}, update: {$set: {a:2}}, upsert:true } }
@@ -203,7 +275,7 @@ mongoClient.connect(mongoUrl, {
         updates.push({ updateOne: { filter: { ourid, type }, update: up, upsert: true } });
 
       } else {
-        // console.log(JSON.stringify(el));
+        // logInfo(JSON.stringify(el));
       }
     } catch (e) {
       logError(e);
@@ -212,7 +284,7 @@ mongoClient.connect(mongoUrl, {
 
   const onEnd = () => {
     fileCount += 1;
-    console.log(`${fileCount} of ${totalFiles - 2}`);
+    logInfo(`CSV file ${fileCount} of ${totalFiles - 2}`);
     if (fileCount === totalFiles - 2) {
       bulk();
     }
@@ -228,8 +300,8 @@ mongoClient.connect(mongoUrl, {
     }
   };
 
-  siteSettings.updateOne({ name: 'last-fire-check' }, lastCheckSet, { upsert: true }, (seterr) => {
-    assert.equal(null, seterr);
+  siteSettings.updateOne({ name: 'last-fire-check' }, lastCheckSet, { upsert: true }, (err) => {
+    assert.equal(null, err);
     touch('check');
   });
 
@@ -240,7 +312,7 @@ mongoClient.connect(mongoUrl, {
     // https://github.com/Keyang/node-csvtojson#parameters
     csv({
       noheader: false,
-      workerNum: workers, // workerNum >= 1
+      workerNum: workers,
       colParser: {
         latitude: 'number',
         longitude: 'number',
@@ -260,11 +332,10 @@ mongoClient.connect(mongoUrl, {
       }
     }).fromFile(filePath)
       .on('json', (row) => {
-        // console.log(row);
-        onRow(row, type);
+        onCsvRow(row, type);
       })
-      .on('done', (error) => {
-        if (error) { logError(e); } else { onEnd(); }
+      .on('done', (err) => {
+        if (err) { logError(e); } else { onEnd(); }
       });
   }
 });
