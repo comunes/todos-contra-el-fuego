@@ -6,6 +6,7 @@
 KEY=$1
 export SENTRY_DSN=$2
 DEST=$3
+SCRIPT=$0
 
 DEBUG=0
 
@@ -45,7 +46,7 @@ function onError {
 }
 
 function trap_err_report() {
-    onGeneralError "Error on line $1"
+    onGeneralError "$SCRIPT failed with error on line $1"
 }
 
 trap 'trap_err_report $LINENO' ERR
@@ -56,7 +57,7 @@ ZONE="Global"
 
 if [[ $# != 3 ]]
 then
-    echo "Usage: $0 nasa-user nasa-key sentry-key /destination-dir"
+    echo "Usage: $SCRIPT nasa-user nasa-key sentry-key /destination-dir"
     exit 1
 fi
 
