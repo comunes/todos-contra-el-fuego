@@ -33,7 +33,7 @@ mongoClient.connect(mongoUrl, {
   reconnectTries: 60,
   // wait 1 second before retrying
   reconnectInterval: 1000
-}), (err, client) => {
+}, (err, client) => {
   assert.equal(null, err);
   logInfo('Connected successfully to server');
   const db = client.db(dbname);
