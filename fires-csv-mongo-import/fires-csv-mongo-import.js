@@ -9,6 +9,8 @@ const calcUnion = require('map-common-utils').calcUnion;
 // FIXME union of none
 const centroid = require('@turf/centroid').default;
 const tunion = require('@turf/union').default;
+const thelpers = require('@turf/helpers')
+
 const {logInfo, logError, touch, saveStats, SpainGeoJSON} = require('./utils.js');
 const {dbname, workers, mongoUrl, debug} = require('./settings.json');
 
@@ -211,12 +213,17 @@ mongoClient.connect(mongoUrl, {
                   logInfo("End active fire union");
                   logInfo(`Fires unified: ${firesUnionCount}`);
                   // logInfo(JSON.stringify(unionMultiPolygon));
-                  unionMultiPolygon.geometry.coordinates.forEach((coords) => {
+
+                  // If only it's only one, convert to array
+                  const polygons = firesUnionCount === 1 ?
+                                   [unionMultiPolygon.geometry.coordinates] :
+                                   unionMultiPolygon.geometry.coordinates;
+                  polygons.forEach((coords) => {
                     // FIXME this to fire group
                     // centroid ?
                     const shape = {"type": "Polygon", "coordinates": coords};
-                    const centerid = centroid(shape).geometry;
                     // logInfo(JSON.stringify(shape));
+                    const centerid = centroid(thelpers.polygon(coords)).geometry;
                     // logInfo(JSON.stringify(centerid));
                     const fireUnion = {
                       centerid, shape, history: [], createdAt: now, updatedAt: now
