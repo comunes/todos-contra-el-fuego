@@ -31,6 +31,17 @@ let activeFires;
 let siteSettings;
 let activeFiresUnion;
 
+const endParseProcess = () => {
+  touch('end');
+  mClient.close();
+}
+
+const logErrorAndExit = (err) => {
+  logError(err);
+  endParseProcess();
+  process.exit(1);
+}
+
 // http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html
 mongoClient.connect(mongoUrl, {
   useNewUrlParser: true,
@@ -133,13 +144,13 @@ mongoClient.connect(mongoUrl, {
             saveStats('ftp-read-fires-stats', updates.length);
             if (updates.length === 0) {
               logInfo('No data read from NASA cvs');
+              endParseProcess();
               process.exit(1);
             }
             activeFires
               .bulkWrite(updates, {w: 1, ordered: 0, wtimeout: 120000})
-              .catch ((err) => {
-                throw err;
-              }).then(() => {
+              .catch ((err) => logErrorAndExit(err)
+              ).then(() => {
                 // TODO more asserts
                 return activeFires.countDocuments();
               }).then((count) => {
@@ -158,7 +169,7 @@ mongoClient.connect(mongoUrl, {
                 assert.notEqual(null, r.value, 'Wrong subs private union in DB');
                 let union = JSON.parse(r.value);
                 // If we are developing we add all Spain to the union
-                if (debug) union = tunion(union, SpainGeoJSON);
+                // if (debug) union = tunion(union, SpainGeoJSON);
                 assert.notEqual(null, union);
                 // logInfo(JSON.stringify(union));
                 const findUnionQuery = {ourid: {$geoWithin: {$geometry: union.geometry}}};
@@ -178,7 +189,9 @@ mongoClient.connect(mongoUrl, {
                 return activeFires.find(findUnionQuery).toArray();
               }).then((r) => {
                 const unionInsert = [];
-                if (r.length > 0) {
+                const numberOfUnionsToNotify = r.length;
+                logInfo(`Whe should notify ${numberOfUnionsToNotify} union of fires`);
+                if (numberOfUnionsToNotify > 0) {
                   const remap = r.map((doc) => {
                     const isNASA = doc.type === 'modis' || doc.type === 'viirs';
                     // const pixelSize = doc.type === 'viirs' ? 0.375 : 1; // viirs has 375m pixel size, modis 1000m
@@ -211,8 +224,13 @@ mongoClient.connect(mongoUrl, {
                     // TODO here we can search for previous fires and add then to history (before delete old fires)
                     unionInsert.push(fireUnion);
                   });
+                } else {
+                  logInfo('Nothing to notify');
+                  endParseProcess();
+                  process.exit(0);
                 }
-                return [activeFiresUnion.deleteMany({createdAt: {$ne: now}}, {w: 1}), unionInsert];
+                return [activeFiresUnion.deleteMany({createdAt: {$ne: now}}, {w: 1}),
+                        unionInsert];
               }).then(async ([promiseResult, unionInsert]) => {
                 const r = await promiseResult;
                 const disappeared = r.result.n;
@@ -237,35 +255,37 @@ mongoClient.connect(mongoUrl, {
                       }
                     }
                   };
-                  await activeFires.updateMany(firesOfUnionQuery, {$set: {fireUnion: fUnion._id}}, async (err) => {
-                    if (err) logError(err);
-                    assert.equal(null, err, 'Error updating active fire with unions');
-                    await activeFires.findOne(
-                      firesOfUnionQuery,
-                      {projection: {when: 1}, sort: {when: 1}, limit: 1},
-                      async (err, r) => {
-                        if (err) logError(err);
-                        assert.equal(null, err);
-                        await activeFiresUnion.updateOne(
-                          {_id: fUnion._id},
-                          {$set: {when: r.when}},
-                          async (err, r) => {
+                  await activeFires.updateMany(firesOfUnionQuery, { $set: {fireUnion: fUnion._id} }, async (err) => {
+                    try {
+                      if (err) logError(err);
+                      assert.equal(null, err, 'Error updating active fire with unions');
+                      await activeFires.findOne(
+                        firesOfUnionQuery,
+                        {projection: {when: 1}, sort: {when: 1}, limit: 1},
+                        async (err, r) => {
+                          try {
+                            if (err) logError(err);
                             assert.equal(null, err);
-                            assert.equal(r.result.nModified, 1, 'Active fire union when update failed');
-                            // logInfo('Updating when');
-                            fireUnionCount -= 1;
-                            if (fireUnionCount === 0) {
-                              touch('end');
-                              mClient.close();
-                            }
-                          });
-                      });
+                            await activeFiresUnion.updateOne(
+                              {_id: fUnion._id},
+                              {$set: {when: r.when}},
+                              async (err, r) => {
+                                try {
+                                  assert.equal(null, err);
+                                  assert.equal(r.result.nModified, 1, 'Active fire union when update failed');
+                                  // logInfo('Updating when');
+                                  fireUnionCount -= 1;
+                                  if (fireUnionCount === 0) {
+                                    endParseProcess();
+                                  }
+                                } catch (err) { logErrorAndExit(err) }
+                              });
+                          } catch (err) { logErrorAndExit(err) }
+                        });
+                    } catch (err) { logErrorAndExit(err) }
                   });
                 }
-              }).catch((reason) => {
-                logError(reason);
-                throw reason;
-              });
+              }).catch((reason) => logErrorAndExit(reason));
           }
         })
   }
