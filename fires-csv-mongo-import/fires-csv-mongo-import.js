@@ -8,8 +8,9 @@ const calcUnion = require('map-common-utils').calcUnion;
 
 // FIXME union of none
 const centroid = require('@turf/centroid').default;
-const {logInfo, logError, touch, saveStats} = require('./utils.js');
-const {dbname, workers, mongoUrl} = require('./settings.json');
+const tunion = require('@turf/union').default;
+const {logInfo, logError, touch, saveStats, SpainGeoJSON} = require('./utils.js');
+const {dbname, workers, mongoUrl, debug} = require('./settings.json');
 
 if (process.argv.length < 3) {
   console.error('You must specify a file or files');
@@ -155,8 +156,11 @@ mongoClient.connect(mongoUrl, {
               }).then((r) => {
                 assert.notEqual(null, r, 'Missing subs private union in DB');
                 assert.notEqual(null, r.value, 'Wrong subs private union in DB');
-                const union = JSON.parse(r.value);
+                let union = JSON.parse(r.value);
+                // If we are developing we add all Spain to the union
+                if (debug) union = tunion(union, SpainGeoJSON);
                 assert.notEqual(null, union);
+                // logInfo(JSON.stringify(union));
                 const findUnionQuery = {ourid: {$geoWithin: {$geometry: union.geometry}}};
                 return [activeFires.countDocuments(findUnionQuery), findUnionQuery];
               }).then(async ([countPromise, findUnionQuery]) => {
@@ -177,11 +181,12 @@ mongoClient.connect(mongoUrl, {
                 if (r.length > 0) {
                   const remap = r.map((doc) => {
                     const isNASA = doc.type === 'modis' || doc.type === 'viirs';
-                    const pixelSize = doc.type === 'viirs' ? 0.375 : 1; // viirs has 375m pixel size, modis 1000m
+                    // const pixelSize = doc.type === 'viirs' ? 0.375 : 1; // viirs has 375m pixel size, modis 1000m
+                    const pixelSize = 1;
                     // default 1 km for neighbor alerts
                     return {
                       location: {lat: doc.lat, lon: doc.lon},
-                      distance: isNASA ? doc.scan * pixelSize : 1,
+                      distance: isNASA ? doc.track * pixelSize : 1,
                       distanceY: isNASA ? doc.track * pixelSize : 1
                     };
                   });

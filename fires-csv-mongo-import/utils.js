@@ -38,3 +38,35 @@ module.exports.saveStats = (file, value) => {
     assert.equal(null, err);
   });
 };
+
+module.exports.SpainGeoJSON = {
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+              -10.1953125,
+          36.31512514748051
+        ],
+        [
+          2.109375,
+          36.31512514748051
+        ],
+        [
+          2.109375,
+          44.84029065139799
+        ],
+        [
+              -10.1953125,
+          44.84029065139799
+        ],
+        [
+              -10.1953125,
+          36.31512514748051
+        ]
+      ]
+    ]
+  }
+};
